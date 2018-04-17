@@ -1,0 +1,35 @@
+{"compile":[
+["C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_smoke.c", "gcc.exe -c  -w -mno-ms-bitfields -DWIN32_LEAN_AND_MEAN  -I\"C:\\Program Files\\nim\\nim-0.18.0\\lib\" -o \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_smoke.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_smoke.c\""],
+["C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_system.c", "gcc.exe -c  -w -mno-ms-bitfields -DWIN32_LEAN_AND_MEAN  -I\"C:\\Program Files\\nim\\nim-0.18.0\\lib\" -o \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_system.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_system.c\""],
+["C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_render.c", "gcc.exe -c  -w -mno-ms-bitfields -DWIN32_LEAN_AND_MEAN  -I\"C:\\Program Files\\nim\\nim-0.18.0\\lib\" -o \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_render.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_render.c\""],
+["C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_character.c", "gcc.exe -c  -w -mno-ms-bitfields -DWIN32_LEAN_AND_MEAN  -I\"C:\\Program Files\\nim\\nim-0.18.0\\lib\" -o \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_character.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_character.c\""]
+],
+"link":[
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_smoke.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_system.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\sdl2_sdl2.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_os.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_times.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_macros.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_unsigned.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_strutils.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_parseutils.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_math.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_algorithm.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\sdl2_image.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_winlean.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_dynlib.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_ospaths.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_matrix.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_vector.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_render.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_gamestate.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_resources.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_constants.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_utils.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_character.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_direction.o\"",
+"\"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_rectangle.o\""
+],
+"linkcmd": "gcc.exe   -o \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\smoke.exe\"  \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_smoke.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_system.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\sdl2_sdl2.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_os.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_times.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_macros.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_unsigned.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_strutils.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_parseutils.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_math.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_algorithm.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\sdl2_image.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_winlean.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_dynlib.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\stdlib_ospaths.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_matrix.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_vector.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_render.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_gamestate.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_resources.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_constants.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_utils.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_character.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_direction.o\" \"C:\\Users\\Quinn Freedman\\workspace\\nim\\smoke\\src\\nimcache\\smoke_rectangle.o\"    "
+}

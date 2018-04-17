@@ -1,0 +1,1 @@
+nimble build && mv smoke.exe bin/ && bin/smoke.exe

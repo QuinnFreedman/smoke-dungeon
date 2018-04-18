@@ -50,6 +50,8 @@ const GRASS_LONG3*  = tile(7, 1)
 
 const STONE1* = tile(0, 2)
 
+const BLACK* = tile(7, 0)
+
 
 
 var texturStore: array[TextureAlias, TexturePtr]

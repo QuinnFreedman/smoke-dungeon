@@ -1,1 +1,5 @@
-const TILE_SIZE* = 32
+const
+    TILE_SIZE* = 32
+
+    SCREEN_WIDTH_TILES* = 10
+    SCREEN_HEIGHT_TILES* = 5

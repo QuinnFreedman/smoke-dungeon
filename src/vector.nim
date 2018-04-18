@@ -1,6 +1,8 @@
 import strutils,
        math
 
+import direction
+
 type Vec2* = object
     x*: int
     y*: int
@@ -19,6 +21,13 @@ const UP* = N
 const DOWN* = S
 const LEFT* = W
 const RIGHT* = E
+
+proc directionVector*(dir: Direction): Vec2 = 
+    case dir
+    of up: UP
+    of down: DOWN
+    of left: LEFT
+    of right: RIGHT
 
 proc v*(x, y: int): Vec2 = Vec2(x: x, y : y)
 
@@ -45,6 +54,10 @@ type Vec2f* = object
     x*: float
     y*: float
 
+proc scale*(self: Vec2, scale: int): Vec2 =
+    result.x = self.x * scale
+    result.y = self.y * scale
+
 proc scale*(self: Vec2, scale: float): Vec2f =
     result.x = float(self.x) * scale
     result.y = float(self.y) * scale
@@ -68,6 +81,10 @@ proc `-` *(self, other: Vec2f): Vec2f =
 proc `-=` *(self: var Vec2f, other: Vec2f) =
     self.x -= other.x
     self.y -= other.y
+
+proc scale*(self: Vec2f, scalar: float): Vec2f =
+    result.x = self.x * scalar
+    result.y = self.y * scalar
 
 proc `==` *(self, other: Vec2f): bool =
     self.x == other.x and self.y == other.y

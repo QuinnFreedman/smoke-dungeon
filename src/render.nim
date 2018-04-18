@@ -35,17 +35,17 @@ proc drawImage(texture: TexturePtr, srcRect: var Rect, destRect: var Rect,
     let _ = sdl2.copyEx(renderer, texture, srcRect, drect,
                         angle=0, center=nil, flip=SDL_FLIP_NONE)
 
-proc renderMap(map: var Matrix[sdl2.Rect],
+proc renderMap(map: Matrix[sdl2.Rect], window: Rect,
                renderer: RendererPtr, transfrom: Vec2) =
-    #TODO make foreach return an iterator instead so we don't gc the closure
-    for x, y in map.indices:
-        let pos = v(x * TILE_SIZE, y * TILE_SIZE)
-        let srect = map[x, y]
-        renderTile(TextureAlias.mapTiles.getTexture(),
-                   srect, pos, renderer, transfrom)
+    for pos in window.iterRect:
+        if map.contains(pos):
+            let srect = map[pos]
+            let tilePos = pos.scale(TILE_SIZE)
+            renderTile(TextureAlias.mapTiles.getTexture(),
+                    srect, tilePos, renderer, transfrom)
 
 
-proc renderCharacter(character: var Character,
+proc renderCharacter(character: Character,
                      renderer: RendererPtr, transfrom: Vec2) =
     var srect = character.getSrcRect
     var drect = character.getDestRect
@@ -61,38 +61,49 @@ proc renderRect(drect: Rect, renderer: RendererPtr, transform: Vec2) =
         )
         renderer.fillRect(newRect)
 
-proc renderMask(mask1, mask2: Matrix[bool], blend: float,
+proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
                 renderer: RendererPtr, transform: Vec2) =
     
     renderer.setDrawBlendMode(BlendMode_Blend)
-    for x, y in mask1.indices:
-        let r = newSdlSquare(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
+    for pos in window.iterRect:
+        let r = newSdlSquare(pos.x * TILE_SIZE, pos.y * TILE_SIZE, TILE_SIZE)
         let alpha: float =
-            if mask1[x, y]:
-                if mask2[x, y]: 1.0
+            if mask1[pos]:
+                if mask2[pos]: 1.0
                 else: blend
             else:
-                if mask2[x, y]: 1 - blend
+                if mask2[pos]: 1 - blend
                 else: 0.0
         renderer.setDrawColor(0, 0, 0, uint8(alpha * 150))
         renderRect(r, renderer, transform)
     
 
+proc getRenderWindow(playerPos: Vec2): Rect =
+    let radiusX = SCREEN_WIDTH_TILES div 2 + 1
+    let radiusY = SCREEN_HEIGHT_TILES div 2 + 1
+    newSdlRect(playerPos.x - radiusX, playerPos.y - radiusY - 1,
+               2 * radiusX + 1, 2 * radiusY + 2)
 
-proc renderGameFrame*(game: var Game) =
-    var transform = ZERO
-    renderMap(game.gamestate.mapTextures, game.renderer, transform)
-    renderCharacter(game.gamestate.playerCharacter, game.renderer, transform)
+
+proc renderGameFrame*(game: Game) =
+    let gamestate: GameState = game.gameState
+    let level = gamestate.level
+    let pc: Character = gamestate.playerCharacter
+    let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
+                               .scale(TILE_SIZE / 2)
+    var transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter)
+
+    let window = getRenderWindow(pc.currentTile)
+
+    renderMap(level.textures, window, game.renderer, transform)
+    renderCharacter(pc, game.renderer, transform)
     #TODO don't alloc these every frame
-    var shadowMask1 = newMatrix[bool](game.gamestate.walls.width, game.gamestate.walls.height)
-    var shadowMask2 = newMatrix[bool](game.gamestate.walls.width, game.gamestate.walls.height)
-    shadowCast(game.gamestate.playerCharacter.currentTile, shadowMask1,
-               game.gamestate.walls)
-    shadowCast(game.gamestate.playerCharacter.nextTile, shadowMask2,
-               game.gamestate.walls)
-    renderMask(shadowMask1, shadowMask2,
-               game.gameState.playerCharacter.animationTimer,
+    var shadowMask1 = newMatrixWithOffset[bool](window.w, window.h,
+                                                v(window.x, window.y))
+    var shadowMask2 = newMatrixWithOffset[bool](window.w, window.h,
+                                                v(window.x, window.y))
+    shadowCast(pc.currentTile, shadowMask1, level.walls)
+    shadowCast(pc.nextTile, shadowMask2, level.walls)
+    renderMask(shadowMask1, shadowMask2, pc.animationTimer, window,
                game.renderer, transform)
     
-
-# seed 1524022525

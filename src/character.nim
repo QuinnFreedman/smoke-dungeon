@@ -59,19 +59,11 @@ proc move*(self: var Character, dir: Direction, collision: Matrix[bool]) =
 
     self.facing = dir
         
-    let dest: Vec2 =
-        case dir
-        of up:
-            self.currentTile + UP
-        of down:
-            self.currentTile + DOWN
-        of left:
-            self.currentTile + LEFT
-        of right:
-            self.currentTile + RIGHT
+    let dest: Vec2 = self.currentTile + directionVector(dir)
     
     # if not collision[dest]:
-    self.nextTile = dest
+    if collision.contains(dest):
+        self.nextTile = dest
 
 
 

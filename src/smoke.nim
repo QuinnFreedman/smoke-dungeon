@@ -9,7 +9,8 @@ import
     render,
     gamestate,
     render,
-    textures
+    textures,
+    constants
 
 type SDLException = object of Exception
 
@@ -44,7 +45,7 @@ proc handleInput(game: var Game) =
         else:
             discard
 
-proc render(game: var Game) =
+proc render(game: Game) =
     # Draw over all drawings of the last frame with the default color
     game.renderer.clear()
 
@@ -83,9 +84,10 @@ proc main =
     defer: renderer.destroy()
 
     # Set the default color to use for drawing
-    renderer.setDrawColor(r = 110, g = 132, b = 174)
+    # renderer.setDrawColor(r = 110, g = 132, b = 174)
 
-    if renderer.setLogicalSize(cint(32 * 10), cint(32 * 5)) < 0:
+    if renderer.setLogicalSize(cint(SCREEN_WIDTH_TILES * TILE_SIZE),
+                               cint(SCREEN_HEIGHT_TILES * TILE_SIZE)) < 0:
         echo "Warning: unable to set renderer logical size"
     if not sdl2.setHint(HINT_RENDER_SCALE_QUALITY, NEAREST):
         echo "Warning: unable to set texture filtering mode"

@@ -22,13 +22,13 @@ proc castOctant(octant: int,
     let octantVecs = getOctant(octant)
     for v in octantVecs.fields:
         let newPos = pos + v
-        if mask.contains(newPos):
+        if mask.contains(newPos) and walls.contains(newPos):
             if inShadow:
                 mask[newPos] = true
 
             castOctant(octant, mask, walls, newPos, inShadow or walls[newPos])
 
-proc shadowCast*(heroPos: Vec2, mask, walls: var Matrix[bool]) =
+proc shadowCast*(heroPos: Vec2, mask: var Matrix[bool], walls: Matrix[bool]) =
     mask[heroPos] = false
     for i in 0..<8:
         castOctant(i, mask, walls, heroPos, false)

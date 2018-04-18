@@ -19,30 +19,35 @@ proc newMatrix*[T](width, height: int): Matrix[T] =
     result.data = newSeq[T](width * height)
 
 proc newMatrixWithOffset*[T](width, height: int, offset: Vec2): Matrix[T] =
-    result = newMatrix(width, height)
+    result = newMatrix[T](width, height)
     result.offset = offset
 
+proc setAll*[T](self: var Matrix[T], value: T) =
+    #TODO use memset
+    for i in 0..<(self.width * self.height):
+        self.data[i] = value
+
 proc get*[T](self: Matrix[T], x, y: int): T =
-    let x2 = x + self.offset.x
-    let y2 = y + self.offset.y
+    let x2 = x - self.offset.x
+    let y2 = y - self.offset.y
     if x2 < 0 or x2 >= self.width:
         raise IndexError.newException(
-            "x index: $1 out of bounds for matrix: $2".format(x2, self))
+            "x index: $1 out of bounds for matrix: $2".format(x, self))
     if y2 < 0 or y2 >= self.height:
         raise IndexError.newException(
-            "y index: $1 out of bounds for matrix: $2".format(y2, self))
-    return self.data[y * self.width + x]
+            "y index: $1 out of bounds for matrix: $2".format(y, self))
+    return self.data[y2 * self.width + x2]
 
 proc set*[T](self: var Matrix[T], x, y: int, value: T) =
-    let x2 = x + self.offset.x
-    let y2 = y + self.offset.y
+    let x2 = x - self.offset.x
+    let y2 = y - self.offset.y
     if x2 < 0 or x2 >= self.width:
         raise IndexError.newException(
-            "x index: $1 out of bounds for matrix: $2".format(x2, self))
+            "x index: $1 out of bounds for matrix: $2".format(x, self))
     if y2 < 0 or y2 >= self.height:
         raise IndexError.newException(
-            "y index: $1 out of bounds for matrix: $2".format(y2, self))
-    self.data[y * self.width + x] = value
+            "y index: $1 out of bounds for matrix: $2".format(y, self))
+    self.data[y2 * self.width + x2] = value
 
 proc `[]` *[T](self: Matrix[T], x, y: int): T {.inline.} =
     self.get(x, y)
@@ -56,9 +61,9 @@ proc `[]=` *[T](self: var Matrix[T], x, y: int, value: T) {.inline.} =
 proc `[]=` *[T](self: var Matrix[T], pos: Vec2, value: T) {.inline.} =
     self.set(pos.x, pos.y, value)
 
-proc contains*[T](self: var Matrix[T], vec: Vec2): bool =
-    let x = vec.x + self.offset.x
-    let y = vec.y + self.offset.y
+proc contains*[T](self: Matrix[T], vec: Vec2): bool =
+    let x = vec.x - self.offset.x
+    let y = vec.y - self.offset.y
     x >= 0 and x < self.width and y >= 0 and y < self.height
 
 proc `$` *[T](self: Matrix[T]): string =
@@ -70,6 +75,6 @@ iterator indices*[T](self: Matrix[T]): (int, int) =
     let width = self.width
     let height = self.height
     for i in 0..<(width * height):
-        let x = i mod width + self.offset.x
-        let y = i div width + self.offset.y
+        let x = i mod width - self.offset.x
+        let y = i div width - self.offset.y
         yield (x, y)

@@ -22,7 +22,7 @@ proc newMatrixWithOffset*[T](width, height: int, offset: Vec2): Matrix[T] =
     result = newMatrix(width, height)
     result.offset = offset
 
-proc get*[T](self: var Matrix[T], x, y: int): T =
+proc get*[T](self: Matrix[T], x, y: int): T =
     let x2 = x + self.offset.x
     let y2 = y + self.offset.y
     if x2 < 0 or x2 >= self.width:
@@ -44,19 +44,11 @@ proc set*[T](self: var Matrix[T], x, y: int, value: T) =
             "y index: $1 out of bounds for matrix: $2".format(y2, self))
     self.data[y * self.width + x] = value
 
-proc `[]` *[T](self: var Matrix[T], x, y: int): T {.inline.} =
+proc `[]` *[T](self: Matrix[T], x, y: int): T {.inline.} =
     self.get(x, y)
 
-proc `[]` *[T](self: var Matrix[T], pos: Vec2): T {.inline.} =
-    self.get(pos.x, pos.y)
-
-proc `[]` *[T](self: Matrix[T], x, y: int): T {.inline.} =
-    var mutSelf = self
-    mutSelf.get(x, y)
-
 proc `[]` *[T](self: Matrix[T], pos: Vec2): T {.inline.} =
-    var mutSelf = self
-    mutSelf.get(pos.x, pos.y)
+    self.get(pos.x, pos.y)
 
 proc `[]=` *[T](self: var Matrix[T], x, y: int, value: T) {.inline.} =
     self.set(x, y, value)

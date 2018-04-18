@@ -52,6 +52,32 @@ proc renderCharacter(character: var Character,
     drawImage(character.spritesheet.getTexture(),
               srect, drect, renderer, transfrom)
 
+proc renderRect(drect: Rect, renderer: RendererPtr, transform: Vec2) =
+        var newRect = rect(
+            drect.x + cint(transform.x),
+            drect.y + cint(transform.y),
+            drect.w,
+            drect.h
+        )
+        renderer.fillRect(newRect)
+
+proc renderMask(mask1, mask2: Matrix[bool], blend: float,
+                renderer: RendererPtr, transform: Vec2) =
+    
+    renderer.setDrawBlendMode(BlendMode_Blend)
+    for x, y in mask1.indices:
+        let r = newSdlSquare(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
+        let alpha: float =
+            if mask1[x, y]:
+                if mask2[x, y]: 1.0
+                else: blend
+            else:
+                if mask2[x, y]: 1 - blend
+                else: 0.0
+        renderer.setDrawColor(0, 0, 0, uint8(alpha * 150))
+        renderRect(r, renderer, transform)
+    
+
 
 proc renderGameFrame*(game: var Game) =
     var transform = ZERO
@@ -62,5 +88,11 @@ proc renderGameFrame*(game: var Game) =
     var shadowMask2 = newMatrix[bool](game.gamestate.walls.width, game.gamestate.walls.height)
     shadowCast(game.gamestate.playerCharacter.currentTile, shadowMask1,
                game.gamestate.walls)
+    shadowCast(game.gamestate.playerCharacter.nextTile, shadowMask2,
+               game.gamestate.walls)
+    renderMask(shadowMask1, shadowMask2,
+               game.gameState.playerCharacter.animationTimer,
+               game.renderer, transform)
+    
 
-
+# seed 1524022525

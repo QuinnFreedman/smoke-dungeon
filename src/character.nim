@@ -57,7 +57,6 @@ proc move*(self: var Character, dir: Direction, collision: Matrix[bool]) =
     if self.currentTile != self.nextTile:
         return
 
-
     self.facing = dir
         
     let dest: Vec2 =
@@ -71,8 +70,8 @@ proc move*(self: var Character, dir: Direction, collision: Matrix[bool]) =
         of right:
             self.currentTile + RIGHT
     
-    if not collision[dest]:
-        self.nextTile = dest
+    # if not collision[dest]:
+    self.nextTile = dest
 
 
 
@@ -99,7 +98,7 @@ proc isMoving(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
 
 
-proc animationTimer(self: Character): float {.inline.} =
+proc animationTimer*(self: Character): float {.inline.} =
     let distanceToMove = vecFloat(self.nextTile - self.currentTile)
     let distanceMoved = vecFloat(self.nextTile) - self.actualPos
 

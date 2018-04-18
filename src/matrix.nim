@@ -64,7 +64,7 @@ proc `[]=` *[T](self: var Matrix[T], x, y: int, value: T) {.inline.} =
 proc `[]=` *[T](self: var Matrix[T], pos: Vec2, value: T) {.inline.} =
     self.set(pos.x, pos.y, value)
 
-proc contains*[T](self: var Matrix, vec: Vec2): bool =
+proc contains*[T](self: var Matrix[T], vec: Vec2): bool =
     let x = vec.x + self.offset.x
     let y = vec.y + self.offset.y
     x >= 0 and x < self.width and y >= 0 and y < self.height

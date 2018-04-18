@@ -196,6 +196,9 @@ N_LIB_PRIVATE N_NIMCALL(void, move_9aRX7iIU7VSOII1UqhN8edQ)(tyObject_Character_z
 N_LIB_PRIVATE N_NIMCALL(void, update_pBfJunJAWPEnvkt2lnqkcA)(tyObject_Character_z7sEl7rGLIEtgyeCSL9aOwg* self, NF dt);
 N_LIB_PRIVATE N_NIMCALL(tySequence_6MHxSSkCYafnfGYzxyCqtA*, newSeq_Vwp4M09ciGpSzWSD1pqtZ6w)(NI len);
 N_LIB_PRIVATE N_NIMCALL(tySequence_shxop0zPIs5Ec3k71aCLuQ*, newSeq_Ltn5D7x7AgJUEN0OQVkiEw)(NI len);
+N_LIB_PRIVATE N_NIMCALL(NimStringDesc*, dollar__BNdGsTV6ZFhDHZTIzaJY5Q)(tyObject_Matrix_Uogfi9b3606EsxiEmiGDiAw* self);
+N_LIB_PRIVATE N_NIMCALL(NimStringDesc*, dollar__QlLPjMfIso9bq08SGs3fS7g)(tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g x);
+N_LIB_PRIVATE N_NIMCALL(void, addQuoted_nyaZAljVI03SH2d9cnD0WMw)(NimStringDesc** s, NI x);
 N_LIB_PRIVATE N_NIMCALL(NimStringDesc*, dollar__hvNTR4uxZJu8fvePwaextw)(tyObject_Matrix_5jfXleRjKMzj7p29cba2i9bg* self);
 TNimType NTI_np3Rx8N215Y1kfBowS8mPQ_;
 extern TNimType NTI_5jfXleRjKMzj7p29cba2i9bg_;

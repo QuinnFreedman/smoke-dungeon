@@ -479,6 +479,8 @@ NIM_EXTERNC N_NOINLINE(void, smoke_gamestateInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_gamestateDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_rectangleInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_rectangleDatInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, smoke_shadowcastingInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, smoke_shadowcastingDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_renderInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_renderDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, NimMainModule)(void);
@@ -1039,7 +1041,7 @@ appendString(T43_, T45_);
 					nimln_(90, "smoke.nim");
 					{
 						NIM_BOOL T55_;
-						nimln_(15, "render.nim");
+						nimln_(16, "render.nim");
 						T55_ = (NIM_BOOL)0;
 						T55_ = Dl_148013_("SDL_RENDER_SCALE_QUALITY", "0");
 						if (!!(T55_)) goto LA56_;
@@ -1151,6 +1153,7 @@ void PreMainInner(void) {
 	smoke_characterDatInit000();
 	smoke_gamestateDatInit000();
 	smoke_rectangleDatInit000();
+	smoke_shadowcastingDatInit000();
 	smoke_renderDatInit000();
 	smokeDatInit000();
 	stdlib_macrosInit000();
@@ -1179,6 +1182,7 @@ void PreMainInner(void) {
 	smoke_characterInit000();
 	smoke_gamestateInit000();
 	smoke_rectangleInit000();
+	smoke_shadowcastingInit000();
 	smoke_renderInit000();
 }
 

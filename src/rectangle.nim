@@ -24,11 +24,11 @@ proc width*(self: Rectangle): int {.inline.} =
 proc height*(self: Rectangle): int {.inline.} =
     self.lowerRight.y - self.upperLeft.y
 
-proc forEach*(self: Rectangle, f: proc(x, y: int)) =
-    var width = self.width
-    var height = self.height
-    var length = width * height
-    for i in 0..length - 1:
-        var y = i div width
-        var x = i mod width
-        f(x, y)
+# proc forEach*(self: Rectangle, f: proc(x, y: int)) =
+#     var width = self.width
+#     var height = self.height
+#     var length = width * height
+#     for i in 0..length - 1:
+#         var y = i div width
+#         var x = i mod width
+#         f(x, y)

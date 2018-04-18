@@ -9,7 +9,7 @@ import
     render,
     gamestate,
     render,
-    resources
+    textures
 
 type SDLException = object of Exception
 
@@ -17,12 +17,6 @@ template sdlFailIf(cond: typed, reason: string) =
     if cond: raise SDLException.newException(
         reason & ", SDL error: " & $getError())
 
-
-proc newGame(renderer: RendererPtr): Game =
-    new result
-    result.renderer = renderer
-    result.resources = initResources(renderer)
-    result.gamestate = initGameState()
 
 proc toInput(key: Scancode): Input =
     case key
@@ -96,7 +90,9 @@ proc main =
     if not sdl2.setHint(HINT_RENDER_SCALE_QUALITY, NEAREST):
         echo "Warning: unable to set texture filtering mode"
 
-    var game = newGame(renderer)
+    initTextures(renderer)
+
+    var game = initGameData(renderer)
 
     var lastTime = epochTime()
 

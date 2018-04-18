@@ -31,11 +31,6 @@ struct tyObject_Rectangle_Nmh3mhZ3Bmv7pIjRzEqLVg {
 tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g upperLeft;
 tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g lowerRight;
 };
-typedef struct {
-N_NIMCALL_PTR(void, ClP_0) (NI x, NI y, void* ClE_0);
-void* ClE_0;
-} tyProc_U9b2RsxBr7YW05GXUbwbFqw;
-typedef N_CLOSURE_PTR(void, TM_20UnZOr9bevAwgKUDj8kGFA_10) (NI x, NI y);
 N_LIB_PRIVATE N_NIMCALL(tyObject_Rectangle_Nmh3mhZ3Bmv7pIjRzEqLVg, newRectangle_PZRoinI9cCau0UD1XjA81wA)(NI x, NI y, NI width, NI height);
 N_LIB_PRIVATE N_NIMCALL(tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g, v_g7Ok4O0iyLEmW9bny8ZknmA)(NI x, NI y);
 static N_INLINE(NI, addInt)(NI a, NI b);
@@ -52,11 +47,6 @@ static N_INLINE(NI, y_prTrI1MVo8MT9chBkL9c6JIA_2rectangle)(tyObject_Rectangle_Nm
 static N_INLINE(NI, width_prTrI1MVo8MT9chBkL9c6JIA_3rectangle)(tyObject_Rectangle_Nmh3mhZ3Bmv7pIjRzEqLVg* self);
 static N_INLINE(NI, subInt)(NI a, NI b);
 static N_INLINE(NI, height_prTrI1MVo8MT9chBkL9c6JIA_4rectangle)(tyObject_Rectangle_Nmh3mhZ3Bmv7pIjRzEqLVg* self);
-N_LIB_PRIVATE N_NIMCALL(void, forEach_oCglDafOf4YskssJpz4WFA)(tyObject_Rectangle_Nmh3mhZ3Bmv7pIjRzEqLVg* self, tyProc_U9b2RsxBr7YW05GXUbwbFqw f);
-N_NIMCALL(NI, mulInt)(NI a, NI b);
-static N_INLINE(NI, divInt)(NI a, NI b);
-N_NOINLINE(void, raiseDivByZero)(void);
-static N_INLINE(NI, modInt)(NI a, NI b);
 extern TFrame* framePtr_HRfVMH3jYeBJz6Q6X9b6Ptw;
 
 static N_INLINE(NI, addInt)(NI a, NI b) {
@@ -228,98 +218,6 @@ static N_INLINE(NI, height_prTrI1MVo8MT9chBkL9c6JIA_4rectangle)(tyObject_Rectang
 	result = (NI)(TM_20UnZOr9bevAwgKUDj8kGFA_5);
 	popFrame();
 	return result;
-}
-
-static N_INLINE(NI, divInt)(NI a, NI b) {
-	NI result;
-{	result = (NI)0;
-	{
-		if (!(b == ((NI) 0))) goto LA3_;
-		raiseDivByZero();
-	}
-	LA3_: ;
-	{
-		NIM_BOOL T7_;
-		T7_ = (NIM_BOOL)0;
-		T7_ = (a == ((NI) (IL64(-9223372036854775807) - IL64(1))));
-		if (!(T7_)) goto LA8_;
-		T7_ = (b == ((NI) -1));
-		LA8_: ;
-		if (!T7_) goto LA9_;
-		raiseOverflow();
-	}
-	LA9_: ;
-	result = (NI)(a / b);
-	goto BeforeRet_;
-	}BeforeRet_: ;
-	return result;
-}
-
-static N_INLINE(NI, modInt)(NI a, NI b) {
-	NI result;
-{	result = (NI)0;
-	{
-		if (!(b == ((NI) 0))) goto LA3_;
-		raiseDivByZero();
-	}
-	LA3_: ;
-	result = (NI)(a % b);
-	goto BeforeRet_;
-	}BeforeRet_: ;
-	return result;
-}
-
-N_LIB_PRIVATE N_NIMCALL(void, forEach_oCglDafOf4YskssJpz4WFA)(tyObject_Rectangle_Nmh3mhZ3Bmv7pIjRzEqLVg* self, tyProc_U9b2RsxBr7YW05GXUbwbFqw f) {
-	NI width;
-	NI height;
-	NI length;
-	NI TM_20UnZOr9bevAwgKUDj8kGFA_6;
-	nimfr_("forEach", "rectangle.nim");
-	nimln_(28, "rectangle.nim");
-	width = width_prTrI1MVo8MT9chBkL9c6JIA_3rectangle(self);
-	nimln_(29, "rectangle.nim");
-	height = height_prTrI1MVo8MT9chBkL9c6JIA_4rectangle(self);
-	nimln_(30, "rectangle.nim");
-	TM_20UnZOr9bevAwgKUDj8kGFA_6 = mulInt(width, height);
-	length = (NI)(TM_20UnZOr9bevAwgKUDj8kGFA_6);
-	{
-		NI i;
-		NI colontmp_;
-		NI TM_20UnZOr9bevAwgKUDj8kGFA_7;
-		NI res;
-		i = (NI)0;
-		colontmp_ = (NI)0;
-		nimln_(31, "rectangle.nim");
-		TM_20UnZOr9bevAwgKUDj8kGFA_7 = subInt(length, ((NI) 1));
-		colontmp_ = (NI)(TM_20UnZOr9bevAwgKUDj8kGFA_7);
-		nimln_(2045, "system.nim");
-		res = ((NI) 0);
-		{
-			nimln_(2046, "system.nim");
-			while (1) {
-				NI y;
-				NI TM_20UnZOr9bevAwgKUDj8kGFA_8;
-				NI x;
-				NI TM_20UnZOr9bevAwgKUDj8kGFA_9;
-				NI TM_20UnZOr9bevAwgKUDj8kGFA_11;
-				if (!(res <= colontmp_)) goto LA3;
-				nimln_(2047, "system.nim");
-				i = res;
-				nimln_(32, "rectangle.nim");
-				TM_20UnZOr9bevAwgKUDj8kGFA_8 = divInt(i, width);
-				y = (NI)(TM_20UnZOr9bevAwgKUDj8kGFA_8);
-				nimln_(33, "rectangle.nim");
-				TM_20UnZOr9bevAwgKUDj8kGFA_9 = modInt(i, width);
-				x = (NI)(TM_20UnZOr9bevAwgKUDj8kGFA_9);
-				nimln_(34, "rectangle.nim");
-				f.ClE_0? f.ClP_0(x, y, f.ClE_0):((TM_20UnZOr9bevAwgKUDj8kGFA_10)(f.ClP_0))(x, y);
-				nimln_(2048, "system.nim");
-				TM_20UnZOr9bevAwgKUDj8kGFA_11 = addInt(res, ((NI) 1));
-				res = (NI)(TM_20UnZOr9bevAwgKUDj8kGFA_11);
-			} LA3: ;
-		}
-	}
-	popFrame();
 }
 NIM_EXTERNC N_NOINLINE(void, smoke_rectangleInit000)(void) {
 	nimfr_("rectangle", "rectangle.nim");

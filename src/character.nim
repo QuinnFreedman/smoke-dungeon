@@ -6,11 +6,19 @@ import
     vector,
     direction,
     constants,
-    utils
+    utils,
+    textures,
+    clothingtypes,
+    matrix
 
 type Race* = enum human
 
 type Sex* = enum male, female
+
+type ItemSet* = object
+    head: ClothingHead
+    body: ClothingBody
+    legs: ClothingFeet
 
 type Character* = object
     currentTile*: Vec2
@@ -20,6 +28,18 @@ type Character* = object
     speed*: float
     race*: Race
     sex*: Sex
+    items*: ItemSet
+    spritesheet*: TextureAlias
+
+
+proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
+    case race
+    of human:
+        case sex
+        of male:
+            TextureAlias.humanMaleBase
+        of female:
+            TextureAlias.humanFemaleBase
 
 
 proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex): Character =
@@ -30,23 +50,29 @@ proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex): Character =
     result.speed = speed
     result.race = race
     result.sex = sex
+    result.spritesheet = getBaseSpriteSheet(race, sex)
     
 
-proc move*(self: var Character, dir: Direction) =
+proc move*(self: var Character, dir: Direction, collision: Matrix[bool]) =
     if self.currentTile != self.nextTile:
         return
 
+
     self.facing = dir
         
-    case dir
-    of up:
-        self.nextTile += UP
-    of down:
-        self.nextTile += DOWN
-    of left:
-        self.nextTile += LEFT
-    of right:
-        self.nextTile += RIGHT
+    let dest: Vec2 =
+        case dir
+        of up:
+            self.currentTile + UP
+        of down:
+            self.currentTile + DOWN
+        of left:
+            self.currentTile + LEFT
+        of right:
+            self.currentTile + RIGHT
+    
+    if not collision[dest]:
+        self.nextTile = dest
 
 
 

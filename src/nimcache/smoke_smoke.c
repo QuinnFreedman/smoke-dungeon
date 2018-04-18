@@ -23,26 +23,30 @@
 #undef powerpc
 #undef unix
 typedef struct tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA;
+typedef struct tyObject_Event_Uzh9aP43ffUpM9aa6vZvNEug tyObject_Event_Uzh9aP43ffUpM9aa6vZvNEug;
 typedef struct tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg;
 typedef struct tyObject_GameState_np3Rx8N215Y1kfBowS8mPQ tyObject_GameState_np3Rx8N215Y1kfBowS8mPQ;
-typedef struct tyObject_Matrix_IUzOSceCjOZ59cvd9c09cGiMw tyObject_Matrix_IUzOSceCjOZ59cvd9c09cGiMw;
+typedef struct tyObject_Matrix_5jfXleRjKMzj7p29cba2i9bg tyObject_Matrix_5jfXleRjKMzj7p29cba2i9bg;
 typedef struct tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g;
-typedef struct tySequence_qwqHTkRvwhrRyENtudHQ7g tySequence_qwqHTkRvwhrRyENtudHQ7g;
+typedef struct tySequence_6MHxSSkCYafnfGYzxyCqtA tySequence_6MHxSSkCYafnfGYzxyCqtA;
+typedef struct tyObject_Matrix_Uogfi9b3606EsxiEmiGDiAw tyObject_Matrix_Uogfi9b3606EsxiEmiGDiAw;
+typedef struct tySequence_shxop0zPIs5Ec3k71aCLuQ tySequence_shxop0zPIs5Ec3k71aCLuQ;
 typedef struct tyObject_Character_z7sEl7rGLIEtgyeCSL9aOwg tyObject_Character_z7sEl7rGLIEtgyeCSL9aOwg;
 typedef struct tyObject_Vec2f_St31Lu7mm4aIQTpxOCjvHA tyObject_Vec2f_St31Lu7mm4aIQTpxOCjvHA;
-typedef struct tyObject_GameResources_ooM6Pmr7S9aRM2IrojeLpTg tyObject_GameResources_ooM6Pmr7S9aRM2IrojeLpTg;
-typedef struct tyObject_TexturePtrcolonObjectType__6n0oqQPDsaMFNhtiJ29bOXw tyObject_TexturePtrcolonObjectType__6n0oqQPDsaMFNhtiJ29bOXw;
-typedef struct tyTuple_Ye8PLO8qqXk1tek2VP9c0UQ tyTuple_Ye8PLO8qqXk1tek2VP9c0UQ;
-typedef struct TNimType TNimType;
-typedef struct TNimNode TNimNode;
-typedef struct tyObject_Event_Uzh9aP43ffUpM9aa6vZvNEug tyObject_Event_Uzh9aP43ffUpM9aa6vZvNEug;
-typedef struct tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ;
-typedef struct tyObject_KeySym_y3t7PyKCT9aYLDh9bLHT3UPw tyObject_KeySym_y3t7PyKCT9aYLDh9bLHT3UPw;
+typedef struct tyObject_ItemSet_q6qi9bPVWXyspg9bTRkyuyXw tyObject_ItemSet_q6qi9bPVWXyspg9bTRkyuyXw;
+typedef struct tyObject_ClothingHead_h3YfKnLVYVYocWj5dIBPGw tyObject_ClothingHead_h3YfKnLVYVYocWj5dIBPGw;
+typedef struct tyObject_ClothingStats_zxet1nto49a9ae8pLlAU14cg tyObject_ClothingStats_zxet1nto49a9ae8pLlAU14cg;
 typedef struct NimStringDesc NimStringDesc;
 typedef struct TGenericSeq TGenericSeq;
+typedef struct tyObject_ClothingBody_jYCMVvD4caXGho8aDSyHJQ tyObject_ClothingBody_jYCMVvD4caXGho8aDSyHJQ;
+typedef struct tyObject_ClothingFeet_UGmkgjwjxmZBaRBpyJpGvw tyObject_ClothingFeet_UGmkgjwjxmZBaRBpyJpGvw;
+typedef struct tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ;
+typedef struct tyObject_KeySym_y3t7PyKCT9aYLDh9bLHT3UPw tyObject_KeySym_y3t7PyKCT9aYLDh9bLHT3UPw;
 typedef struct tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg;
 typedef struct Exception Exception;
 typedef struct RootObj RootObj;
+typedef struct TNimType TNimType;
+typedef struct TNimNode TNimNode;
 typedef struct tySequence_uB9b75OUPRENsBAu4AnoePA tySequence_uB9b75OUPRENsBAu4AnoePA;
 typedef struct tyObject_Cell_1zcF9cV8XIAtbN8h5HRUB8g tyObject_Cell_1zcF9cV8XIAtbN8h5HRUB8g;
 typedef struct tyObject_CellSeq_Axo1XVm9aaQueTOldv8le5w tyObject_CellSeq_Axo1XVm9aaQueTOldv8le5w;
@@ -62,82 +66,10 @@ typedef struct tyObject_CellSet_jG87P0AI9aZtss9ccTYBIISQ tyObject_CellSet_jG87P0
 typedef struct tyObject_PageDesc_fublkgIY4LG3mT51LU2WHg tyObject_PageDesc_fublkgIY4LG3mT51LU2WHg;
 typedef struct TSafePoint TSafePoint;
 typedef struct tyObject_WindowPtrcolonObjectType__8bMU2xl1xmmMvYcskTOB4w tyObject_WindowPtrcolonObjectType__8bMU2xl1xmmMvYcskTOB4w;
+typedef struct tyTuple_Ye8PLO8qqXk1tek2VP9c0UQ tyTuple_Ye8PLO8qqXk1tek2VP9c0UQ;
 typedef struct tyObject_StackTraceEntry_oLyohQ7O2XOvGnflOss8EA tyObject_StackTraceEntry_oLyohQ7O2XOvGnflOss8EA;
 typedef struct tyObject_BaseChunk_Sdq7WpT6qAH858F5ZEdG3w tyObject_BaseChunk_Sdq7WpT6qAH858F5ZEdG3w;
 typedef struct tyObject_FreeCell_u6M5LHprqzkn9axr04yg9bGQ tyObject_FreeCell_u6M5LHprqzkn9axr04yg9bGQ;
-typedef NIM_BOOL tyArray_k64wcrcoLEGgK5bVTvG2WA[6];
-struct tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g {
-NI x;
-NI y;
-};
-struct tyObject_Matrix_IUzOSceCjOZ59cvd9c09cGiMw {
-NI width;
-NI height;
-tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g offset;
-tySequence_qwqHTkRvwhrRyENtudHQ7g* data;
-};
-struct tyObject_Vec2f_St31Lu7mm4aIQTpxOCjvHA {
-NF x;
-NF y;
-};
-typedef NU8 tyEnum_Direction_p7h0usAc9c3d7sTkU0MWLNg;
-typedef NU8 tyEnum_Race_wN6IdQU5M5xJLM35A76jlQ;
-typedef NU8 tyEnum_Sex_fZXzEuE89cG49aK9cXfwfCxeQ;
-struct tyObject_Character_z7sEl7rGLIEtgyeCSL9aOwg {
-tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g currentTile;
-tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g nextTile;
-tyObject_Vec2f_St31Lu7mm4aIQTpxOCjvHA actualPos;
-tyEnum_Direction_p7h0usAc9c3d7sTkU0MWLNg facing;
-NF speed;
-tyEnum_Race_wN6IdQU5M5xJLM35A76jlQ race;
-tyEnum_Sex_fZXzEuE89cG49aK9cXfwfCxeQ sex;
-};
-struct tyObject_GameState_np3Rx8N215Y1kfBowS8mPQ {
-tyObject_Matrix_IUzOSceCjOZ59cvd9c09cGiMw map;
-tyObject_Character_z7sEl7rGLIEtgyeCSL9aOwg playerCharacter;
-};
-struct tyTuple_Ye8PLO8qqXk1tek2VP9c0UQ {
-int Field0;
-int Field1;
-int Field2;
-int Field3;
-};
-typedef tyTuple_Ye8PLO8qqXk1tek2VP9c0UQ tyArray_5DS7xhk7iTcg7Sx9cHw9biag[32];
-struct tyObject_GameResources_ooM6Pmr7S9aRM2IrojeLpTg {
-tyObject_TexturePtrcolonObjectType__6n0oqQPDsaMFNhtiJ29bOXw* mapTexture;
-tyArray_5DS7xhk7iTcg7Sx9cHw9biag mapTiles;
-tyObject_TexturePtrcolonObjectType__6n0oqQPDsaMFNhtiJ29bOXw* baseSpriteFemaleHuman;
-tyObject_TexturePtrcolonObjectType__6n0oqQPDsaMFNhtiJ29bOXw* baseSpriteMaleHuman;
-};
-struct tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA {
-tyArray_k64wcrcoLEGgK5bVTvG2WA inputs;
-tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer;
-tyObject_GameState_np3Rx8N215Y1kfBowS8mPQ gameState;
-tyObject_GameResources_ooM6Pmr7S9aRM2IrojeLpTg resources;
-};
-typedef NU8 tyEnum_TNimKind_jIBKr1ejBgsfM33Kxw4j7A;
-typedef NU8 tySet_tyEnum_TNimTypeFlag_v8QUszD1sWlSIWZz7mC4bQ;
-typedef N_NIMCALL_PTR(void, tyProc_ojoeKfW4VYIm36I9cpDTQIg) (void* p, NI op);
-typedef N_NIMCALL_PTR(void*, tyProc_WSm2xU5ARYv9aAR4l0z9c9auQ) (void* p);
-struct TNimType {
-NI size;
-tyEnum_TNimKind_jIBKr1ejBgsfM33Kxw4j7A kind;
-tySet_tyEnum_TNimTypeFlag_v8QUszD1sWlSIWZz7mC4bQ flags;
-TNimType* base;
-TNimNode* node;
-void* finalizer;
-tyProc_ojoeKfW4VYIm36I9cpDTQIg marker;
-tyProc_WSm2xU5ARYv9aAR4l0z9c9auQ deepcopy;
-};
-typedef NU8 tyEnum_TNimNodeKind_unfNsxrcATrufDZmpBq4HQ;
-struct TNimNode {
-tyEnum_TNimNodeKind_unfNsxrcATrufDZmpBq4HQ kind;
-NI offset;
-TNimType* typ;
-NCSTRING name;
-NI len;
-TNimNode** sons;
-};
 typedef NU8 tyEnum_Input_HkmkensvbmBMoEqXX3PFKw;
 typedef NI32 tyEnum_Scancode_ZC4j1APU9aAJPXuZfLFUG0w;
 typedef NI32 tyEnum_EventType_9ayvRjKFMoE6pV9bOp5OUI5w;
@@ -148,6 +80,77 @@ tyArray_Y1pDC6KIrpu9aJMBN9aOQMhw padding;
 };
 typedef NI32 tyEnum_Bool32_lrv4aZgVTmBUYdrYUkLMlg;
 typedef N_CDECL_PTR(tyEnum_Bool32_lrv4aZgVTmBUYdrYUkLMlg, tyProc_b9aXpKFbsyZ0PIk3aYRVCAA) (tyObject_Event_Uzh9aP43ffUpM9aa6vZvNEug* event);
+typedef NIM_BOOL tyArray_k64wcrcoLEGgK5bVTvG2WA[6];
+struct tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g {
+NI x;
+NI y;
+};
+struct tyObject_Matrix_5jfXleRjKMzj7p29cba2i9bg {
+NI width;
+NI height;
+tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g offset;
+tySequence_6MHxSSkCYafnfGYzxyCqtA* data;
+};
+struct tyObject_Matrix_Uogfi9b3606EsxiEmiGDiAw {
+NI width;
+NI height;
+tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g offset;
+tySequence_shxop0zPIs5Ec3k71aCLuQ* data;
+};
+struct tyObject_Vec2f_St31Lu7mm4aIQTpxOCjvHA {
+NF x;
+NF y;
+};
+typedef NU8 tyEnum_Direction_p7h0usAc9c3d7sTkU0MWLNg;
+typedef NU8 tyEnum_Race_wN6IdQU5M5xJLM35A76jlQ;
+typedef NU8 tyEnum_Sex_fZXzEuE89cG49aK9cXfwfCxeQ;
+struct TGenericSeq {
+NI len;
+NI reserved;
+};
+struct NimStringDesc {
+  TGenericSeq Sup;
+NIM_CHAR data[SEQ_DECL_SIZE];
+};
+struct tyObject_ClothingStats_zxet1nto49a9ae8pLlAU14cg {
+NimStringDesc* name;
+};
+struct tyObject_ClothingHead_h3YfKnLVYVYocWj5dIBPGw {
+tyObject_ClothingStats_zxet1nto49a9ae8pLlAU14cg stats;
+};
+struct tyObject_ClothingBody_jYCMVvD4caXGho8aDSyHJQ {
+tyObject_ClothingStats_zxet1nto49a9ae8pLlAU14cg stats;
+};
+struct tyObject_ClothingFeet_UGmkgjwjxmZBaRBpyJpGvw {
+tyObject_ClothingStats_zxet1nto49a9ae8pLlAU14cg stats;
+};
+struct tyObject_ItemSet_q6qi9bPVWXyspg9bTRkyuyXw {
+tyObject_ClothingHead_h3YfKnLVYVYocWj5dIBPGw head;
+tyObject_ClothingBody_jYCMVvD4caXGho8aDSyHJQ body;
+tyObject_ClothingFeet_UGmkgjwjxmZBaRBpyJpGvw legs;
+};
+typedef NU8 tyEnum_TextureAlias_6sotYNRMaoTgzBzqkJyyLQ;
+struct tyObject_Character_z7sEl7rGLIEtgyeCSL9aOwg {
+tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g currentTile;
+tyObject_Vec2_7SQP9azfryP3zjoOAafzI6g nextTile;
+tyObject_Vec2f_St31Lu7mm4aIQTpxOCjvHA actualPos;
+tyEnum_Direction_p7h0usAc9c3d7sTkU0MWLNg facing;
+NF speed;
+tyEnum_Race_wN6IdQU5M5xJLM35A76jlQ race;
+tyEnum_Sex_fZXzEuE89cG49aK9cXfwfCxeQ sex;
+tyObject_ItemSet_q6qi9bPVWXyspg9bTRkyuyXw items;
+tyEnum_TextureAlias_6sotYNRMaoTgzBzqkJyyLQ spritesheet;
+};
+struct tyObject_GameState_np3Rx8N215Y1kfBowS8mPQ {
+tyObject_Matrix_5jfXleRjKMzj7p29cba2i9bg mapTextures;
+tyObject_Matrix_Uogfi9b3606EsxiEmiGDiAw walls;
+tyObject_Character_z7sEl7rGLIEtgyeCSL9aOwg playerCharacter;
+};
+struct tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA {
+tyArray_k64wcrcoLEGgK5bVTvG2WA inputs;
+tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer;
+tyObject_GameState_np3Rx8N215Y1kfBowS8mPQ gameState;
+};
 struct tyObject_KeySym_y3t7PyKCT9aYLDh9bLHT3UPw {
 tyEnum_Scancode_ZC4j1APU9aAJPXuZfLFUG0w scancode;
 int sym;
@@ -166,17 +169,23 @@ tyObject_KeySym_y3t7PyKCT9aYLDh9bLHT3UPw keysym;
 };
 typedef N_CDECL_PTR(int, tyProc_zHpDbFN4o9bvP9cAphXAUHXg) (tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer);
 typedef N_CDECL_PTR(void, tyProc_9a8AalbnAaIxTUMpzQQqpjw) (tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer);
-struct TGenericSeq {
-NI len;
-NI reserved;
-};
-struct NimStringDesc {
-  TGenericSeq Sup;
-NIM_CHAR data[SEQ_DECL_SIZE];
-};
 typedef NimStringDesc* tyArray_nHXaesL0DJZHyVS07ARPRA[1];
 typedef NI32 tyEnum_SDL_Return_8wc8or7UFANAtbisKJq7lw;
 typedef N_CDECL_PTR(tyEnum_SDL_Return_8wc8or7UFANAtbisKJq7lw, tyProc_fvOXafK39cW5YZA9b9bzinu9cw) (int flags);
+typedef NU8 tyEnum_TNimKind_jIBKr1ejBgsfM33Kxw4j7A;
+typedef NU8 tySet_tyEnum_TNimTypeFlag_v8QUszD1sWlSIWZz7mC4bQ;
+typedef N_NIMCALL_PTR(void, tyProc_ojoeKfW4VYIm36I9cpDTQIg) (void* p, NI op);
+typedef N_NIMCALL_PTR(void*, tyProc_WSm2xU5ARYv9aAR4l0z9c9auQ) (void* p);
+struct TNimType {
+NI size;
+tyEnum_TNimKind_jIBKr1ejBgsfM33Kxw4j7A kind;
+tySet_tyEnum_TNimTypeFlag_v8QUszD1sWlSIWZz7mC4bQ flags;
+TNimType* base;
+TNimNode* node;
+void* finalizer;
+tyProc_ojoeKfW4VYIm36I9cpDTQIg marker;
+tyProc_WSm2xU5ARYv9aAR4l0z9c9auQ deepcopy;
+};
 struct RootObj {
 TNimType* m_type;
 };
@@ -190,6 +199,15 @@ Exception* up;
 };
 struct tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg {
   Exception Sup;
+};
+typedef NU8 tyEnum_TNimNodeKind_unfNsxrcATrufDZmpBq4HQ;
+struct TNimNode {
+tyEnum_TNimNodeKind_unfNsxrcATrufDZmpBq4HQ kind;
+NI offset;
+TNimType* typ;
+NCSTRING name;
+NI len;
+TNimNode** sons;
 };
 typedef N_CDECL_PTR(NCSTRING, tyProc_09bvyvHFtWbkzL5AHgf0bKw) (void);
 struct tyObject_Cell_1zcF9cV8XIAtbN8h5HRUB8g {
@@ -303,8 +321,11 @@ typedef N_CDECL_PTR(void, tyProc_ln4kdL5W9bbX4a1xl8nnVXQ) (void);
 struct tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg {
 char dummy;
 };
-struct tyObject_TexturePtrcolonObjectType__6n0oqQPDsaMFNhtiJ29bOXw {
-char dummy;
+struct tyTuple_Ye8PLO8qqXk1tek2VP9c0UQ {
+int Field0;
+int Field1;
+int Field2;
+int Field3;
 };
 struct tyObject_StackTraceEntry_oLyohQ7O2XOvGnflOss8EA {
 NCSTRING procname;
@@ -353,28 +374,28 @@ struct tyObject_FreeCell_u6M5LHprqzkn9axr04yg9bGQ {
 tyObject_FreeCell_u6M5LHprqzkn9axr04yg9bGQ* next;
 NI zeroField;
 };
-struct tySequence_qwqHTkRvwhrRyENtudHQ7g {
+struct tySequence_6MHxSSkCYafnfGYzxyCqtA {
   TGenericSeq Sup;
-  NI data[SEQ_DECL_SIZE];
+  tyTuple_Ye8PLO8qqXk1tek2VP9c0UQ data[SEQ_DECL_SIZE];
+};
+struct tySequence_shxop0zPIs5Ec3k71aCLuQ {
+  TGenericSeq Sup;
+  NIM_BOOL data[SEQ_DECL_SIZE];
 };
 struct tySequence_uB9b75OUPRENsBAu4AnoePA {
   TGenericSeq Sup;
   tyObject_StackTraceEntry_oLyohQ7O2XOvGnflOss8EA data[SEQ_DECL_SIZE];
 };
-N_LIB_PRIVATE N_NIMCALL(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA*, newGame_chqf19cmIMj0icJXh049a3UQ)(tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer);
-N_NIMCALL(void*, newObj)(TNimType* typ, NI size);
-N_LIB_PRIVATE N_NIMCALL(tyObject_GameResources_ooM6Pmr7S9aRM2IrojeLpTg, initResources_CEai4Zbcvl59a3cJ5I9aqh7g)(tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* r);
-N_LIB_PRIVATE N_NIMCALL(void, initGamestate_FNlPPl39aiQFG5ZxCMgW9bUw)(tyObject_GameState_np3Rx8N215Y1kfBowS8mPQ* Result);
+N_LIB_PRIVATE N_NIMCALL(tyEnum_Input_HkmkensvbmBMoEqXX3PFKw, toInput_sW56DJVBY2IuMjCIsI5tPQ)(tyEnum_Scancode_ZC4j1APU9aAJPXuZfLFUG0w key);
 static N_INLINE(void, nimFrame)(TFrame* s);
 N_LIB_PRIVATE N_NOINLINE(void, stackOverflow_II46IjNZztN9bmbxUD8dt8g)(void);
 static N_INLINE(void, popFrame)(void);
-N_LIB_PRIVATE N_NIMCALL(tyEnum_Input_HkmkensvbmBMoEqXX3PFKw, toInput_sW56DJVBY2IuMjCIsI5tPQ)(tyEnum_Scancode_ZC4j1APU9aAJPXuZfLFUG0w key);
 N_LIB_PRIVATE N_NIMCALL(void, handleInput_4cFc3ApldCyqXVMMnn1bmQ)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** game);
 N_LIB_PRIVATE N_NIMCALL(NIM_BOOL, toBool_3fq5Y9cfgYx8q7J9ba6TTYbQ)(tyEnum_Bool32_lrv4aZgVTmBUYdrYUkLMlg some);
 N_LIB_PRIVATE N_NIMCALL(tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ*, key_Sy9cYLza36NW1QN9asfW9a0LA)(tyObject_Event_Uzh9aP43ffUpM9aa6vZvNEug* event);
-N_LIB_PRIVATE N_NIMCALL(void, render_GJ7rc9ceDX19aWnO9cpaB1A9bw)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** game);
-N_LIB_PRIVATE N_NIMCALL(void, renderGameFrame_rW8yH9cWFoQWgDtzwQhZVhA)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** game);
-N_LIB_PRIVATE N_NIMCALL(void, main_y8hSQ1Er7YdZnYEAgOQXvw)(void);
+N_LIB_PRIVATE N_NIMCALL(void, render_4cFc3ApldCyqXVMMnn1bmQ_2)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** game);
+N_LIB_PRIVATE N_NIMCALL(void, renderGameFrame_DNr2pOUK8Aw01XldiYBEiA)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** game);
+N_LIB_PRIVATE N_NIMCALL(void, main_bWnkIoWyFFnjlYj9a9baJQYw)(void);
 static N_INLINE(void, appendString)(NimStringDesc* dest, NimStringDesc* src);
 static N_INLINE(void, copyMem_E1xtACub5WcDa3vbrIXbwgsystem)(void* dest, void* source, NI size);
 N_LIB_PRIVATE N_NIMCALL(NimStringDesc*, nosgetCurrentDir)(void);
@@ -383,6 +404,7 @@ N_NIMCALL(void, echoBinSafe)(NimStringDesc** args, NI argsLen_0);
 N_LIB_PRIVATE N_NIMCALL(NIM_BOOL, toBool_9bg9codirrpaPKZJuSwGJgEg)(tyEnum_SDL_Return_8wc8or7UFANAtbisKJq7lw some);
 N_NIMCALL(void, nimGCvisit)(void* d, NI op);
 static N_NIMCALL(void, Marker_tyRef_yEsavQFTBQGpgLZ3fCM9aPA)(void* p, NI op);
+N_NIMCALL(void*, newObj)(TNimType* typ, NI size);
 N_NIMCALL(NimStringDesc*, cstrToNimstr)(NCSTRING str);
 static N_INLINE(void, asgnRefNoCycle)(void** dest, void* src);
 static N_INLINE(tyObject_Cell_1zcF9cV8XIAtbN8h5HRUB8g*, usrToCell_yB9aH5WIlwd0xkYrcdPeXrQsystem)(void* usr);
@@ -393,6 +415,8 @@ static N_INLINE(void, incRef_9cAA5YuQAAC3MVbnGeV86swsystem)(tyObject_Cell_1zcF9c
 static N_INLINE(void, decRef_MV4BBk6J1qu70IbBxwEn4wsystem)(tyObject_Cell_1zcF9cV8XIAtbN8h5HRUB8g* c);
 N_NIMCALL(void, raiseException)(Exception* e, NCSTRING ename);
 static N_INLINE(void, pushSafePoint)(TSafePoint* s);
+N_LIB_PRIVATE N_NIMCALL(void, initTextures_5jhsfEp2uQLg0uKv65KfVg)(tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer);
+N_LIB_PRIVATE N_NIMCALL(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA*, initGameData_SMOesfyeK6X3txgLgpEMOQ)(tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer);
 N_LIB_PRIVATE N_NIMCALL(NF, ntepochTime)(void);
 N_LIB_PRIVATE N_NIMCALL(void, loop_Z9bGN9cEjwwM1MosnoQKTduA)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** self, NF dt);
 static N_INLINE(void, popSafePoint)(void);
@@ -433,16 +457,24 @@ NIM_EXTERNC N_NOINLINE(void, smoke_vectorInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_vectorDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_matrixInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_matrixDatInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, stdlib_randomInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, stdlib_randomDatInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, smoke_directionInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, smoke_directionDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_constantsInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_constantsDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_utilsInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_utilsDatInit000)(void);
-NIM_EXTERNC N_NOINLINE(void, smoke_directionInit000)(void);
-NIM_EXTERNC N_NOINLINE(void, smoke_directionDatInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, stdlib_hashesInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, stdlib_hashesDatInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, stdlib_tablesInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, stdlib_tablesDatInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, smoke_texturesInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, smoke_texturesDatInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, smoke_clothingtypesInit000)(void);
+NIM_EXTERNC N_NOINLINE(void, smoke_clothingtypesDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_characterInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_characterDatInit000)(void);
-NIM_EXTERNC N_NOINLINE(void, smoke_resourcesInit000)(void);
-NIM_EXTERNC N_NOINLINE(void, smoke_resourcesDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_gamestateInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_gamestateDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_rectangleInit000)(void);
@@ -451,7 +483,6 @@ NIM_EXTERNC N_NOINLINE(void, smoke_renderInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, smoke_renderDatInit000)(void);
 NIM_EXTERNC N_NOINLINE(void, NimMainModule)(void);
 NIM_EXTERNC N_NOINLINE(void, smokeDatInit000)(void);
-extern TNimType NTI_lJGwzzOtEj8PUQVSnppB6w_;
 extern TFrame* framePtr_HRfVMH3jYeBJz6Q6X9b6Ptw;
 extern tyObject_Event_Uzh9aP43ffUpM9aa6vZvNEug defaultEvent_LbtYyFPe9bpTC9bKZ8rWJeKQ;
 extern tyProc_b9aXpKFbsyZ0PIk3aYRVCAA Dl_147605_;
@@ -515,27 +546,11 @@ static N_INLINE(void, popFrame)(void) {
 	framePtr_HRfVMH3jYeBJz6Q6X9b6Ptw = (*framePtr_HRfVMH3jYeBJz6Q6X9b6Ptw).prev;
 }
 
-N_LIB_PRIVATE N_NIMCALL(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA*, newGame_chqf19cmIMj0icJXh049a3UQ)(tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer) {
-	tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA* result;
-	nimfr_("newGame", "smoke.nim");
-	result = (tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA*)0;
-	nimln_(22, "smoke.nim");
-	result = (tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA*) newObj((&NTI_lJGwzzOtEj8PUQVSnppB6w_), sizeof(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA));
-	nimln_(23, "smoke.nim");
-	(*result).renderer = renderer;
-	nimln_(24, "smoke.nim");
-	(*result).resources = initResources_CEai4Zbcvl59a3cJ5I9aqh7g(renderer);
-	nimln_(25, "smoke.nim");
-	initGamestate_FNlPPl39aiQFG5ZxCMgW9bUw((&(*result).gameState));
-	popFrame();
-	return result;
-}
-
 N_LIB_PRIVATE N_NIMCALL(tyEnum_Input_HkmkensvbmBMoEqXX3PFKw, toInput_sW56DJVBY2IuMjCIsI5tPQ)(tyEnum_Scancode_ZC4j1APU9aAJPXuZfLFUG0w key) {
 	tyEnum_Input_HkmkensvbmBMoEqXX3PFKw result;
 	nimfr_("toInput", "smoke.nim");
 	result = (tyEnum_Input_HkmkensvbmBMoEqXX3PFKw)0;
-	nimln_(28, "smoke.nim");
+	nimln_(22, "smoke.nim");
 	switch (key) {
 	case ((tyEnum_Scancode_ZC4j1APU9aAJPXuZfLFUG0w) 4):
 	{
@@ -595,10 +610,10 @@ N_LIB_PRIVATE N_NIMCALL(tyEnum_Input_HkmkensvbmBMoEqXX3PFKw, toInput_sW56DJVBY2I
 N_LIB_PRIVATE N_NIMCALL(void, handleInput_4cFc3ApldCyqXVMMnn1bmQ)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** game) {
 	tyObject_Event_Uzh9aP43ffUpM9aa6vZvNEug event;
 	nimfr_("handleInput", "smoke.nim");
-	nimln_(41, "smoke.nim");
+	nimln_(35, "smoke.nim");
 	event = defaultEvent_LbtYyFPe9bpTC9bKZ8rWJeKQ;
 	{
-		nimln_(42, "smoke.nim");
+		nimln_(36, "smoke.nim");
 		while (1) {
 			tyEnum_Bool32_lrv4aZgVTmBUYdrYUkLMlg T3_;
 			NIM_BOOL T4_;
@@ -607,11 +622,11 @@ N_LIB_PRIVATE N_NIMCALL(void, handleInput_4cFc3ApldCyqXVMMnn1bmQ)(tyObject_Gamec
 			T4_ = (NIM_BOOL)0;
 			T4_ = toBool_3fq5Y9cfgYx8q7J9ba6TTYbQ(T3_);
 			if (!T4_) goto LA2;
-			nimln_(43, "smoke.nim");
+			nimln_(37, "smoke.nim");
 			switch (event.kind) {
 			case ((tyEnum_EventType_9ayvRjKFMoE6pV9bOp5OUI5w) 256):
 			{
-				nimln_(45, "smoke.nim");
+				nimln_(39, "smoke.nim");
 				(*(*game)).inputs[(((tyEnum_Input_HkmkensvbmBMoEqXX3PFKw) 5))- 0] = NIM_TRUE;
 			}
 			break;
@@ -619,7 +634,7 @@ N_LIB_PRIVATE N_NIMCALL(void, handleInput_4cFc3ApldCyqXVMMnn1bmQ)(tyObject_Gamec
 			{
 				tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ* T7_;
 				tyEnum_Input_HkmkensvbmBMoEqXX3PFKw T8_;
-				nimln_(47, "smoke.nim");
+				nimln_(41, "smoke.nim");
 				T7_ = (tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ*)0;
 				T7_ = key_Sy9cYLza36NW1QN9asfW9a0LA((&event));
 				T8_ = (tyEnum_Input_HkmkensvbmBMoEqXX3PFKw)0;
@@ -631,7 +646,7 @@ N_LIB_PRIVATE N_NIMCALL(void, handleInput_4cFc3ApldCyqXVMMnn1bmQ)(tyObject_Gamec
 			{
 				tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ* T10_;
 				tyEnum_Input_HkmkensvbmBMoEqXX3PFKw T11_;
-				nimln_(49, "smoke.nim");
+				nimln_(43, "smoke.nim");
 				T10_ = (tyObject_KeyboardEventObj_T9cLiQTAfT4u62zIltLlWzQ*)0;
 				T10_ = key_Sy9cYLza36NW1QN9asfW9a0LA((&event));
 				T11_ = (tyEnum_Input_HkmkensvbmBMoEqXX3PFKw)0;
@@ -649,15 +664,15 @@ N_LIB_PRIVATE N_NIMCALL(void, handleInput_4cFc3ApldCyqXVMMnn1bmQ)(tyObject_Gamec
 	popFrame();
 }
 
-N_LIB_PRIVATE N_NIMCALL(void, render_GJ7rc9ceDX19aWnO9cpaB1A9bw)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** game) {
+N_LIB_PRIVATE N_NIMCALL(void, render_4cFc3ApldCyqXVMMnn1bmQ_2)(tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA** game) {
 	int T1_;
 	nimfr_("render", "smoke.nim");
-	nimln_(55, "smoke.nim");
+	nimln_(49, "smoke.nim");
 	T1_ = (int)0;
 	T1_ = Dl_147017_((*(*game)).renderer);
-	nimln_(57, "smoke.nim");
-	renderGameFrame_rW8yH9cWFoQWgDtzwQhZVhA(game);
-	nimln_(59, "smoke.nim");
+	nimln_(51, "smoke.nim");
+	renderGameFrame_DNr2pOUK8Aw01XldiYBEiA(game);
+	nimln_(53, "smoke.nim");
 	Dl_147036_((*(*game)).renderer);
 	popFrame();
 }
@@ -805,13 +820,13 @@ static N_INLINE(void, destroy_sFvfWODyHxg46OuBtGyU8Qsmoke)(tyObject_WindowPtrcol
 	popFrame();
 }
 
-N_LIB_PRIVATE N_NIMCALL(void, main_y8hSQ1Er7YdZnYEAgOQXvw)(void) {
+N_LIB_PRIVATE N_NIMCALL(void, main_bWnkIoWyFFnjlYj9a9baJQYw)(void) {
 	tyArray_nHXaesL0DJZHyVS07ARPRA T1_;
 	NimStringDesc* T2_;
 	NimStringDesc* T3_;
 	TSafePoint TM_bBfdi46nQ4ev68Uhq10y0A_5;
 	nimfr_("main", "smoke.nim");
-	nimln_(63, "smoke.nim");
+	nimln_(57, "smoke.nim");
 	memset((void*)T1_, 0, sizeof(T1_));
 	T2_ = (NimStringDesc*)0;
 	T3_ = (NimStringDesc*)0;
@@ -821,7 +836,7 @@ appendString(T2_, ((NimStringDesc*) &TM_bBfdi46nQ4ev68Uhq10y0A_2));
 appendString(T2_, T3_);
 	T1_[0] = T2_;
 	echoBinSafe(T1_, 1);
-	nimln_(65, "smoke.nim");
+	nimln_(59, "smoke.nim");
 	{
 		tyEnum_SDL_Return_8wc8or7UFANAtbisKJq7lw T6_;
 		NIM_BOOL T7_;
@@ -838,7 +853,7 @@ appendString(T2_, T3_);
 		nimln_(2811, "system.nim");
 		e = (tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg*) newObj((&NTI_yEsavQFTBQGpgLZ3fCM9aPA_), sizeof(tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg));
 		(*e).Sup.Sup.m_type = (&NTI_HEToztgn9a0zVfyFTQj1vQg_);
-		nimln_(66, "smoke.nim");
+		nimln_(60, "smoke.nim");
 		T10_ = (NimStringDesc*)0;
 		nimln_(18, "smoke.nim");
 		T11_ = (NCSTRING)0;
@@ -856,12 +871,12 @@ appendString(T10_, T12_);
 		raiseException((Exception*)e, "SDLException");
 	}
 	LA8_: ;
-	nimln_(70, "smoke.nim");
+	nimln_(64, "smoke.nim");
 	pushSafePoint(&TM_bBfdi46nQ4ev68Uhq10y0A_5);
 	TM_bBfdi46nQ4ev68Uhq10y0A_5.status = setjmp(TM_bBfdi46nQ4ev68Uhq10y0A_5.context);
 	if (TM_bBfdi46nQ4ev68Uhq10y0A_5.status == 0) {
 		TSafePoint TM_bBfdi46nQ4ev68Uhq10y0A_7;
-		nimln_(73, "smoke.nim");
+		nimln_(67, "smoke.nim");
 		{
 			int T16_;
 			tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg* volatile e_2;
@@ -869,7 +884,7 @@ appendString(T10_, T12_);
 			NCSTRING T20_;
 			NimStringDesc* T21_;
 			nimln_(398, "system.nim");
-			nimln_(73, "smoke.nim");
+			nimln_(67, "smoke.nim");
 			T16_ = (int)0;
 			T16_ = Dl_149604_(((int) 2));
 			if (!!((T16_ == ((int) 2)))) goto LA17_;
@@ -877,7 +892,7 @@ appendString(T10_, T12_);
 			nimln_(2811, "system.nim");
 			e_2 = (tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg*) newObj((&NTI_yEsavQFTBQGpgLZ3fCM9aPA_), sizeof(tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg));
 			(*e_2).Sup.Sup.m_type = (&NTI_HEToztgn9a0zVfyFTQj1vQg_);
-			nimln_(74, "smoke.nim");
+			nimln_(68, "smoke.nim");
 			T19_ = (NimStringDesc*)0;
 			nimln_(18, "smoke.nim");
 			T20_ = (NCSTRING)0;
@@ -895,13 +910,13 @@ appendString(T19_, T21_);
 			raiseException((Exception*)e_2, "SDLException");
 		}
 		LA17_: ;
-		nimln_(75, "smoke.nim");
+		nimln_(69, "smoke.nim");
 		pushSafePoint(&TM_bBfdi46nQ4ev68Uhq10y0A_7);
 		TM_bBfdi46nQ4ev68Uhq10y0A_7.status = setjmp(TM_bBfdi46nQ4ev68Uhq10y0A_7.context);
 		if (TM_bBfdi46nQ4ev68Uhq10y0A_7.status == 0) {
 			tyObject_WindowPtrcolonObjectType__8bMU2xl1xmmMvYcskTOB4w* window;
 			TSafePoint TM_bBfdi46nQ4ev68Uhq10y0A_10;
-			nimln_(77, "smoke.nim");
+			nimln_(71, "smoke.nim");
 			{
 				NIM_BOOL T25_;
 				tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg* volatile e_3;
@@ -915,7 +930,7 @@ appendString(T19_, T21_);
 				nimln_(2811, "system.nim");
 				e_3 = (tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg*) newObj((&NTI_yEsavQFTBQGpgLZ3fCM9aPA_), sizeof(tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg));
 				(*e_3).Sup.Sup.m_type = (&NTI_HEToztgn9a0zVfyFTQj1vQg_);
-				nimln_(78, "smoke.nim");
+				nimln_(72, "smoke.nim");
 				T28_ = (NimStringDesc*)0;
 				nimln_(18, "smoke.nim");
 				T29_ = (NCSTRING)0;
@@ -933,9 +948,9 @@ appendString(T28_, T30_);
 				raiseException((Exception*)e_3, "SDLException");
 			}
 			LA26_: ;
-			nimln_(80, "smoke.nim");
+			nimln_(74, "smoke.nim");
 			window = Dl_147356_("Smoke", ((int) 805240832), ((int) 805240832), ((int) 1280), ((int) 720), ((unsigned int) 4));
-			nimln_(83, "smoke.nim");
+			nimln_(77, "smoke.nim");
 			{
 				tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg* volatile e_4;
 				NimStringDesc* T35_;
@@ -946,7 +961,7 @@ appendString(T28_, T30_);
 				nimln_(2811, "system.nim");
 				e_4 = (tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg*) newObj((&NTI_yEsavQFTBQGpgLZ3fCM9aPA_), sizeof(tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg));
 				(*e_4).Sup.Sup.m_type = (&NTI_HEToztgn9a0zVfyFTQj1vQg_);
-				nimln_(83, "smoke.nim");
+				nimln_(77, "smoke.nim");
 				T35_ = (NimStringDesc*)0;
 				nimln_(18, "smoke.nim");
 				T36_ = (NCSTRING)0;
@@ -964,15 +979,15 @@ appendString(T35_, T37_);
 				raiseException((Exception*)e_4, "SDLException");
 			}
 			LA33_: ;
-			nimln_(84, "smoke.nim");
+			nimln_(78, "smoke.nim");
 			pushSafePoint(&TM_bBfdi46nQ4ev68Uhq10y0A_10);
 			TM_bBfdi46nQ4ev68Uhq10y0A_10.status = setjmp(TM_bBfdi46nQ4ev68Uhq10y0A_10.context);
 			if (TM_bBfdi46nQ4ev68Uhq10y0A_10.status == 0) {
 				tyObject_RendererPtrcolonObjectType__RZ5I89cPVLRdJchBQYVCSfg* renderer;
 				TSafePoint TM_bBfdi46nQ4ev68Uhq10y0A_12;
-				nimln_(86, "smoke.nim");
+				nimln_(80, "smoke.nim");
 				renderer = Dl_146811_(window, ((int) -1), ((NI32) 6));
-				nimln_(88, "smoke.nim");
+				nimln_(82, "smoke.nim");
 				{
 					tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg* volatile e_5;
 					NimStringDesc* T43_;
@@ -983,7 +998,7 @@ appendString(T35_, T37_);
 					nimln_(2811, "system.nim");
 					e_5 = (tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg*) newObj((&NTI_yEsavQFTBQGpgLZ3fCM9aPA_), sizeof(tyObject_SDLException_HEToztgn9a0zVfyFTQj1vQg));
 					(*e_5).Sup.Sup.m_type = (&NTI_HEToztgn9a0zVfyFTQj1vQg_);
-					nimln_(88, "smoke.nim");
+					nimln_(82, "smoke.nim");
 					T43_ = (NimStringDesc*)0;
 					nimln_(18, "smoke.nim");
 					T44_ = (NCSTRING)0;
@@ -1001,59 +1016,61 @@ appendString(T43_, T45_);
 					raiseException((Exception*)e_5, "SDLException");
 				}
 				LA41_: ;
-				nimln_(89, "smoke.nim");
+				nimln_(83, "smoke.nim");
 				pushSafePoint(&TM_bBfdi46nQ4ev68Uhq10y0A_12);
 				TM_bBfdi46nQ4ev68Uhq10y0A_12.status = setjmp(TM_bBfdi46nQ4ev68Uhq10y0A_12.context);
 				if (TM_bBfdi46nQ4ev68Uhq10y0A_12.status == 0) {
 					tyEnum_SDL_Return_8wc8or7UFANAtbisKJq7lw T47_;
 					tyObject_GamecolonObjectType__CtGi8Xr9b12gKxEZURFqedA* game;
 					NF volatile lastTime;
-					nimln_(92, "smoke.nim");
+					nimln_(86, "smoke.nim");
 					T47_ = (tyEnum_SDL_Return_8wc8or7UFANAtbisKJq7lw)0;
 					T47_ = Dl_146617_(renderer, ((NU8) 110), ((NU8) 132), ((NU8) 174), ((NU8) 255));
-					nimln_(94, "smoke.nim");
+					nimln_(88, "smoke.nim");
 					{
 						int T50_;
 						T50_ = (int)0;
 						T50_ = Dl_146606_(renderer, ((int) 320), ((int) 160));
 						if (!(T50_ < ((NI32) 0))) goto LA51_;
-						nimln_(95, "smoke.nim");
+						nimln_(89, "smoke.nim");
 						echoBinSafe(TM_bBfdi46nQ4ev68Uhq10y0A_13, 1);
 					}
 					LA51_: ;
-					nimln_(96, "smoke.nim");
+					nimln_(90, "smoke.nim");
 					{
 						NIM_BOOL T55_;
 						nimln_(15, "render.nim");
 						T55_ = (NIM_BOOL)0;
 						T55_ = Dl_148013_("SDL_RENDER_SCALE_QUALITY", "0");
 						if (!!(T55_)) goto LA56_;
-						nimln_(97, "smoke.nim");
+						nimln_(91, "smoke.nim");
 						echoBinSafe(TM_bBfdi46nQ4ev68Uhq10y0A_15, 1);
 					}
 					LA56_: ;
-					nimln_(99, "smoke.nim");
-					game = newGame_chqf19cmIMj0icJXh049a3UQ(renderer);
-					nimln_(101, "smoke.nim");
+					nimln_(93, "smoke.nim");
+					initTextures_5jhsfEp2uQLg0uKv65KfVg(renderer);
+					nimln_(95, "smoke.nim");
+					game = initGameData_SMOesfyeK6X3txgLgpEMOQ(renderer);
+					nimln_(97, "smoke.nim");
 					lastTime = ntepochTime();
 					{
-						nimln_(103, "smoke.nim");
+						nimln_(99, "smoke.nim");
 						while (1) {
 							NF now;
 							NF dt;
 							if (!!((*game).inputs[(((tyEnum_Input_HkmkensvbmBMoEqXX3PFKw) 5))- 0])) goto LA59;
-							nimln_(104, "smoke.nim");
+							nimln_(100, "smoke.nim");
 							now = ntepochTime();
-							nimln_(105, "smoke.nim");
+							nimln_(101, "smoke.nim");
 							dt = ((NF)(now) - (NF)(lastTime));
-							nimln_(106, "smoke.nim");
+							nimln_(102, "smoke.nim");
 							lastTime = now;
-							nimln_(107, "smoke.nim");
+							nimln_(103, "smoke.nim");
 							handleInput_4cFc3ApldCyqXVMMnn1bmQ(&game);
-							nimln_(108, "smoke.nim");
+							nimln_(104, "smoke.nim");
 							loop_Z9bGN9cEjwwM1MosnoQKTduA(&game, dt);
-							nimln_(109, "smoke.nim");
-							render_GJ7rc9ceDX19aWnO9cpaB1A9bw(&game);
+							nimln_(105, "smoke.nim");
+							render_4cFc3ApldCyqXVMMnn1bmQ_2(&game);
 						} LA59: ;
 					}
 					popSafePoint();
@@ -1063,7 +1080,7 @@ appendString(T43_, T45_);
 					setFrame((TFrame*)&FR_);
 				}
 				{
-					nimln_(89, "smoke.nim");
+					nimln_(83, "smoke.nim");
 					Dl_146648_(renderer);
 				}
 				if (TM_bBfdi46nQ4ev68Uhq10y0A_12.status != 0) reraiseException();
@@ -1074,7 +1091,7 @@ appendString(T43_, T45_);
 				setFrame((TFrame*)&FR_);
 			}
 			{
-				nimln_(84, "smoke.nim");
+				nimln_(78, "smoke.nim");
 				destroy_sFvfWODyHxg46OuBtGyU8Qsmoke(window);
 			}
 			if (TM_bBfdi46nQ4ev68Uhq10y0A_10.status != 0) reraiseException();
@@ -1085,7 +1102,7 @@ appendString(T43_, T45_);
 			setFrame((TFrame*)&FR_);
 		}
 		{
-			nimln_(75, "smoke.nim");
+			nimln_(69, "smoke.nim");
 			Dl_149607_();
 		}
 		if (TM_bBfdi46nQ4ev68Uhq10y0A_7.status != 0) reraiseException();
@@ -1096,7 +1113,7 @@ appendString(T43_, T45_);
 		setFrame((TFrame*)&FR_);
 	}
 	{
-		nimln_(70, "smoke.nim");
+		nimln_(64, "smoke.nim");
 		Dl_146777_();
 	}
 	if (TM_bBfdi46nQ4ev68Uhq10y0A_5.status != 0) reraiseException();
@@ -1123,11 +1140,15 @@ void PreMainInner(void) {
 	stdlib_osDatInit000();
 	smoke_vectorDatInit000();
 	smoke_matrixDatInit000();
+	stdlib_randomDatInit000();
+	smoke_directionDatInit000();
 	smoke_constantsDatInit000();
 	smoke_utilsDatInit000();
-	smoke_directionDatInit000();
+	stdlib_hashesDatInit000();
+	stdlib_tablesDatInit000();
+	smoke_texturesDatInit000();
+	smoke_clothingtypesDatInit000();
 	smoke_characterDatInit000();
-	smoke_resourcesDatInit000();
 	smoke_gamestateDatInit000();
 	smoke_rectangleDatInit000();
 	smoke_renderDatInit000();
@@ -1147,11 +1168,15 @@ void PreMainInner(void) {
 	stdlib_osInit000();
 	smoke_vectorInit000();
 	smoke_matrixInit000();
+	stdlib_randomInit000();
+	smoke_directionInit000();
 	smoke_constantsInit000();
 	smoke_utilsInit000();
-	smoke_directionInit000();
+	stdlib_hashesInit000();
+	stdlib_tablesInit000();
+	smoke_texturesInit000();
+	smoke_clothingtypesInit000();
 	smoke_characterInit000();
-	smoke_resourcesInit000();
 	smoke_gamestateInit000();
 	smoke_rectangleInit000();
 	smoke_renderInit000();
@@ -1190,8 +1215,8 @@ int main(int argc, char** args, char** env) {
 
 NIM_EXTERNC N_NOINLINE(void, NimMainModule)(void) {
 	nimfr_("smoke", "smoke.nim");
-	nimln_(111, "smoke.nim");
-	main_y8hSQ1Er7YdZnYEAgOQXvw();
+	nimln_(107, "smoke.nim");
+	main_bWnkIoWyFFnjlYj9a9baJQYw();
 	popFrame();
 }
 

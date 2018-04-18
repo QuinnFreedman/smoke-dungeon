@@ -5,7 +5,7 @@ import strutils,
 import gamestate,
        matrix,
        rectangle,
-       resources,
+       textures,
        vector,
        character,
        constants,
@@ -34,28 +34,26 @@ proc drawImage(texture: TexturePtr, srcRect: var Rect, destRect: var Rect,
     let _ = sdl2.copyEx(renderer, texture, srcRect, drect,
                         angle=0, center=nil, flip=SDL_FLIP_NONE)
 
-proc renderMap(resources: var GameResources, map: var Matrix[int],
+proc renderMap(map: var Matrix[sdl2.Rect],
                renderer: RendererPtr, transfrom: Vec2) =
     #TODO make foreach return an iterator instead so we don't gc the closure
-    let resources = resources
-    let map = map
-    newRectangle(0, 0, map.width, map.height).forEach do (x, y: int):
+    for x, y in map.indices:
         let pos = v(x * TILE_SIZE, y * TILE_SIZE)
-        let srect: Rect = resources.mapTiles[map[x, y] + x + y]
-        renderTile(resources.mapTexture, srect, pos, renderer, transfrom)
+        let srect = map[x, y]
+        renderTile(TextureAlias.mapTiles.getTexture(),
+                   srect, pos, renderer, transfrom)
 
 
-proc renderCharacter(character: var Character, resources: var GameResources,
+proc renderCharacter(character: var Character,
                      renderer: RendererPtr, transfrom: Vec2) =
     var srect = character.getSrcRect
     var drect = character.getDestRect
-    drawImage(resources.getBaseSpriteSheet(character.race, character.sex),
+    drawImage(character.spritesheet.getTexture(),
               srect, drect, renderer, transfrom)
 
 
 proc renderGameFrame*(game: var Game) =
     var transform = ZERO
-    renderMap(game.resources, game.gamestate.map, game.renderer, transform)
-    renderCharacter(game.gamestate.playerCharacter, game.resources,
-                    game.renderer, transform)
+    renderMap(game.gamestate.mapTextures, game.renderer, transform)
+    renderCharacter(game.gamestate.playerCharacter, game.renderer, transform)
 

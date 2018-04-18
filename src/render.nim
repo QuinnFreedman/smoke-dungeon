@@ -9,7 +9,8 @@ import gamestate,
        vector,
        character,
        constants,
-       utils
+       utils,
+       shadowcasting
 
 const
     HINT_RENDER_SCALE_QUALITY* = cstring("SDL_RENDER_SCALE_QUALITY")
@@ -56,4 +57,10 @@ proc renderGameFrame*(game: var Game) =
     var transform = ZERO
     renderMap(game.gamestate.mapTextures, game.renderer, transform)
     renderCharacter(game.gamestate.playerCharacter, game.renderer, transform)
+    #TODO don't alloc these every frame
+    var shadowMask1 = newMatrix[bool](game.gamestate.walls.width, game.gamestate.walls.height)
+    var shadowMask2 = newMatrix[bool](game.gamestate.walls.width, game.gamestate.walls.height)
+    shadowCast(game.gamestate.playerCharacter.currentTile, shadowMask1,
+               game.gamestate.walls)
+
 

@@ -4,7 +4,6 @@ import strutils,
 
 import gamestate,
        matrix,
-       rectangle,
        textures,
        vector,
        character,

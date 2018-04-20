@@ -28,6 +28,7 @@ const BASE_ARMOR_MAGE = SPRITESHEETS & "armor_mage/"
 type TextureAlias* {.pure.} = enum
     none
     mapTiles = IMAGES & "texturesheet.png"
+    inventoryBackground = IMAGES & "inventory.png"
     humanFemaleBase = SPRITESHEETS & "base_human_female.png"
     humanMaleBase = SPRITESHEETS & "base_human_male.png"
     mageHoodMale = BASE_ARMOR_MAGE & "mage_head_male.png"

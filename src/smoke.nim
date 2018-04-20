@@ -79,7 +79,7 @@ proc main =
     defer: window.destroy()
 
     let renderer = window.createRenderer(index = -1,
-        flags = Renderer_Accelerated or Renderer_PresentVsync)
+        flags = Renderer_Accelerated)
     sdlFailIf renderer.isNil: "Renderer could not be created"
     defer: renderer.destroy()
 
@@ -89,6 +89,7 @@ proc main =
     if renderer.setLogicalSize(cint(SCREEN_WIDTH_TILES * TILE_SIZE),
                                cint(SCREEN_HEIGHT_TILES * TILE_SIZE)) < 0:
         echo "Warning: unable to set renderer logical size"
+
     if not sdl2.setHint(HINT_RENDER_SCALE_QUALITY, NEAREST):
         echo "Warning: unable to set texture filtering mode"
 

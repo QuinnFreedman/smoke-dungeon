@@ -3,19 +3,18 @@ import strutils,
 
 import direction
 
-type Vec2* = object
-    x*: int
-    y*: int
-
-const ZERO* = Vec2(x: 0, y: 0)
-const NE*  = Vec2( x:  1, y: -1 )
-const E*   = Vec2( x:  1, y:  0 )
-const SE*  = Vec2( x:  1, y:  1 )
-const S*   = Vec2( x:  0, y:  1 )
-const SW*  = Vec2( x: -1, y:  1 )
-const W*   = Vec2( x: -1, y:  0 )
-const NW*  = Vec2( x: -1, y: -1 )
-const N*   = Vec2( x:  0, y: -1 )
+type Vec2* = tuple
+    x: int
+    y: int
+const ZERO* =( x:  0, y:  0 )
+const NE*  = ( x:  1, y: -1 )
+const E*   = ( x:  1, y:  0 )
+const SE*  = ( x:  1, y:  1 )
+const S*   = ( x:  0, y:  1 )
+const SW*  = ( x: -1, y:  1 )
+const W*   = ( x: -1, y:  0 )
+const NW*  = ( x: -1, y: -1 )
+const N*   = ( x:  0, y: -1 )
 
 const UP* = N
 const DOWN* = S
@@ -29,7 +28,7 @@ proc directionVector*(dir: Direction): Vec2 =
     of left: LEFT
     of right: RIGHT
 
-proc v*(x, y: int): Vec2 = Vec2(x: x, y : y)
+proc v*(x, y: int): Vec2 = (x: x, y : y)
 
 proc `+` *(self, other: Vec2): Vec2 =
     result.x = self.x + other.x
@@ -50,9 +49,9 @@ proc `-=` *(self: var Vec2, other: Vec2) =
 proc `==` *(self, other: Vec2): bool =
     self.x == other.x and self.y == other.y
 
-type Vec2f* = object
-    x*: float
-    y*: float
+type Vec2f* = tuple
+    x: float
+    y: float
 
 proc scale*(self: Vec2, scale: int): Vec2 =
     result.x = self.x * scale
@@ -90,7 +89,7 @@ proc `==` *(self, other: Vec2f): bool =
     self.x == other.x and self.y == other.y
 
 proc vecFloat*(x, y: float): Vec2f =
-    Vec2f(x: x, y: y)
+    (x: x, y: y)
 
 proc vecFloat*(v: Vec2): Vec2f =
-    Vec2f(x: float(v.x), y: float(v.y))
+    (x: float(v.x), y: float(v.y))

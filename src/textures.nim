@@ -23,11 +23,15 @@ proc cachedLoadTexture(renderer: RendererPtr, path: string): TexturePtr =
 
 const IMAGES = "assets/images/"
 const SPRITESHEETS = IMAGES & "spritesheets/"
+const BASE_ARMOR_MAGE = SPRITESHEETS & "armor_mage/"
 
 type TextureAlias* {.pure.} = enum
+    none
     mapTiles = IMAGES & "texturesheet.png"
     humanFemaleBase = SPRITESHEETS & "base_human_female.png"
     humanMaleBase = SPRITESHEETS & "base_human_male.png"
+    mageHoodMale = BASE_ARMOR_MAGE & "mage_head_male.png"
+    mageHoodFemale = BASE_ARMOR_MAGE & "mage_head_female.png"
 
 
 proc tile(x, y: int): sdl2.Rect =
@@ -58,7 +62,8 @@ var texturStore: array[TextureAlias, TexturePtr]
 
 proc initTextures*(renderer: RendererPtr) =
     for t in TextureAlias:
-        texturStore[t] = renderer.cachedLoadTexture($t)
+        if t != TextureAlias.none:
+            texturStore[t] = renderer.cachedLoadTexture($t)
 
 proc getTexture*(texture: TextureAlias): TexturePtr {.inline.} =
     texturStore[texture]

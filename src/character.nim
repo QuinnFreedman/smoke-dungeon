@@ -8,17 +8,13 @@ import
     constants,
     utils,
     textures,
-    clothingtypes,
+    clothing,
     matrix
 
 type Race* = enum human
 
 type Sex* = enum male, female
 
-type ItemSet* = object
-    head: ClothingHead
-    body: ClothingBody
-    legs: ClothingFeet
 
 type Character* = object
     currentTile*: Vec2
@@ -28,7 +24,7 @@ type Character* = object
     speed*: float
     race*: Race
     sex*: Sex
-    items*: ItemSet
+    clothes*: array[ClothingSlot, Clothing]
     spritesheet*: TextureAlias
 
 
@@ -61,9 +57,9 @@ proc move*(self: var Character, dir: Direction, collision: Matrix[bool]) =
         
     let dest: Vec2 = self.currentTile + directionVector(dir)
     
-    # if not collision[dest]:
     if collision.contains(dest):
-        self.nextTile = dest
+        if not collision[dest]:
+            self.nextTile = dest
 
 
 
@@ -84,7 +80,7 @@ proc update*(self: var Character, dt: float) =
 
     if abs(dif.x) < moveAmount and abs(dif.y) < moveAmount:
         self.currentTile = self.nextTile
-
+    
 
 proc isMoving(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
@@ -92,14 +88,15 @@ proc isMoving(self: Character): bool {.inline.} =
 
 proc animationTimer*(self: Character): float {.inline.} =
     let distanceToMove = vecFloat(self.nextTile - self.currentTile)
-    let distanceMoved = vecFloat(self.nextTile) - self.actualPos
+    let distanceMoved = self.actualPos - vecFloat(self.currentTile)
 
     if distanceToMove.x != 0:
-        distanceMoved.x / distanceToMove.x
+        abs(distanceMoved.x / distanceToMove.x)
     elif distanceToMove.y != 0:
-        distanceMoved.y / distanceToMove.y
+        abs(distanceMoved.y / distanceToMove.y)
     else:
         0
+
 
 proc getSrcRect*(self: Character): sdl2.Rect =
     let row =
@@ -113,9 +110,7 @@ proc getSrcRect*(self: Character): sdl2.Rect =
         if not self.isMoving:
             0
         else:
-            let tilesPerSecond = self.speed
-            let secondsPerTile = 1.0 / tilesPerSecond
-            int(self.animationTimer / secondsPerTile * 7.0) mod 7
+            int(self.animationTimer * 7.0) mod 7
 
     newSdlSquare(frame * TILE_SIZE, row * TILE_SIZE, TILE_SIZE)
  
@@ -124,3 +119,16 @@ proc getDestRect*(self: Character): sdl2.Rect =
     newSdlSquare(int(round(self.actualPos.x * TILE_SIZE)),
                  int(round(self.actualPos.y * TILE_SIZE)),
                  TILE_SIZE)
+
+proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Clothing) =
+    let item = self.clothes[slot]
+    result[0] = item.name != nil
+    result[1] = item
+
+#TODO does this alloc?
+iterator iterWornItems*(self: Character): Clothing =
+    for slot in ClothingSlot.items:
+        let (exists, item) = self.getWornItem(slot)
+        if exists:
+            yield item
+            

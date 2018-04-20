@@ -50,6 +50,11 @@ proc renderCharacter(character: Character,
     var drect = character.getDestRect
     drawImage(character.spritesheet.getTexture(),
               srect, drect, renderer, transfrom)
+    for item in character.iterWornItems:
+        let sprite =
+            if character.sex == Sex.male: item.textureMale
+            else: item.textureFemale
+        drawImage(sprite.getTexture(), srect, drect, renderer, transfrom)
 
 proc renderRect(drect: Rect, renderer: RendererPtr, transform: Vec2) =
         var newRect = rect(
@@ -69,9 +74,9 @@ proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
         let alpha: float =
             if mask1[pos]:
                 if mask2[pos]: 1.0
-                else: blend
+                else: 1 - blend
             else:
-                if mask2[pos]: 1 - blend
+                if mask2[pos]: blend
                 else: 0.0
         renderer.setDrawColor(0, 0, 0, uint8(alpha * 150))
         renderRect(r, renderer, transform)

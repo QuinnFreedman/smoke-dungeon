@@ -28,17 +28,27 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
         for x in -1..1:
             for y in -1..1:
                 let neighbor = v(particle.x + x, particle.y + y)
-                if result.textures[neighbor] == BLACK:
-                    result.textures[neighbor] = STONE1
+                if result.textures.contains(neighbor):
+                    if result.textures[neighbor] == BLACK:
+                        result.textures[neighbor] = STONE1
 
         var next = particle + directionVector(randomDirection(rng))
         while not result.walls.contains(next):
             next = particle + directionVector(randomDirection(rng))
         particle = next
 
-    # for x, y in result.walls.indices:
-    #     if result.walls[x, y]:
-    #         result.walls[x, y] = true
-    #         result.textures[x, y] = STONE1
-    #     else:
-    #         result.textures[x, y] = GRASS_LONG3
+    for y in 0..<result.textures.height:
+        var line = ""
+        for x in 0..<result.textures.width:
+            let c: string = 
+                if result.textures[x, y]  == GRASS_LONG3:
+                    string(" .")
+                elif result.textures[x, y]  == STONE1:
+                    string(" #")
+                else:
+                    string("  ")
+            line = line & c
+        echo line
+
+
+# seed 1524098290: Long, linear

@@ -4,13 +4,15 @@ import
     times,
     strutils
 
-import matrix,
-       character,
-       direction,
-       vector,
-       textures,
-       dungeon_generation
-       
+import
+    matrix,
+    character,
+    direction,
+    vector,
+    textures,
+    dungeon_generation,
+    clothing
+
 type
     Input* {.pure.} = enum none, left, right, up, down, quit
 
@@ -28,7 +30,9 @@ proc initGameData*(renderer: RendererPtr): Game =
     new result
     result.renderer = renderer
 
-    let seed = int64(epochTime())
+    # let seed = int64(epochTime())
+    let seed = int64(1524099821)
+
     var rng: Rand = initRand(seed)
     echo "Creating map with seed: $1".format(seed)
     let levelWidth = 100
@@ -36,7 +40,9 @@ proc initGameData*(renderer: RendererPtr): Game =
     result.gameState.level = generateLevel(levelWidth, levelHeight, rng)
 
     result.gameState.playerCharacter = newCharacter(
-        v(levelWidth div 2, levelHeight div 2), 1.5, Race.human, Sex.male)
+        v(levelWidth div 2, levelHeight div 2), 2, Race.human, Sex.male)
+
+    result.gameState.playerCharacter.clothes[ClothingSlot.head] = MAGE_HOOD
 
 proc loop*(self: var Game, dt: float) =
     if self.inputs[Input.up]:

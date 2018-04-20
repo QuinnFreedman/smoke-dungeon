@@ -39,6 +39,7 @@ proc handleInput(game: var Game) =
         of QuitEvent:
             game.inputs[Input.quit] = true
         of KeyDown:
+            echo event.key.keysym.scancode 
             game.inputs[event.key.keysym.scancode.toInput] = true
         of KeyUp:
             game.inputs[event.key.keysym.scancode.toInput] = false

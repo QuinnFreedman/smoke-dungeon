@@ -71,7 +71,7 @@ proc `$` *[T](self: Matrix[T]): string =
         self.width, self.height, self.offset)
 
 #TODO add destructuring assignment to vectors so that this can return a vector
-iterator indices*[T](self: Matrix[T]): (int, int) =
+iterator indices*[T](self: Matrix[T]): Vec2 =
     let width = self.width
     let height = self.height
     for i in 0..<(width * height):

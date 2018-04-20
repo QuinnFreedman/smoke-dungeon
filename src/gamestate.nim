@@ -15,7 +15,7 @@ import
     utils
 
 type
-    Input* {.pure.} = enum left, right, up, down, none
+    Input* {.pure.} = enum none, left, right, up, down, tab
 
     Game* = ref object
         shouldQuit*: bool

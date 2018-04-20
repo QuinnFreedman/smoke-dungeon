@@ -1,12 +1,14 @@
 import sdl2
 
-import vector
+import
+    vector
 
 proc newSdlRect*(x, y, w, h: int): Rect {.inline.} =
     rect(cint(x), cint(y), cint(w), cint(h))
 
 proc newSdlSquare*(x, y, w: int): Rect {.inline.} =
     newSdlRect(x, y, w, w)
+
 
 iterator iterRect*(self: Rect): Vec2 =
     let width = self.w

@@ -9,30 +9,8 @@ import gamestate,
        character,
        constants,
        utils,
+       render_utils,
        shadowcasting
-
-const
-    HINT_RENDER_SCALE_QUALITY* = cstring("SDL_RENDER_SCALE_QUALITY")
-    NEAREST* = cstring("0")
-
-proc renderTile(texture: TexturePtr, srcRect: Rect, pos: Vec2,
-                renderer: RendererPtr, transform: Vec2) {.inline.} =
-    var drect = newSdlSquare(
-        pos.x + transform.x, pos.y + transform.y, TILE_SIZE)
-    
-    var srect = srcRect
-    let _ = sdl2.copyEx(renderer, texture, srect, drect, angle=0, center=nil, flip=SDL_FLIP_NONE)
-
-proc drawImage(texture: TexturePtr, srcRect: var Rect, destRect: var Rect,
-               renderer: RendererPtr, transform: Vec2) {.inline.} =
-    var drect = rect(
-        cint(destRect.x + transform.x),
-        cint(destRect.y + transform.y),
-        destRect.w,
-        destRect.h
-    )
-    let _ = sdl2.copyEx(renderer, texture, srcRect, drect,
-                        angle=0, center=nil, flip=SDL_FLIP_NONE)
 
 proc renderMap(map: Matrix[sdl2.Rect], window: Rect,
                renderer: RendererPtr, transfrom: Vec2) =
@@ -40,7 +18,7 @@ proc renderMap(map: Matrix[sdl2.Rect], window: Rect,
         if map.contains(pos):
             let srect = map[pos]
             let tilePos = pos.scale(TILE_SIZE)
-            renderTile(TextureAlias.mapTiles.getTexture(),
+            drawTile(TextureAlias.mapTiles,
                     srect, tilePos, renderer, transfrom)
 
 
@@ -48,13 +26,13 @@ proc renderCharacter(character: Character,
                      renderer: RendererPtr, transfrom: Vec2) =
     var srect = character.getSrcRect
     var drect = character.getDestRect
-    drawImage(character.spritesheet.getTexture(),
+    drawImage(character.spritesheet,
               srect, drect, renderer, transfrom)
     for item in character.iterWornItems:
         let sprite =
             if character.sex == Sex.male: item.textureMale
             else: item.textureFemale
-        drawImage(sprite.getTexture(), srect, drect, renderer, transfrom)
+        drawImage(sprite, srect, drect, renderer, transfrom)
 
 proc renderRect(drect: Rect, renderer: RendererPtr, transform: Vec2) =
         var newRect = rect(

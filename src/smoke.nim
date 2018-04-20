@@ -29,6 +29,7 @@ proc toInput(key: Scancode): Input =
     of SDL_SCANCODE_RIGHT: Input.right
     of SDL_SCANCODE_UP: Input.up
     of SDL_SCANCODE_DOWN: Input.down
+    of SDL_SCANCODE_TAB: Input.tab
     else: Input.none
 
 
@@ -55,6 +56,9 @@ proc render(game: Game) =
 
     game.renderer.present()
 
+const
+    HINT_RENDER_SCALE_QUALITY = cstring("SDL_RENDER_SCALE_QUALITY")
+    NEAREST = cstring("0")
 
 proc main =
     echo "Starting game from directory: " & getCurrentDir()
@@ -70,9 +74,6 @@ proc main =
     sdlFailIf(image.init(imgFlags) != imgFlags):
         "SDL2 Image initialization failed"
     defer: image.quit()
-
-    sdlFailIf(not setHint("SDL_RENDER_SCALE_QUALITY", "2")):
-        "Linear texture filtering could not be enabled"
 
     let window = createWindow(title = "Smoke",
         x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED,

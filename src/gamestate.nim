@@ -11,19 +11,36 @@ import
     vector,
     textures,
     dungeon_generation,
-    clothing
+    clothing,
+    utils
 
 type
-    Input* {.pure.} = enum none, left, right, up, down, quit
+    Input* {.pure.} = enum left, right, up, down, none
 
     Game* = ref object
+        shouldQuit*: bool
         inputs*: array[Input, bool]
+        inputsSinceLastFrame: array[Input, bool]
         renderer*: RendererPtr
         gameState*: GameState
 
     GameState* = object
         level*: Level
         playerCharacter*: Character
+
+
+proc handleInput*(self: var Game, input: Input, keyDown: bool) {.inline.} =
+    if keyDown and not self.inputs[input]:
+        self.inputsSinceLastFrame[input] = true
+    self.inputs[input] = keyDown
+    
+
+proc keyDown*(self: Game, key: Input): bool {.inline.} = 
+    self.inputs[key]
+
+
+proc keyPressed*(self: Game, key: Input): bool {.inline.} = 
+    self.inputsSinceLastFrame[key]
 
 
 proc initGameData*(renderer: RendererPtr): Game =
@@ -44,19 +61,22 @@ proc initGameData*(renderer: RendererPtr): Game =
 
     result.gameState.playerCharacter.clothes[ClothingSlot.head] = MAGE_HOOD
 
+
 proc loop*(self: var Game, dt: float) =
-    if self.inputs[Input.up]:
+    if self.keyDown(Input.up):
         self.gameState.playerCharacter.move(Direction.up,
                                             self.gamestate.level.walls)
-    if self.inputs[Input.down]:
+    if self.keyDown(Input.down):
         self.gameState.playerCharacter.move(Direction.down,
                                             self.gamestate.level.walls)
-    if self.inputs[Input.left]:
+    if self.keyDown(Input.left):
         self.gameState.playerCharacter.move(Direction.left,
                                             self.gamestate.level.walls)
-    if self.inputs[Input.right]:
+    if self.keyDown(Input.right):
         self.gameState.playerCharacter.move(Direction.right,
                                             self.gamestate.level.walls)
         
     self.gameState.playerCharacter.update(dt)
 
+    self.inputsSinceLastFrame.zero()
+    

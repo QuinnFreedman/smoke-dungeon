@@ -15,3 +15,7 @@ iterator iterRect*(self: Rect): Vec2 =
         let x = i mod width + self.x
         let y = i div width + self.y
         yield v(x, y)
+
+proc zero*(a: var openArray[bool]) =
+    for i in 0..<a.len:
+        a[i] = false

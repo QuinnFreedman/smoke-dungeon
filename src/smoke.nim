@@ -29,20 +29,21 @@ proc toInput(key: Scancode): Input =
     of SDL_SCANCODE_RIGHT: Input.right
     of SDL_SCANCODE_UP: Input.up
     of SDL_SCANCODE_DOWN: Input.down
-    of SDL_SCANCODE_ESCAPE: Input.quit
     else: Input.none
 
-proc handleInput(game: var Game) =
+
+proc pollInput(game: var Game) =
     var event = defaultEvent
     while pollEvent(event):
         case event.kind
         of QuitEvent:
-            game.inputs[Input.quit] = true
+            game.shouldQuit = true
         of KeyDown:
-            echo event.key.keysym.scancode 
-            game.inputs[event.key.keysym.scancode.toInput] = true
+            game.handleInput(event.key.keysym.scancode.toInput, true)
+            if event.key.keysym.scancode == SDL_SCANCODE_ESCAPE:
+                game.shouldQuit = true
         of KeyUp:
-            game.inputs[event.key.keysym.scancode.toInput] = false
+            game.handleInput(event.key.keysym.scancode.toInput, false)
         else:
             discard
 
@@ -100,11 +101,11 @@ proc main =
 
     var lastTime = epochTime()
 
-    while not game.inputs[Input.quit]:
+    while not game.shouldQuit:
         let now = epochTime()
         let dt = now - lastTime
         lastTime = now
-        game.handleInput()
+        game.pollInput()
         game.loop(dt)
         game.render()
 

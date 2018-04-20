@@ -17,6 +17,9 @@ proc getTexture*(self: Clothing, sex: Sex): TextureAlias =
     if sex == Sex.male: self.textureMale
     else: self.textureFemale
 
+proc isNone*(self: Clothing): bool =
+    self.name.isNil
+
 const MAGE_HOOD* = Clothing(
     name: "Mage Hood",
     textureMale: TextureAlias.mageHoodMale,

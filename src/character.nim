@@ -22,6 +22,7 @@ type Character* = object
     race*: Race
     sex*: Sex
     clothes*: array[ClothingSlot, Clothing]
+    backpack: Matrix[Clothing] #TODO make Item type
     spritesheet*: TextureAlias
 
 
@@ -43,6 +44,7 @@ proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex): Character =
     result.speed = speed
     result.race = race
     result.sex = sex
+    result.backpack = newMatrix[Clothing](4, 4)
     result.spritesheet = getBaseSpriteSheet(race, sex)
     
 

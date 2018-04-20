@@ -27,3 +27,11 @@ const MAGE_HOOD* = Clothing(
     icon: mageHeadIcon,
     slot: ClothingSlot.head
 )
+
+const KNIGHT_HELMET* = Clothing(
+    name: "Knight Helmet",
+    textureMale: TextureAlias.knightHelmetMale,
+    textureFemale: TextureAlias.knightHelmetFemale,
+    icon: knightHeadIcon,
+    slot: ClothingSlot.head
+)

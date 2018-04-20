@@ -8,7 +8,8 @@ import
     character,
     render_utils,
     textures,
-    clothing
+    clothing,
+    gamestate
 
 proc renderCharacterFullPreview(character: Character, pos: Vec2,
                                 renderer: RendererPtr, transform: Vec2) =
@@ -47,3 +48,22 @@ proc renderInventory*(player: Character, renderer: RendererPtr) =
     renderCharacterFullPreview(player, mainPreviewRect, renderer, transform)
     for r in previewRects:
         renderCharacterCroppedPreview(player, r, renderer, transform)
+
+
+proc trySwapItem(character: var Character, backpackSlot: Vec2) =
+    let item = character.backpack[backpackSlot]
+    #TODO check if item is clothing, etc
+    let itemSlot = item.slot 
+    let current = character.clothes[itemSlot]
+    character.clothes[itemSlot] = item
+    character.backpack[backpackSlot] = current
+
+
+proc loopInventory*(game: Game) =
+    if game.keyPressed(Input.tab):
+        game.screen = Screen.world
+
+    
+    if game.keyPressed(Input.enter):
+        trySwapItem(game.gameState.playerCharacter, v(0,0))        
+    

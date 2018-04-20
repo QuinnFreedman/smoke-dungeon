@@ -11,7 +11,8 @@ import
     render,
     textures,
     constants,
-    inventory
+    inventory,
+    gameloop
 
 type SDLException = object of Exception
 
@@ -31,6 +32,8 @@ proc toInput(key: Scancode): Input =
     of SDL_SCANCODE_UP: Input.up
     of SDL_SCANCODE_DOWN: Input.down
     of SDL_SCANCODE_TAB: Input.tab
+    of SDL_SCANCODE_RETURN,
+       SDL_SCANCODE_RETURN2: Input.enter
     else: Input.none
 
 
@@ -48,19 +51,6 @@ proc pollInput(game: var Game) =
             game.handleInput(event.key.keysym.scancode.toInput, false)
         else:
             discard
-
-
-proc render(game: Game) =
-    ## main render loop for the game
-
-    # Draw over all drawings of the last frame with the default color
-    game.renderer.clear()
-
-    renderGameFrame(game)
-    renderInventory(game.gameState.playerCharacter, game.renderer)
-
-    game.renderer.present()
-
 
 const
     HINT_RENDER_SCALE_QUALITY = cstring("SDL_RENDER_SCALE_QUALITY")

@@ -13,17 +13,19 @@ import
     dungeon_generation,
     clothing,
     utils,
-    simple_types,
-    inventory
+    simple_types
 
 type
-    Input* {.pure.} = enum none, left, right, up, down, tab
+    Input* {.pure.} = enum none, left, right, up, down, tab, enter
+
+    Screen* {.pure.} = enum world, inventory
 
     Game* = ref object
         shouldQuit*: bool
         inputs*: array[Input, bool]
         inputsSinceLastFrame: array[Input, bool]
         renderer*: RendererPtr
+        screen*: Screen
         gameState*: GameState
 
     GameState* = object
@@ -45,12 +47,16 @@ proc keyPressed*(self: Game, key: Input): bool {.inline.} =
     self.inputsSinceLastFrame[key]
 
 
+proc resetInputs*(self: Game) =
+    self.inputsSinceLastFrame.zero()
+
+
 proc initGameData*(renderer: RendererPtr): Game =
     new result
     result.renderer = renderer
 
-    # let seed = int64(epochTime())
-    let seed = int64(1524099821)
+    let seed = int64(epochTime())
+    # let seed = int64(1524099821)
 
     var rng: Rand = initRand(seed)
     echo "Creating map with seed: $1".format(seed)
@@ -62,23 +68,7 @@ proc initGameData*(renderer: RendererPtr): Game =
         v(levelWidth div 2, levelHeight div 2), 2, Race.human, Sex.male)
 
     result.gameState.playerCharacter.clothes[ClothingSlot.head] = MAGE_HOOD
+    result.gameState.playerCharacter.backpack[0, 0] = KNIGHT_HELMET
 
 
-proc loop*(self: var Game, dt: float) =
-    if self.keyDown(Input.up):
-        self.gameState.playerCharacter.move(Direction.up,
-                                            self.gamestate.level.walls)
-    if self.keyDown(Input.down):
-        self.gameState.playerCharacter.move(Direction.down,
-                                            self.gamestate.level.walls)
-    if self.keyDown(Input.left):
-        self.gameState.playerCharacter.move(Direction.left,
-                                            self.gamestate.level.walls)
-    if self.keyDown(Input.right):
-        self.gameState.playerCharacter.move(Direction.right,
-                                            self.gamestate.level.walls)
-        
-    self.gameState.playerCharacter.update(dt)
-
-    self.inputsSinceLastFrame.zero()
     

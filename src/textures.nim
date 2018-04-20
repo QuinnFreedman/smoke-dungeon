@@ -25,18 +25,30 @@ proc cachedLoadTexture(renderer: RendererPtr, path: string): TexturePtr =
 const IMAGES = "assets/images/"
 const SPRITESHEETS = IMAGES & "spritesheets/"
 const BASE_ARMOR_MAGE = SPRITESHEETS & "armor_mage/"
+const BASE_ARMOR_KNIGHT = SPRITESHEETS & "armor_knight/"
 
 type TextureAlias* {.pure.} = enum
     none
     mapTiles = IMAGES & "texturesheet.png"
     inventoryBackground = IMAGES & "inventory.png"
     humanFemaleBase = SPRITESHEETS & "base_human_female.png"
+
+    # Mage
     humanMaleBase = SPRITESHEETS & "base_human_male.png"
     mageHoodMale = BASE_ARMOR_MAGE & "mage_head_male.png"
     mageHoodFemale = BASE_ARMOR_MAGE & "mage_head_female.png"
+
     mageChestIcon = BASE_ARMOR_MAGE & "mage_chest_icon.png"
     mageHeadIcon = BASE_ARMOR_MAGE & "mage_head_icon.png"
     mageFeetIcon = BASE_ARMOR_MAGE & "mage_feet_icon.png"
+
+    # Knight
+    knightHelmetMale = BASE_ARMOR_KNIGHT & "knight_head_male.png"
+    knightHelmetFemale = BASE_ARMOR_KNIGHT & "knight_head_female.png"
+    
+    knightChestIcon = BASE_ARMOR_KNIGHT & "knight_chest_icon.png"
+    knightHeadIcon = BASE_ARMOR_KNIGHT & "knight_head_icon.png"
+    knightFeetIcon = BASE_ARMOR_KNIGHT & "knight_feet_icon.png"
 
 
 proc tile(x, y: int): sdl2.Rect =

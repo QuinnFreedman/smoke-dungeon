@@ -1,4 +1,6 @@
-import textures
+import
+    textures,
+    simple_types
 
 type ClothingSlot* {.pure.} = enum
     head, body, feet
@@ -8,12 +10,17 @@ type
         name*: string
         textureMale*: TextureAlias
         textureFemale*: TextureAlias
-        slot: ClothingSlot
+        icon*: TextureAlias
+        slot*: ClothingSlot
 
+proc getTexture*(self: Clothing, sex: Sex): TextureAlias =
+    if sex == Sex.male: self.textureMale
+    else: self.textureFemale
 
 const MAGE_HOOD* = Clothing(
     name: "Mage Hood",
     textureMale: TextureAlias.mageHoodMale,
     textureFemale: TextureAlias.mageHoodFemale,
+    icon: mageHeadIcon,
     slot: ClothingSlot.head
 )

@@ -9,11 +9,8 @@ import
     utils,
     textures,
     clothing,
-    matrix
-
-type Race* = enum human
-
-type Sex* = enum male, female
+    matrix,
+    simple_types
 
 
 type Character* = object
@@ -97,6 +94,9 @@ proc animationTimer*(self: Character): float {.inline.} =
     else:
         0
 
+
+proc getStaticSrcRect*(self: Character): sdl2.Rect =
+    newSdlSquare(0, 0, TILE_SIZE)
 
 proc getSrcRect*(self: Character): sdl2.Rect =
     let row =

@@ -12,7 +12,9 @@ import
     textures,
     dungeon_generation,
     clothing,
-    utils
+    utils,
+    simple_types,
+    inventory
 
 type
     Input* {.pure.} = enum none, left, right, up, down, tab

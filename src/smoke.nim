@@ -10,7 +10,8 @@ import
     gamestate,
     render,
     textures,
-    constants
+    constants,
+    inventory
 
 type SDLException = object of Exception
 
@@ -48,13 +49,18 @@ proc pollInput(game: var Game) =
         else:
             discard
 
+
 proc render(game: Game) =
+    ## main render loop for the game
+
     # Draw over all drawings of the last frame with the default color
     game.renderer.clear()
 
     renderGameFrame(game)
+    renderInventory(game.gameState.playerCharacter, game.renderer)
 
     game.renderer.present()
+
 
 const
     HINT_RENDER_SCALE_QUALITY = cstring("SDL_RENDER_SCALE_QUALITY")

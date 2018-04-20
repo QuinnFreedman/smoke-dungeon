@@ -5,7 +5,8 @@ import
 
 import
     utils,
-    constants
+    constants,
+    vector
 
 type FileNotFoundError = object of Exception
 
@@ -33,6 +34,9 @@ type TextureAlias* {.pure.} = enum
     humanMaleBase = SPRITESHEETS & "base_human_male.png"
     mageHoodMale = BASE_ARMOR_MAGE & "mage_head_male.png"
     mageHoodFemale = BASE_ARMOR_MAGE & "mage_head_female.png"
+    mageChestIcon = BASE_ARMOR_MAGE & "mage_chest_icon.png"
+    mageHeadIcon = BASE_ARMOR_MAGE & "mage_head_icon.png"
+    mageFeetIcon = BASE_ARMOR_MAGE & "mage_feet_icon.png"
 
 
 proc tile(x, y: int): sdl2.Rect =
@@ -68,3 +72,10 @@ proc initTextures*(renderer: RendererPtr) =
 
 proc getTexture*(texture: TextureAlias): TexturePtr {.inline.} =
     texturStore[texture]
+
+proc getDimens*(texture: TextureAlias): Vec2 =
+    var w, h: cint
+    var wPtr = addr w
+    var hPtr = addr h
+    texture.getTexture.queryTexture(nil, nil, wPtr, hPtr)
+    v(w, h)

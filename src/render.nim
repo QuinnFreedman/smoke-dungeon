@@ -10,7 +10,8 @@ import gamestate,
        constants,
        utils,
        render_utils,
-       shadowcasting
+       shadowcasting,
+       clothing
 
 proc renderMap(map: Matrix[sdl2.Rect], window: Rect,
                renderer: RendererPtr, transfrom: Vec2) =
@@ -29,9 +30,7 @@ proc renderCharacter(character: Character,
     drawImage(character.spritesheet,
               srect, drect, renderer, transfrom)
     for item in character.iterWornItems:
-        let sprite =
-            if character.sex == Sex.male: item.textureMale
-            else: item.textureFemale
+        let sprite = item.getTexture(character.sex)
         drawImage(sprite, srect, drect, renderer, transfrom)
 
 proc renderRect(drect: Rect, renderer: RendererPtr, transform: Vec2) =

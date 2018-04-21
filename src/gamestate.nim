@@ -20,12 +20,18 @@ type
 
     Screen* {.pure.} = enum world, inventory
 
+    InventoryCursor* = object
+        player*: int
+        x*, y*, i*: int
+        left*: bool
+
     Game* = ref object
         shouldQuit*: bool
         inputs*: array[Input, bool]
         inputsSinceLastFrame: array[Input, bool]
         renderer*: RendererPtr
         screen*: Screen
+        invCursor*: InventoryCursor
         gameState*: GameState
 
     GameState* = object
@@ -68,7 +74,11 @@ proc initGameData*(renderer: RendererPtr): Game =
         v(levelWidth div 2, levelHeight div 2), 2, Race.human, Sex.male)
 
     result.gameState.playerCharacter.clothes[ClothingSlot.head] = MAGE_HOOD
+    result.gameState.playerCharacter.clothes[ClothingSlot.body] = KNIGHT_CHESTPLATE
+    result.gameState.playerCharacter.clothes[ClothingSlot.feet] = KNIGHT_GRIEVES
     result.gameState.playerCharacter.backpack[0, 0] = KNIGHT_HELMET
+    result.gameState.playerCharacter.backpack[1, 0] = MAGE_CLOAK
+    result.gameState.playerCharacter.backpack[3, 1] = MAGE_SHOES
 
 
     

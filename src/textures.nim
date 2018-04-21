@@ -31,12 +31,17 @@ type TextureAlias* {.pure.} = enum
     none
     mapTiles = IMAGES & "texturesheet.png"
     inventoryBackground = IMAGES & "inventory.png"
+    inventoryCursor = IMAGES & "inventory_cursor.png"
     humanFemaleBase = SPRITESHEETS & "base_human_female.png"
+    humanMaleBase = SPRITESHEETS & "base_human_male.png"
 
     # Mage
-    humanMaleBase = SPRITESHEETS & "base_human_male.png"
     mageHoodMale = BASE_ARMOR_MAGE & "mage_head_male.png"
     mageHoodFemale = BASE_ARMOR_MAGE & "mage_head_female.png"
+    mageCloakMale = BASE_ARMOR_MAGE & "mage_chest_male.png"
+    mageCloakFemale = BASE_ARMOR_MAGE & "mage_chest_female.png"
+    mageFeetMale = BASE_ARMOR_MAGE & "mage_feet_male.png"
+    mageFeetFemale = BASE_ARMOR_MAGE & "mage_feet_female.png"
 
     mageChestIcon = BASE_ARMOR_MAGE & "mage_chest_icon.png"
     mageHeadIcon = BASE_ARMOR_MAGE & "mage_head_icon.png"
@@ -45,6 +50,10 @@ type TextureAlias* {.pure.} = enum
     # Knight
     knightHelmetMale = BASE_ARMOR_KNIGHT & "knight_head_male.png"
     knightHelmetFemale = BASE_ARMOR_KNIGHT & "knight_head_female.png"
+    knightChestMale = BASE_ARMOR_KNIGHT & "knight_chest_male.png"
+    knightChestFemale = BASE_ARMOR_KNIGHT & "knight_chest_female.png"
+    knightFeetMale = BASE_ARMOR_KNIGHT & "knight_feet_male.png"
+    knightFeetFemale = BASE_ARMOR_KNIGHT & "knight_feet_female.png"
     
     knightChestIcon = BASE_ARMOR_KNIGHT & "knight_chest_icon.png"
     knightHeadIcon = BASE_ARMOR_KNIGHT & "knight_head_icon.png"

@@ -47,6 +47,6 @@ proc render*(self: Game) =
     of Screen.world:
         renderGameFrame(self)
     of Screen.inventory:
-        renderInventory(self.gameState.playerCharacter, self.renderer)
+        renderInventory(self)
 
     self.renderer.present()

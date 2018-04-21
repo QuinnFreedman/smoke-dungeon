@@ -150,25 +150,26 @@ proc loopInventory*(game: Game) =
         if not character.isNone:
             backpacks[i] = addr(character.backpack)
 
-    var cursor = game.invCursor
-    if cursor.left:
-        if moveX > 0: cursor.left = true
+    if game.invCursor.left:
+        if moveX > 0: game.invCursor.left = false
         game.invCursor.i = (game.invCursor.i + moveY) mod clothingPositions.len
     else:
-        let backpack = game.gameState.playerParty[cursor.player].backpack
+        let backpack = game.gameState.playerParty[game.invCursor.player].backpack
         let newX = game.invCursor.x + moveX
-        if cursor.player == 0 and newX < 0:
-            cursor.left = true
+        if game.invCursor.player == 0 and newX < 0:
+            game.invCursor.left = true
         elif newX < 0:
-            cursor.player -= 1
-        elif newX > backpack.width:
-            if not game.gameState.playerParty[cursor.player + 1].isNone:
-                cursor.player += 1
+            game.invCursor.player -= 1
+        elif newX > backpack.width - 1:
+            if not game.gameState.playerParty[game.invCursor.player + 1].isNone:
+                game.invCursor.player += 1
+        else:
+            game.invCursor.x = newX
 
-        let newBackpack = game.gameState.playerParty[cursor.player].backpack
+        let newBackpack = game.gameState.playerParty[game.invCursor.player].backpack
         game.invCursor.y = (game.invCursor.y + moveY) mod newBackpack.height
 
     
     if game.keyPressed(Input.enter):
-        trySwapItem(game.gameState.playerParty[cursor.player], cursor)        
+        trySwapItem(game.gameState.playerParty[game.invCursor.player], game.invCursor)        
     

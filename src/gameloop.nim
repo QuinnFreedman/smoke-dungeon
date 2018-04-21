@@ -12,19 +12,21 @@ proc loopMainGame(self: var Game, dt: float) =
         self.screen = Screen.inventory
 
     if self.keyDown(Input.up):
-        self.gameState.playerCharacter.move(Direction.up,
+        self.gameState.playerParty[0].move(Direction.up,
                                             self.gamestate.level.walls)
     if self.keyDown(Input.down):
-        self.gameState.playerCharacter.move(Direction.down,
+        self.gameState.playerParty[0].move(Direction.down,
                                             self.gamestate.level.walls)
     if self.keyDown(Input.left):
-        self.gameState.playerCharacter.move(Direction.left,
+        self.gameState.playerParty[0].move(Direction.left,
                                             self.gamestate.level.walls)
     if self.keyDown(Input.right):
-        self.gameState.playerCharacter.move(Direction.right,
+        self.gameState.playerParty[0].move(Direction.right,
                                             self.gamestate.level.walls)
         
-    self.gameState.playerCharacter.update(dt)
+    for i in 0..<self.gameState.playerParty.len:
+        if not self.gameState.playerParty[i].isNone:
+            self.gameState.playerParty[i].update(dt)
 
 
 proc loop*(self: var Game, dt: float) =

@@ -36,7 +36,7 @@ proc renderCharacterCroppedPreview(character: Character, pos: Vec2,
                   renderer, transform)
 
 proc getItemSlotPosition(player, x, y: int): Rect =
-    let newX = 60 + x * 9
+    let newX = 60 + x * 9 + player * 50 #TODO tune this 50
     let newY = 62 + y * 9
     newSdlSquare(newX, newY, ITEM_ICON_SIZE)
 
@@ -71,7 +71,6 @@ proc renderCursor(cursor: InventoryCursor,
 
 proc renderInventory*(game: Game) =
     let renderer = game.renderer
-    let player = game.gameState.playerCharacter
     let transform = ZERO
     let bgTexture = TextureAlias.inventoryBackground
     let bgDimens = bgTexture.getDimens
@@ -81,20 +80,23 @@ proc renderInventory*(game: Game) =
 
     renderCursor(game.invCursor, renderer, transform)
 
-    renderCharacterFullPreview(player, mainPreviewRect, renderer, transform)
-    for r in previewRects:
-        renderCharacterCroppedPreview(player, r, renderer, transform)
+    let activeCharacter = game.gamestate.playerParty[game.invActiveCharacter]
+    if not activeCharacter.isNone:
+        renderCharacterFullPreview(activeCharacter, mainPreviewRect, renderer, transform)
+        for r in previewRects:
+            renderCharacterCroppedPreview(activeCharacter, r, renderer, transform)
     
-    for item in player.clothes:
-        renderItemPreview(item, clothingPositions[ord(item.slot)],
-                          renderer, transform)
+        for item in activeCharacter.clothes:
+            renderItemPreview(item, clothingPositions[ord(item.slot)],
+                            renderer, transform)
 
-    for slot in player.backpack.indices:
-        let item = player.backpack[slot]
-        if not item.isNone:
-            var srect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
-            var drect = getItemSlotPosition(0, slot.x, slot.y)
-            drawImage(item.icon, srect, drect, renderer, transform)
+    for i, character in game.gameState.playerParty:
+        for slot in character.backpack.indices:
+            let item = character.backpack[slot]
+            if not item.isNone:
+                var srect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
+                var drect = getItemSlotPosition(i, slot.x, slot.y)
+                drawImage(item.icon, srect, drect, renderer, transform)
 
 
 proc trySwapItem(character: var Character, cursor: InventoryCursor) =
@@ -142,23 +144,31 @@ proc loopInventory*(game: Game) =
         elif game.keyPressed(Input.down): 1
         else: 0
 
-    let backpack = game.gameState.playerCharacter.backpack
+    var backpacks: array[game.gameState.playerParty.len, ptr Matrix[Clothing]]
+    for i, _ in game.gameState.playerParty:
+        var character = game.gameState.playerParty[i]
+        if not character.isNone:
+            backpacks[i] = addr(character.backpack)
 
-    if not game.invCursor.left:
-        if game.invCursor.x + moveX < 0:
-            game.invCursor.left = true
-        else:
-            game.invCursor.x = (game.invCursor.x + moveX) mod backpack.width
-    else:
-        if moveX > 0:
-            game.invCursor.left = false
-    
-    if game.invCursor.left:
+    var cursor = game.invCursor
+    if cursor.left:
+        if moveX > 0: cursor.left = true
         game.invCursor.i = (game.invCursor.i + moveY) mod clothingPositions.len
     else:
-        game.invCursor.y = (game.invCursor.y + moveY) mod backpack.height
+        let backpack = game.gameState.playerParty[cursor.player].backpack
+        let newX = game.invCursor.x + moveX
+        if cursor.player == 0 and newX < 0:
+            cursor.left = true
+        elif newX < 0:
+            cursor.player -= 1
+        elif newX > backpack.width:
+            if not game.gameState.playerParty[cursor.player + 1].isNone:
+                cursor.player += 1
+
+        let newBackpack = game.gameState.playerParty[cursor.player].backpack
+        game.invCursor.y = (game.invCursor.y + moveY) mod newBackpack.height
 
     
     if game.keyPressed(Input.enter):
-        trySwapItem(game.gameState.playerCharacter, game.invCursor)        
+        trySwapItem(game.gameState.playerParty[cursor.player], cursor)        
     

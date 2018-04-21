@@ -32,11 +32,12 @@ type
         renderer*: RendererPtr
         screen*: Screen
         invCursor*: InventoryCursor
+        invActiveCharacter*: int
         gameState*: GameState
 
     GameState* = object
         level*: Level
-        playerCharacter*: Character
+        playerParty*: array[4, Character]
 
 
 proc handleInput*(self: var Game, input: Input, keyDown: bool) {.inline.} =
@@ -70,15 +71,15 @@ proc initGameData*(renderer: RendererPtr): Game =
     let levelHeight = 100
     result.gameState.level = generateLevel(levelWidth, levelHeight, rng)
 
-    result.gameState.playerCharacter = newCharacter(
+    var playerCharacter = newCharacter(
         v(levelWidth div 2, levelHeight div 2), 2, Race.human, Sex.male)
 
-    result.gameState.playerCharacter.clothes[ClothingSlot.head] = MAGE_HOOD
-    result.gameState.playerCharacter.clothes[ClothingSlot.body] = KNIGHT_CHESTPLATE
-    result.gameState.playerCharacter.clothes[ClothingSlot.feet] = KNIGHT_GRIEVES
-    result.gameState.playerCharacter.backpack[0, 0] = KNIGHT_HELMET
-    result.gameState.playerCharacter.backpack[1, 0] = MAGE_CLOAK
-    result.gameState.playerCharacter.backpack[3, 1] = MAGE_SHOES
-
+    playerCharacter.clothes[ClothingSlot. head] = MAGE_HOOD
+    playerCharacter.clothes[ClothingSlot.body] = KNIGHT_CHESTPLATE
+    playerCharacter.clothes[ClothingSlot.feet] = KNIGHT_GRIEVES
+    playerCharacter.backpack[0, 0] = KNIGHT_HELMET
+    playerCharacter.backpack[1, 0] = MAGE_CLOAK
+    playerCharacter.backpack[3, 1] = MAGE_SHOES
+    result.gameState.playerParty[0] = playerCharacter
 
     

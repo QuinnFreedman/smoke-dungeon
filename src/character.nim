@@ -26,6 +26,11 @@ type Character* = object
     spritesheet*: TextureAlias
 
 
+#TODO remove this when switch characters ptrs -> use isNil
+proc isNone*(character: Character): bool =
+    character.spritesheet == TextureAlias.none
+
+
 proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
     case race
     of human:

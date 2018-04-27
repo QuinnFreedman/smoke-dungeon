@@ -14,9 +14,6 @@ import
 proc invCursorGetBackpack*(game: Game): Matrix[Clothing] {.inline.} =
     game.gameState.playerParty[game.invCursor.player].backpack
 
-proc invCursorGetCharacter*(game: Game): Character {.inline.} =
-    game.gameState.playerParty[game.invCursor.player]
-
 
 const ITEM_ICON_SIZE = TILE_SIZE div 4
 

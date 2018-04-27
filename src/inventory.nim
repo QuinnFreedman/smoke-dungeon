@@ -66,15 +66,21 @@ const clothingPositions = [
 
 proc renderCursor(inv: Inventory,
                   renderer: RendererPtr, transform: Vec2) =
-    var drect = 
-        if not inv.cursorInSidePane:
-            getItemSlotPosition(inv.curBackpack, inv.curX, inv.curY)
-        else:
-            newSdlSquare(clothingPositions[inv.curI].x,
-                         clothingPositions[inv.curI].y,
-                         ITEM_ICON_SIZE)
-    var srect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
-    drawImage(TextureAlias.inventoryCursor, srect, drect, renderer, transform)
+    if inv.cursorInTopRow:
+        let weirdOffset = v(3, -1) #TODO temporary offset for current inv screen
+        drawImage(TextureAlias.inventoryCursorBig,
+                  previewRects[inv.curBackpack] + weirdOffset,
+                  renderer, transform)
+    else:
+        var drect = 
+            if not inv.cursorInSidePane:
+                getItemSlotPosition(inv.curBackpack, inv.curX, inv.curY)
+            else:
+                newSdlSquare(clothingPositions[inv.curI].x,
+                            clothingPositions[inv.curI].y,
+                            ITEM_ICON_SIZE)
+        var srect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
+        drawImage(TextureAlias.inventoryCursor, srect, drect, renderer, transform)
 
 proc renderInventory*(game: Game) =
     let renderer = game.renderer
@@ -155,17 +161,21 @@ proc loopInventory*(game: Game) =
         elif game.keyPressed(Input.down): 1
         else: 0
 
-    var backpacks: array[game.gameState.playerParty.len, ptr Matrix[Clothing]]
-    for i, _ in game.gameState.playerParty:
-        var character = game.gameState.playerParty[i]
-        if not character.isNone:
-            backpacks[i] = addr(character.backpack)
-
     template inv: untyped = game.inventory
 
     if inv.cursorInSidePane:
         if moveX > 0: inv.cursorInSidePane = false
         inv.curI = (inv.curI + moveY) mod clothingPositions.len
+    elif inv.cursorInTopRow:
+        if moveY > 0:
+            inv.curX = 0
+            inv.cursorInTopRow = false
+        else:
+            let nextBackpack = inv.curBackpack + moveX
+            if nextBackpack >= 0 and
+                    nextBackpack < game.gamestate.playerParty.len and
+                    not game.gameState.playerParty[nextBackpack].isNone:
+                inv.curBackpack = nextBackpack
     else:
         let newX = inv.curX + moveX
         if inv.curBackpack == 0 and newX < 0:
@@ -180,9 +190,16 @@ proc loopInventory*(game: Game) =
         else:
             inv.curX = newX
 
-        inv.curY = clamp(inv.curY + moveY, 0,
-                         game.invCursorGetBackpack().height - 1)
+        let newY = inv.curY + moveY
+
+        if newY < 0:
+            inv.cursorInTopRow = true
+        else:
+            inv.curY = min(newY, game.invCursorGetBackpack().height - 1)
     
     if game.keyPressed(Input.enter):
-        trySwapItem(game.gameState.playerParty, inv)        
+        if inv.cursorInTopRow:
+            inv.activeCharacter = inv.curBackpack
+        else:
+            trySwapItem(game.gameState.playerParty, inv)        
     

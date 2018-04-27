@@ -23,7 +23,7 @@ type
     Inventory* = object
         curBackpack*: int
         curX*, curY*, curI*: int
-        cursorInSidePane*: bool
+        cursorInSidePane*, cursorInTopRow*: bool
         activeCharacter*: int
 
     Game* = ref object

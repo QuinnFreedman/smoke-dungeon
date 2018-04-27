@@ -20,10 +20,11 @@ type
 
     Screen* {.pure.} = enum world, inventory
 
-    InventoryCursor* = object
-        player*: int
-        x*, y*, i*: int
-        left*: bool
+    Inventory* = object
+        curBackpack*: int
+        curX*, curY*, curI*: int
+        cursorInSidePane*: bool
+        activeCharacter*: int
 
     Game* = ref object
         shouldQuit*: bool
@@ -31,8 +32,7 @@ type
         inputsSinceLastFrame: array[Input, bool]
         renderer*: RendererPtr
         screen*: Screen
-        invCursor*: InventoryCursor
-        invActiveCharacter*: int
+        inventory*: Inventory
         gameState*: GameState
 
     GameState* = object
@@ -84,5 +84,5 @@ proc initGameData*(renderer: RendererPtr): Game =
 
     var companion1 = newCharacter(
         v(levelWidth div 2 + 1, levelHeight div 2), 2, Race.human, Sex.male)
-    playerCharacter.backpack[1, 0] = KNIGHT_HELMET
+    companion1.backpack[1, 0] = KNIGHT_HELMET
     result.gameState.playerParty[1] = companion1

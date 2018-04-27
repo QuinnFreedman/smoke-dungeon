@@ -1,5 +1,5 @@
 import sdl2
-
+import macros
 import
     matrix,
     vector,
@@ -12,7 +12,7 @@ import
     gamestate
 
 proc invCursorGetBackpack*(game: Game): Matrix[Clothing] {.inline.} =
-    game.gameState.playerParty[game.invCursor.player].backpack
+    game.gameState.playerParty[game.inventory.curBackpack].backpack
 
 
 const ITEM_ICON_SIZE = TILE_SIZE div 4
@@ -64,14 +64,14 @@ const clothingPositions = [
     v(4, 26)
 ]
 
-proc renderCursor(cursor: InventoryCursor,
+proc renderCursor(inv: Inventory,
                   renderer: RendererPtr, transform: Vec2) =
     var drect = 
-        if not cursor.left:
-            getItemSlotPosition(cursor.player, cursor.x, cursor.y)
+        if not inv.cursorInSidePane:
+            getItemSlotPosition(inv.curBackpack, inv.curX, inv.curY)
         else:
-            newSdlSquare(clothingPositions[cursor.i].x,
-                         clothingPositions[cursor.i].y,
+            newSdlSquare(clothingPositions[inv.curI].x,
+                         clothingPositions[inv.curI].y,
                          ITEM_ICON_SIZE)
     var srect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
     drawImage(TextureAlias.inventoryCursor, srect, drect, renderer, transform)
@@ -85,9 +85,9 @@ proc renderInventory*(game: Game) =
     var drect = srect
     drawImage(bgTexture, srect, drect, renderer, transform)
 
-    renderCursor(game.invCursor, renderer, transform)
+    renderCursor(game.inventory, renderer, transform)
 
-    let activeCharacter = game.gamestate.playerParty[game.invActiveCharacter]
+    let activeCharacter = game.gamestate.playerParty[game.inventory.activeCharacter]
     if not activeCharacter.isNone:
         renderCharacterFullPreview(activeCharacter, mainPreviewRect, renderer, transform)
     
@@ -109,19 +109,21 @@ proc renderInventory*(game: Game) =
                 drawImage(item.icon, srect, drect, renderer, transform)
 
 
-proc trySwapItem(character: var Character, cursor: InventoryCursor) =
-    let item = character.backpack[cursor.x, cursor.y]
-    if not cursor.left:
+proc trySwapItem(playerParty: var openArray[Character], inv: Inventory) =
+    template activeChar: untyped = playerParty[inv.activeCharacter]
+    if not inv.cursorInSidePane:
+        template bag: untyped = playerParty[inv.curBackpack].backpack
+        let item = bag[inv.curX, inv.curY]
         if not item.isNone:
             #TODO check if item is clothing, etc
             let itemSlot = item.slot 
-            let current = character.clothes[itemSlot]
-            character.clothes[itemSlot] = item
-            character.backpack[cursor.x, cursor.y] = current
+            let current = activeChar.clothes[itemSlot]
+            activeChar.clothes[itemSlot] = item
+            bag[inv.curX, inv.curY] = current
     else:
         var firstOpenSlot: Vec2 = v(-1, -1)
-        for slot in character.backpack.indices:
-            if character.backpack[slot].isNone:
+        for slot in activeChar.backpack.indices:
+            if activeChar.backpack[slot].isNone:
                 firstOpenSlot = slot
                 break
         
@@ -129,15 +131,14 @@ proc trySwapItem(character: var Character, cursor: InventoryCursor) =
             #TODO there has to be a cleaner way to do this
             #how to get enum item by index?
             let itemSlot =
-                case cursor.i
+                case inv.curI
                 of 0: ClothingSlot.head
                 of 1: ClothingSlot.body
                 else: ClothingSlot.feet
-            let current = character.clothes[itemSlot]
-            let item = character.backpack[firstOpenSlot]
-            character.backpack[firstOpenSlot] = current
-            character.clothes[itemSlot] = item
-
+            let current = activeChar.clothes[itemSlot]
+            let item = activeChar.backpack[firstOpenSlot]
+            activeChar.backpack[firstOpenSlot] = current
+            activeChar.clothes[itemSlot] = item
 
 
 proc loopInventory*(game: Game) =
@@ -160,26 +161,28 @@ proc loopInventory*(game: Game) =
         if not character.isNone:
             backpacks[i] = addr(character.backpack)
 
-    if game.invCursor.left:
-        if moveX > 0: game.invCursor.left = false
-        game.invCursor.i = (game.invCursor.i + moveY) mod clothingPositions.len
-    else:
-        let newX = game.invCursor.x + moveX
-        if game.invCursor.player == 0 and newX < 0:
-            game.invCursor.left = true
-        elif newX < 0:
-            game.invCursor.player -= 1
-            game.invCursor.x = game.invCursorGetBackpack().width - 1
-        elif newX > game.invCursorGetBackpack().width - 1:
-            if not game.gameState.playerParty[game.invCursor.player + 1].isNone:
-                game.invCursor.player += 1
-                game.invCursor.x = 0
-        else:
-            game.invCursor.x = newX
+    template inv: untyped = game.inventory
 
-        game.invCursor.y = clamp(game.invCursor.y + moveY,
-                                 0, game.invCursorGetBackpack().height - 1)
+    if inv.cursorInSidePane:
+        if moveX > 0: inv.cursorInSidePane = false
+        inv.curI = (inv.curI + moveY) mod clothingPositions.len
+    else:
+        let newX = inv.curX + moveX
+        if inv.curBackpack == 0 and newX < 0:
+            inv.cursorInSidePane = true
+        elif newX < 0:
+            inv.curBackpack -= 1
+            inv.curX = game.invCursorGetBackpack().width - 1
+        elif newX > game.invCursorGetBackpack().width - 1:
+            if not game.gameState.playerParty[inv.curBackpack + 1].isNone:
+                inv.curBackpack += 1
+                inv.curX = 0
+        else:
+            inv.curX = newX
+
+        inv.curY = clamp(inv.curY + moveY, 0,
+                         game.invCursorGetBackpack().height - 1)
     
     if game.keyPressed(Input.enter):
-        trySwapItem(game.gameState.playerParty[game.invCursor.player], game.invCursor)        
+        trySwapItem(game.gameState.playerParty, inv)        
     

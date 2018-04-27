@@ -9,6 +9,10 @@ proc newSdlRect*(x, y, w, h: int): Rect {.inline.} =
 proc newSdlSquare*(x, y, w: int): Rect {.inline.} =
     newSdlRect(x, y, w, w)
 
+proc clamp*(x, min, max: int): int {.inline.} =
+    if x < min: min
+    elif x > max: max
+    else: x
 
 iterator iterRect*(self: Rect): Vec2 =
     let width = self.w

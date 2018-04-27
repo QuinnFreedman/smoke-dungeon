@@ -11,6 +11,13 @@ import
     clothing,
     gamestate
 
+proc invCursorGetBackpack*(game: Game): Matrix[Clothing] {.inline.} =
+    game.gameState.playerParty[game.invCursor.player].backpack
+
+proc invCursorGetCharacter*(game: Game): Character {.inline.} =
+    game.gameState.playerParty[game.invCursor.player]
+
+
 const ITEM_ICON_SIZE = TILE_SIZE div 4
 
 proc renderCharacterFullPreview(character: Character, pos: Vec2,
@@ -36,7 +43,7 @@ proc renderCharacterCroppedPreview(character: Character, pos: Vec2,
                   renderer, transform)
 
 proc getItemSlotPosition(player, x, y: int): Rect =
-    let newX = 60 + x * 9 + player * 50 #TODO tune this 50
+    let newX = 60 + x * 9 + player * 41
     let newY = 62 + y * 9
     newSdlSquare(newX, newY, ITEM_ICON_SIZE)
 
@@ -49,6 +56,9 @@ proc renderItemPreview(item: Clothing, pos: Vec2,
 const mainPreviewRect = v(18, 8)
 const previewRects = [
     v(61, 11),
+    v(102, 11),
+    v(140, 11),
+    v(160, 11),
 ]
 
 const clothingPositions = [
@@ -83,14 +93,17 @@ proc renderInventory*(game: Game) =
     let activeCharacter = game.gamestate.playerParty[game.invActiveCharacter]
     if not activeCharacter.isNone:
         renderCharacterFullPreview(activeCharacter, mainPreviewRect, renderer, transform)
-        for r in previewRects:
-            renderCharacterCroppedPreview(activeCharacter, r, renderer, transform)
     
         for item in activeCharacter.clothes:
             renderItemPreview(item, clothingPositions[ord(item.slot)],
                             renderer, transform)
 
     for i, character in game.gameState.playerParty:
+        if character.isNone: continue
+
+        renderCharacterCroppedPreview(
+            character, previewRects[i], renderer, transform)
+
         for slot in character.backpack.indices:
             let item = character.backpack[slot]
             if not item.isNone:
@@ -154,21 +167,21 @@ proc loopInventory*(game: Game) =
         if moveX > 0: game.invCursor.left = false
         game.invCursor.i = (game.invCursor.i + moveY) mod clothingPositions.len
     else:
-        let backpack = game.gameState.playerParty[game.invCursor.player].backpack
         let newX = game.invCursor.x + moveX
         if game.invCursor.player == 0 and newX < 0:
             game.invCursor.left = true
         elif newX < 0:
             game.invCursor.player -= 1
-        elif newX > backpack.width - 1:
+            game.invCursor.x = game.invCursorGetBackpack().width - 1
+        elif newX > game.invCursorGetBackpack().width - 1:
             if not game.gameState.playerParty[game.invCursor.player + 1].isNone:
                 game.invCursor.player += 1
+                game.invCursor.x = 0
         else:
             game.invCursor.x = newX
 
-        let newBackpack = game.gameState.playerParty[game.invCursor.player].backpack
-        game.invCursor.y = (game.invCursor.y + moveY) mod newBackpack.height
-
+        game.invCursor.y = clamp(game.invCursor.y + moveY,
+                                 0, game.invCursorGetBackpack().height - 1)
     
     if game.keyPressed(Input.enter):
         trySwapItem(game.gameState.playerParty[game.invCursor.player], game.invCursor)        

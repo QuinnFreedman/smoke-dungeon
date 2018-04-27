@@ -82,4 +82,7 @@ proc initGameData*(renderer: RendererPtr): Game =
     playerCharacter.backpack[3, 1] = MAGE_SHOES
     result.gameState.playerParty[0] = playerCharacter
 
-    
+    var companion1 = newCharacter(
+        v(levelWidth div 2 + 1, levelHeight div 2), 2, Race.human, Sex.male)
+    playerCharacter.backpack[1, 0] = KNIGHT_HELMET
+    result.gameState.playerParty[1] = companion1

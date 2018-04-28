@@ -44,7 +44,7 @@ proc renderRect(drect: Rect, renderer: RendererPtr, transform: Vec2) =
 
 proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
                 renderer: RendererPtr, transform: Vec2) =
-    
+
     renderer.setDrawBlendMode(BlendMode_Blend)
     for pos in window.iterRect:
         let r = newSdlSquare(pos.x * TILE_SIZE, pos.y * TILE_SIZE, TILE_SIZE)
@@ -57,7 +57,7 @@ proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
                 else: 0.0
         renderer.setDrawColor(0, 0, 0, uint8(alpha * 150))
         renderRect(r, renderer, transform)
-    
+
 
 proc getRenderWindow(playerPos: Vec2): Rect =
     let radiusX = SCREEN_WIDTH_TILES div 2 + 1
@@ -69,7 +69,7 @@ proc getRenderWindow(playerPos: Vec2): Rect =
 proc renderGameFrame*(game: Game) =
     let gamestate: GameState = game.gameState
     let level = gamestate.level
-    let pc: Character = gamestate.playerParty[0]
+    let pc: Character = gamestate.playerParty[0][]
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
                                .scale(TILE_SIZE / 2)
     var transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter)
@@ -78,8 +78,8 @@ proc renderGameFrame*(game: Game) =
 
     renderMap(level.textures, window, game.renderer, transform)
     for character in gamestate.playerParty:
-        if not character.isNone:
-            renderCharacter(character, game.renderer, transform)
+        if not character.isNil:
+            renderCharacter(character[], game.renderer, transform)
 
     #TODO don't alloc these every frame
     var shadowMask1 = newMatrixWithOffset[bool](window.w, window.h,
@@ -90,4 +90,3 @@ proc renderGameFrame*(game: Game) =
     shadowCast(pc.nextTile, shadowMask2, level.walls)
     renderMask(shadowMask1, shadowMask2, pc.animationTimer, window,
                game.renderer, transform)
-    

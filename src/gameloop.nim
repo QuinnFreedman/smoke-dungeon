@@ -13,20 +13,24 @@ proc loopMainGame(self: var Game, dt: float) =
 
     if self.keyDown(Input.up):
         self.gameState.playerParty[0].move(Direction.up,
-                                            self.gamestate.level.walls)
+                                           self.gamestate.level.walls)
     if self.keyDown(Input.down):
         self.gameState.playerParty[0].move(Direction.down,
-                                            self.gamestate.level.walls)
+                                           self.gamestate.level.walls)
     if self.keyDown(Input.left):
         self.gameState.playerParty[0].move(Direction.left,
-                                            self.gamestate.level.walls)
+                                           self.gamestate.level.walls)
     if self.keyDown(Input.right):
         self.gameState.playerParty[0].move(Direction.right,
-                                            self.gamestate.level.walls)
-        
+                                           self.gamestate.level.walls)
+
     for i in 0..<self.gameState.playerParty.len:
-        if not self.gameState.playerParty[i].isNone:
-            self.gameState.playerParty[i].update(dt)
+        if not self.gameState.playerParty[i].isNil:
+            (self.gameState.playerParty[i][]).doLogic(self.gameState.level)
+
+    for i in 0..<self.gameState.playerParty.len:
+        if not self.gameState.playerParty[i].isNil:
+            self.gameState.playerParty[i][].update(dt)
 
 
 proc loop*(self: var Game, dt: float) =
@@ -35,7 +39,7 @@ proc loop*(self: var Game, dt: float) =
         loopMainGame(self, dt)
     of Screen.inventory:
         loopInventory(self)
-    
+
     self.resetInputs()
 
 

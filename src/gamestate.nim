@@ -13,7 +13,8 @@ import
     dungeon_generation,
     clothing,
     utils,
-    simple_types
+    simple_types,
+    level
 
 type
     Input* {.pure.} = enum none, left, right, up, down, tab, enter
@@ -37,20 +38,20 @@ type
 
     GameState* = object
         level*: Level
-        playerParty*: array[4, Character]
+        playerParty*: seq[ref Character]
 
 
 proc handleInput*(self: var Game, input: Input, keyDown: bool) {.inline.} =
     if keyDown and not self.inputs[input]:
         self.inputsSinceLastFrame[input] = true
     self.inputs[input] = keyDown
-    
 
-proc keyDown*(self: Game, key: Input): bool {.inline.} = 
+
+proc keyDown*(self: Game, key: Input): bool {.inline.} =
     self.inputs[key]
 
 
-proc keyPressed*(self: Game, key: Input): bool {.inline.} = 
+proc keyPressed*(self: Game, key: Input): bool {.inline.} =
     self.inputsSinceLastFrame[key]
 
 
@@ -71,6 +72,8 @@ proc initGameData*(renderer: RendererPtr): Game =
     let levelHeight = 100
     result.gameState.level = generateLevel(levelWidth, levelHeight, rng)
 
+    result.gameState.playerParty = newSeq[ref Character]()
+
     var playerCharacter = newCharacter(
         v(levelWidth div 2, levelHeight div 2), 2, Race.human, Sex.male)
 
@@ -80,9 +83,10 @@ proc initGameData*(renderer: RendererPtr): Game =
     playerCharacter.backpack[0, 0] = KNIGHT_HELMET
     playerCharacter.backpack[1, 0] = MAGE_CLOAK
     playerCharacter.backpack[3, 1] = MAGE_SHOES
-    result.gameState.playerParty[0] = playerCharacter
+    result.gameState.playerParty.add(playerCharacter)
 
     var companion1 = newCharacter(
         v(levelWidth div 2 + 1, levelHeight div 2), 2, Race.human, Sex.male)
     companion1.backpack[1, 0] = KNIGHT_HELMET
-    result.gameState.playerParty[1] = companion1
+    companion1.following = playerCharacter
+    result.gameState.playerParty.add(companion1)

@@ -5,14 +5,11 @@ import
     random
 
 import
-    matrix,
     vector,
+    matrix,
     textures,
-    direction
-
-type Level* = object
-    walls*: Matrix[bool]
-    textures*: Matrix[sdl2.Rect]
+    direction,
+    level
 
 proc generateLevel*(width, height: int, rng: var Rand): Level =
     result.textures = newMatrix[sdl2.Rect](width, height)
@@ -40,15 +37,12 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
     for y in 0..<result.textures.height:
         var line = ""
         for x in 0..<result.textures.width:
-            let c: string = 
+            let c: string =
                 if result.textures[x, y]  == GRASS_LONG3:
-                    string(" .")
+                    " ."
                 elif result.textures[x, y]  == STONE1:
-                    string(" #")
+                    " #"
                 else:
-                    string("  ")
+                    "  "
             line = line & c
         echo line
-
-
-# seed 1524098290: Long, linear

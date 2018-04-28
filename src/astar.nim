@@ -20,16 +20,17 @@ proc aStarSearch*(collision: Matrix[bool], start, goal: Vec2): seq[Vec2] =
     var costSoFar = initTable[Vec2, int]()
     cameFrom[start] = v(-1, -1)
     costSoFar[start] = 0
-    
+
     while frontier.size != 0:
         let (current, _) = frontier.pop()
-        
+
         if current == goal:
+            result = newSeq[Vec2]()
             var parent = current
             while parent != v(-1, -1):
                 result.add(parent)
                 parent = cameFrom[parent]
-        
+
         var neighbors: array[4, Vec2]
         var numNeighbors = 0
         for dir in Direction.items:
@@ -46,4 +47,3 @@ proc aStarSearch*(collision: Matrix[bool], start, goal: Vec2): seq[Vec2] =
                 let priority = newCost + heuristic(goal, next)
                 frontier.push((next, priority))
                 cameFrom[next] = current
-    

@@ -10,7 +10,9 @@ import
     textures,
     clothing,
     matrix,
-    simple_types
+    simple_types,
+    astar,
+    level
 
 
 type Character* = object
@@ -24,11 +26,7 @@ type Character* = object
     clothes*: array[ClothingSlot, Clothing]
     backpack*: Matrix[Clothing] #TODO make Item type
     spritesheet*: TextureAlias
-
-
-#TODO remove this when switch characters ptrs -> use isNil
-proc isNone*(character: Character): bool =
-    character.spritesheet == TextureAlias.none
+    following*: ref Character
 
 
 proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
@@ -41,7 +39,9 @@ proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
             TextureAlias.humanFemaleBase
 
 
-proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex): Character =
+proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):
+        ref Character =
+    new result
     result.currentTile = pos
     result.nextTile = pos
     result.actualPos = vecFloat(pos)
@@ -51,21 +51,43 @@ proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex): Character =
     result.sex = sex
     result.backpack = newMatrix[Clothing](4, 2)
     result.spritesheet = getBaseSpriteSheet(race, sex)
-    
 
-proc move*(self: var Character, dir: Direction, collision: Matrix[bool]) =
+
+proc isMoving(self: Character): bool {.inline.} =
+    self.currentTile != self.nextTile
+
+
+proc move*(self: ref Character, dir: Direction, collision: Matrix[bool]) =
     if self.currentTile != self.nextTile:
         return
 
     self.facing = dir
-        
+
     let dest: Vec2 = self.currentTile + directionVector(dir)
-    
+
     if collision.contains(dest):
         if not collision[dest]:
             self.nextTile = dest
 
+# TODO move to util or vector/direction
+proc directionTo(f, t: Vec2): Direction =
+    let delta = t - f
+    if abs(delta.x) > abs(delta.y):
+        if delta.x < 0: Direction.left
+        else: Direction.right
+    else:
+        if delta.y < 0: Direction.up
+        else: Direction.down
 
+
+proc doLogic*(self: var Character, level: Level) =
+    if not self.isMoving:
+        if not self.following.isNil:
+            let path = aStarSearch(level.walls, self.currentTile,
+                                   self.following.nextTile)
+            if path.len > 4:
+                self.nextTile = path[path.len - 2]
+                self.facing = self.currentTile.directionTo(self.nextTile)
 
 proc update*(self: var Character, dt: float) =
     let dif = vecFloat(self.nextTile) - self.actualPos
@@ -76,7 +98,7 @@ proc update*(self: var Character, dt: float) =
         self.actualPos.x = float(self.nextTile.x)
     else:
         self.actualPos.x += float(sgn(dif.x)) * moveAmount
-    
+
     if abs(dif.y) < moveAmount:
         self.actualPos.y = float(self.nextTile.y)
     else:
@@ -84,10 +106,6 @@ proc update*(self: var Character, dt: float) =
 
     if abs(dif.x) < moveAmount and abs(dif.y) < moveAmount:
         self.currentTile = self.nextTile
-    
-
-proc isMoving(self: Character): bool {.inline.} =
-    self.currentTile != self.nextTile
 
 
 proc animationTimer*(self: Character): float {.inline.} =
@@ -105,6 +123,7 @@ proc animationTimer*(self: Character): float {.inline.} =
 proc getStaticSrcRect*(self: Character): sdl2.Rect =
     newSdlSquare(0, 0, TILE_SIZE)
 
+
 proc getSrcRect*(self: Character): sdl2.Rect =
     let row =
         case self.facing
@@ -120,7 +139,7 @@ proc getSrcRect*(self: Character): sdl2.Rect =
             int(self.animationTimer * 7.0) mod 7
 
     newSdlSquare(frame * TILE_SIZE, row * TILE_SIZE, TILE_SIZE)
- 
+
 
 proc getDestRect*(self: Character): sdl2.Rect =
     newSdlSquare(int(round(self.actualPos.x * TILE_SIZE)),
@@ -132,10 +151,9 @@ proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Clothing) =
     result[0] = item.name != nil
     result[1] = item
 
-#TODO does this alloc?
+
 iterator iterWornItems*(self: Character): Clothing =
     for slot in ClothingSlot.items:
         let (exists, item) = self.getWornItem(slot)
         if exists:
             yield item
-            

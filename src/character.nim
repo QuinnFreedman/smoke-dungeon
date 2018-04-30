@@ -24,7 +24,7 @@ type Character* = object
     race*: Race
     sex*: Sex
     clothes*: array[ClothingSlot, Item]
-    backpack*: Matrix[Item] #TODO make Item type
+    backpack*: Matrix[Item]
     spritesheet*: TextureAlias
     following*: ref Character
 

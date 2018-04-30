@@ -34,13 +34,15 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
             next = particle + directionVector(randomDirection(rng))
         particle = next
 
-    for y in 0..<result.textures.height:
+
+proc debugDrawDungeon(textures: Matrix[Rect]) =
+    for y in 0..<textures.height:
         var line = ""
-        for x in 0..<result.textures.width:
+        for x in 0..<textures.width:
             let c: string =
-                if result.textures[x, y]  == GRASS_LONG3:
+                if textures[x, y]  == GRASS_LONG3:
                     " ."
-                elif result.textures[x, y]  == STONE1:
+                elif textures[x, y]  == STONE1:
                     " #"
                 else:
                     "  "

@@ -13,6 +13,7 @@ import
     dungeon_generation,
     item,
     clothing_definitions,
+    weapon_definitions,
     utils,
     simple_types,
     level
@@ -27,6 +28,9 @@ type
         curX*, curY*, curI*: int
         cursorInSidePane*, cursorInTopRow*: bool
         activeCharacter*: int
+        inMenu*: bool
+        menuCursor*: int
+        menuSubject*: Item
 
     Game* = ref object
         shouldQuit*: bool
@@ -84,6 +88,7 @@ proc initGameData*(renderer: RendererPtr): Game =
     playerCharacter.backpack[0, 0] = KNIGHT_HELMET
     playerCharacter.backpack[1, 0] = MAGE_CLOAK
     playerCharacter.backpack[3, 1] = MAGE_SHOES
+    playerCharacter.backpack[2, 1] = IRON_SHORTSWORD
     result.gameState.playerParty.add(playerCharacter)
 
     var companion1 = newCharacter(

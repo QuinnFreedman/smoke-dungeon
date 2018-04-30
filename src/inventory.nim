@@ -11,9 +11,6 @@ import
     item,
     gamestate
 
-proc invCursorGetBackpack*(game: Game): Matrix[Item] {.inline.} =
-    game.gameState.playerParty[game.inventory.curBackpack].backpack
-
 
 const ITEM_ICON_SIZE = TILE_SIZE div 4
 
@@ -153,6 +150,56 @@ proc trySwapItem(playerParty: seq[ref Character], inv: Inventory) =
             else:
                 discard #TODO allow equipping weapons
 
+proc getCurrentBackpack(inv: Inventory, playerParty: seq[ref Character]): Matrix[Item] =
+    playerParty[inv.curBackpack].backpack
+
+proc updateInvCursor(inv: var Inventory,
+                     playerParty: seq[ref Character],
+                     moveX, moveY: int, enter: bool) =
+    if inv.cursorInSidePane:
+        if moveX > 0: inv.cursorInSidePane = false
+        inv.curI = (inv.curI + moveY) mod clothingPositions.len
+    elif inv.cursorInTopRow:
+        if moveY > 0:
+            inv.curX = 0
+            inv.cursorInTopRow = false
+        else:
+            let nextBackpack = inv.curBackpack + moveX
+            if nextBackpack >= 0 and
+                    nextBackpack < playerParty.len and
+                    not playerParty[nextBackpack].isNil:
+                inv.curBackpack = nextBackpack
+    else:
+        let newX = inv.curX + moveX
+        if inv.curBackpack == 0 and newX < 0:
+            inv.cursorInSidePane = true
+        elif newX < 0:
+            inv.curBackpack -= 1
+            inv.curX = getCurrentBackpack(inv, playerParty).width - 1
+        elif newX > getCurrentBackpack(inv, playerParty).width - 1:
+            if not playerParty[inv.curBackpack + 1].isNil:
+                inv.curBackpack += 1
+                inv.curX = 0
+        else:
+            inv.curX = newX
+
+        let newY = inv.curY + moveY
+
+        if newY < 0:
+            inv.cursorInTopRow = true
+        else:
+            inv.curY = min(newY,
+                           getCurrentBackpack(inv, playerParty).height - 1)
+
+    if enter:
+        if inv.cursorInTopRow:
+            inv.activeCharacter = inv.curBackpack
+        else:
+            trySwapItem(playerParty, inv)
+
+proc updateMenu(inv: Inventory, moveX, moveY: int, enter: bool) =
+    discard
+
 
 proc loopInventory*(game: Game) =
     if game.keyPressed(Input.tab):
@@ -168,44 +215,12 @@ proc loopInventory*(game: Game) =
         elif game.keyPressed(Input.down): 1
         else: 0
 
+    let enter = game.keyPressed(Input.enter)
+
+    if moveX == 0 and moveY == 0 and not enter: return
+
     template inv: untyped = game.inventory
-
-    if inv.cursorInSidePane:
-        if moveX > 0: inv.cursorInSidePane = false
-        inv.curI = (inv.curI + moveY) mod clothingPositions.len
-    elif inv.cursorInTopRow:
-        if moveY > 0:
-            inv.curX = 0
-            inv.cursorInTopRow = false
-        else:
-            let nextBackpack = inv.curBackpack + moveX
-            if nextBackpack >= 0 and
-                    nextBackpack < game.gamestate.playerParty.len and
-                    not game.gameState.playerParty[nextBackpack].isNil:
-                inv.curBackpack = nextBackpack
+    if inv.inMenu:
+        updateMenu(inv, moveX, moveY, enter)
     else:
-        let newX = inv.curX + moveX
-        if inv.curBackpack == 0 and newX < 0:
-            inv.cursorInSidePane = true
-        elif newX < 0:
-            inv.curBackpack -= 1
-            inv.curX = game.invCursorGetBackpack().width - 1
-        elif newX > game.invCursorGetBackpack().width - 1:
-            if not game.gameState.playerParty[inv.curBackpack + 1].isNil:
-                inv.curBackpack += 1
-                inv.curX = 0
-        else:
-            inv.curX = newX
-
-        let newY = inv.curY + moveY
-
-        if newY < 0:
-            inv.cursorInTopRow = true
-        else:
-            inv.curY = min(newY, game.invCursorGetBackpack().height - 1)
-
-    if game.keyPressed(Input.enter):
-        if inv.cursorInTopRow:
-            inv.activeCharacter = inv.curBackpack
-        else:
-            trySwapItem(game.gameState.playerParty, inv)
+        updateInvCursor(inv, game.gamestate.playerParty, moveX, moveY, enter)

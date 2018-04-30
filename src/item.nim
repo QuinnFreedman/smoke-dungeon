@@ -14,7 +14,15 @@ type
         of ItemType.weapon: weaponInfo*: WeaponInfo
 
     WeaponInfo* = object
-        dummyDamage: int
+        baseDamage*: int
+        critChance*: float
+        critBonus*: float
+        weaponRange*: AttackRange
+        handedness*: Handed
+
+    AttackRange* {.pure.} = enum melee, short, long, ally
+
+    Handed* {.pure.} = enum single, double
 
     ClothingInfo* = object
         textureMale*: TextureAlias

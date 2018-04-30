@@ -5,7 +5,8 @@ import
     inventory,
     character,
     direction,
-    render
+    render,
+    render_utils
 
 proc loopMainGame(self: var Game, dt: float) =
     if self.keyPressed(Input.tab):
@@ -43,10 +44,9 @@ proc loop*(self: var Game, dt: float) =
     self.resetInputs()
 
 
-proc render*(self: Game) =
+proc render*(self: Game, debugFps: float) =
     ## main render loop for the game
 
-    # Draw over all drawings of the last frame with the default color
     self.renderer.clear()
 
     case self.screen
@@ -55,4 +55,6 @@ proc render*(self: Game) =
     of Screen.inventory:
         renderInventory(self)
 
+    renderText(self.renderer, self.font, "fps: " & $debugFps,
+               100.cint, 100.cint, color(255,255,255,255), self.textCache)
     self.renderer.present()

@@ -1,8 +1,10 @@
 import
-    sdl2, 
+    sdl2,
     sdl2.image,
+    sdl2.ttf,
     os,
-    times
+    times,
+    streams
 
 import
     matrix,
@@ -12,13 +14,8 @@ import
     textures,
     constants,
     inventory,
-    gameloop
-
-type SDLException = object of Exception
-
-template sdlFailIf(cond: typed, reason: string) =
-    if cond: raise SDLException.newException(
-        reason & ", SDL error: " & $getError())
+    gameloop,
+    render_utils
 
 
 proc toInput(key: Scancode): Input =
@@ -52,20 +49,37 @@ proc pollInput(game: var Game) =
         else:
             discard
 
+template staticReadRW(filename: string): ptr RWops =
+    const file = staticRead(filename)
+    rwFromConstMem(file.cstring, file.len)
+
 const
     HINT_RENDER_SCALE_QUALITY = cstring("SDL_RENDER_SCALE_QUALITY")
     NEAREST = cstring("0")
+
+
+const TARGET_FPS = 60
+const TARGET_DT = uint32(1 / TARGET_FPS * 1000)
+
+var frameTime: uint32 = 0
+proc limitFrameRate() =
+    let now = getTicks()
+    if frameTime > now:
+        delay(frameTime - now)
+    frameTime += TARGET_DT
+
 
 proc main =
     echo "Starting game from directory: " & getCurrentDir()
 
     sdlFailIf(not sdl2.init(INIT_VIDEO or INIT_TIMER or INIT_EVENTS)):
         "SDL2 initialization failed"
-
-    # defer blocks get called at the end of the procedure, even if an
-    # exception has been thrown
     defer: sdl2.quit()
-    
+
+    sdlFailIf(ttfInit() == SdlError): "SDL2 TTF initialization failed"
+    defer: ttfQuit()
+
+
     const imgFlags: cint = IMG_INIT_PNG
     sdlFailIf(image.init(imgFlags) != imgFlags):
         "SDL2 Image initialization failed"
@@ -94,7 +108,12 @@ proc main =
 
     initTextures(renderer)
 
-    var game = initGameData(renderer)
+    let font = openFontRW(
+        staticReadRW("../assets/Helvetica.ttf"), freesrc = 1, 28)
+
+    sdlFailIf font.isNil: "Failed to load font"
+
+    var game = initGameData(renderer, font)
 
     var lastTime = epochTime()
 
@@ -102,8 +121,11 @@ proc main =
         let now = epochTime()
         let dt = now - lastTime
         lastTime = now
+        let fps = 1 / dt
         game.pollInput()
         game.loop(dt)
-        game.render()
+        game.render(fps)
+
+        limitFrameRate()
 
 main()

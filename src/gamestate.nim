@@ -1,5 +1,6 @@
 import
     sdl2,
+    sdl2.ttf,
     random,
     times,
     strutils
@@ -16,7 +17,8 @@ import
     weapon_definitions,
     utils,
     simple_types,
-    level
+    level,
+    render_utils
 
 type
     Input* {.pure.} = enum none, left, right, up, down, tab, enter
@@ -37,6 +39,8 @@ type
         inputs*: array[Input, bool]
         inputsSinceLastFrame: array[Input, bool]
         renderer*: RendererPtr
+        font*: FontPtr
+        textCache*: TextCache
         screen*: Screen
         inventory*: Inventory
         gameState*: GameState
@@ -64,9 +68,11 @@ proc resetInputs*(self: Game) =
     self.inputsSinceLastFrame.zero()
 
 
-proc initGameData*(renderer: RendererPtr): Game =
+proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     new result
     result.renderer = renderer
+    result.font = font
+    result.textCache = newTextCache()
 
     let seed = int64(epochTime())
     # let seed = int64(1524099821)

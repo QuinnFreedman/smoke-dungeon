@@ -1,10 +1,18 @@
-import sdl2
+import
+    sdl2,
+    sdl2.ttf
 
 import
     vector,
     constants,
     textures,
     utils
+
+type SDLException = object of Exception
+
+template sdlFailIf*(cond: typed, reason: string) =
+    if cond: raise SDLException.newException(
+        reason & ", SDL error: " & $getError())
 
 proc drawTile*(textureAlias: TextureAlias, srcRect: Rect, pos: Vec2,
                renderer: RendererPtr, transform: Vec2) {.inline.} =
@@ -36,3 +44,49 @@ proc drawImage*(texture: TextureAlias, pos: Vec2,
         cint(size.y)
     )
     let _ = sdl2.copy(renderer, texture.getTexture, nil, addr(drect))
+
+
+type
+    CacheLine = object
+        texture: TexturePtr
+        w, h: cint
+
+    TextCache* = ref object
+        text: string
+        cache: CacheLine
+
+
+proc newTextCache*: TextCache =
+  new result
+
+
+proc renderText(renderer: RendererPtr, font: FontPtr,
+                text: string, color: Color): CacheLine =
+    let surface = font.renderUtf8Solid(text.cstring, color)
+    sdlFailIf surface.isNil: "Could not render text surface"
+
+    discard surface.setSurfaceAlphaMod(color.a)
+
+    result.w = surface.w
+    result.h = surface.h
+    result.texture = renderer.createTextureFromSurface(surface)
+    sdlFailIf result.texture.isNil:
+        "Could not create texture from rendered text"
+
+    surface.freeSurface()
+
+
+proc renderText*(renderer: RendererPtr, font: FontPtr,
+                 text: string, x, y: cint, color: Color,
+                 tc: TextCache) =
+
+    if text != tc.text:
+        tc.cache.texture.destroy()
+        tc.cache = renderer.renderText(
+            font, text, color)
+        tc.text = text
+
+    var source = rect(0, 0, tc.cache.w, tc.cache.h)
+    var dest = rect(x, y, tc.cache.w, tc.cache.h)
+    renderer.copyEx(tc.cache.texture, source, dest,
+                    angle = 0.0, center = nil)

@@ -1,5 +1,5 @@
 import
-    sdl2, 
+    sdl2,
     sdl2.image,
     tables
 
@@ -20,7 +20,7 @@ proc cachedLoadTexture(renderer: RendererPtr, path: string): TexturePtr =
         if result.isNil:
             raise FileNotFoundError.newException("File not found: " & path)
         TEXTURE_LOADER_CACHE[path] = result
-    
+
 
 const IMAGES = "assets/images/"
 const SPRITESHEETS = IMAGES & "spritesheets/"
@@ -55,10 +55,14 @@ type TextureAlias* {.pure.} = enum
     knightChestFemale = BASE_ARMOR_KNIGHT & "knight_chest_female.png"
     knightFeetMale = BASE_ARMOR_KNIGHT & "knight_feet_male.png"
     knightFeetFemale = BASE_ARMOR_KNIGHT & "knight_feet_female.png"
-    
+
     knightChestIcon = BASE_ARMOR_KNIGHT & "knight_chest_icon.png"
     knightHeadIcon = BASE_ARMOR_KNIGHT & "knight_head_icon.png"
     knightFeetIcon = BASE_ARMOR_KNIGHT & "knight_feet_icon.png"
+
+    # Items
+    basicSwordIcon = IMAGES & "sword_icon.png"
+
 
 
 proc tile(x, y: int): sdl2.Rect =

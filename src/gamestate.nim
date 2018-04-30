@@ -11,7 +11,8 @@ import
     vector,
     textures,
     dungeon_generation,
-    clothing,
+    item,
+    clothing_definitions,
     utils,
     simple_types,
     level

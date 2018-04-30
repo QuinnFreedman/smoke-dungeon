@@ -11,7 +11,7 @@ proc drawTile*(textureAlias: TextureAlias, srcRect: Rect, pos: Vec2,
     let texture = textureAlias.getTexture()
     var drect = newSdlSquare(
         pos.x + transform.x, pos.y + transform.y, TILE_SIZE)
-    
+
     var srect = srcRect
     let _ = sdl2.copyEx(renderer, texture, srect, drect, angle=0, center=nil, flip=SDL_FLIP_NONE)
 
@@ -37,4 +37,3 @@ proc drawImage*(texture: TextureAlias, pos: Vec2,
         cint(size.y)
     )
     let _ = sdl2.copy(renderer, texture.getTexture, nil, addr(drect))
-

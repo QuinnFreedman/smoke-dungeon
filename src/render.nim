@@ -11,7 +11,7 @@ import gamestate,
        utils,
        render_utils,
        shadowcasting,
-       clothing
+       item
 
 proc renderMap(map: Matrix[sdl2.Rect], window: Rect,
                renderer: RendererPtr, transfrom: Vec2) =
@@ -32,6 +32,7 @@ proc renderCharacter(character: Character,
     for item in character.iterWornItems:
         let sprite = item.getTexture(character.sex)
         drawImage(sprite, srect, drect, renderer, transfrom)
+
 
 proc renderRect(drect: Rect, renderer: RendererPtr, transform: Vec2) =
         var newRect = rect(

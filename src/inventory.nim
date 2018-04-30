@@ -8,10 +8,10 @@ import
     character,
     render_utils,
     textures,
-    clothing,
+    item,
     gamestate
 
-proc invCursorGetBackpack*(game: Game): Matrix[Clothing] {.inline.} =
+proc invCursorGetBackpack*(game: Game): Matrix[Item] {.inline.} =
     game.gameState.playerParty[game.inventory.curBackpack].backpack
 
 
@@ -44,7 +44,7 @@ proc getItemSlotPosition(player, x, y: int): Rect =
     let newY = 62 + y * 9
     newSdlSquare(newX, newY, ITEM_ICON_SIZE)
 
-proc renderItemPreview(item: Clothing, pos: Vec2,
+proc renderItemPreview(item: Item, pos: Vec2,
                        renderer: RendererPtr, transform: Vec2) =
     var srcRect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
     var destRect = newSdlSquare(pos.x, pos.y, ITEM_ICON_SIZE)
@@ -98,8 +98,10 @@ proc renderInventory*(game: Game) =
         renderCharacterFullPreview(activeCharacter[], mainPreviewRect, renderer, transform)
 
         for item in activeCharacter.clothes:
-            renderItemPreview(item, clothingPositions[ord(item.slot)],
-                            renderer, transform)
+            assert item.kind == ItemType.clothing
+            renderItemPreview(item,
+                    clothingPositions[ord(item.clothingInfo.slot)],
+                    renderer, transform)
 
     for i, character in game.gameState.playerParty:
         if character.isNil: continue
@@ -121,11 +123,14 @@ proc trySwapItem(playerParty: seq[ref Character], inv: Inventory) =
         template bag: untyped = playerParty[inv.curBackpack].backpack
         let item = bag[inv.curX, inv.curY]
         if not item.isNone:
-            #TODO check if item is clothing, etc
-            let itemSlot = item.slot
-            let current = activeChar.clothes[itemSlot]
-            activeChar.clothes[itemSlot] = item
-            bag[inv.curX, inv.curY] = current
+            case item.kind
+            of ItemType.clothing:
+                let itemSlot = item.clothingInfo.slot
+                let current = activeChar.clothes[itemSlot]
+                activeChar.clothes[itemSlot] = item
+                bag[inv.curX, inv.curY] = current
+            of ItemType.weapon:
+                discard #TODO allow equipping weapons
     else:
         var firstOpenSlot: Vec2 = v(-1, -1)
         for slot in activeChar.backpack.indices:
@@ -134,17 +139,19 @@ proc trySwapItem(playerParty: seq[ref Character], inv: Inventory) =
                 break
 
         if firstOpenSlot != v(-1, -1):
-            #TODO there has to be a cleaner way to do this
-            #how to get enum item by index?
-            let itemSlot =
-                case inv.curI
-                of 0: ClothingSlot.head
-                of 1: ClothingSlot.body
-                else: ClothingSlot.feet
-            let current = activeChar.clothes[itemSlot]
-            let item = activeChar.backpack[firstOpenSlot]
-            activeChar.backpack[firstOpenSlot] = current
-            activeChar.clothes[itemSlot] = item
+            if inv.curI < 3:
+                #TODO there has to be a cleaner way to do this
+                #how to get enum item by index?
+                let itemSlot =
+                    case inv.curI
+                    of 0: ClothingSlot.head
+                    of 1: ClothingSlot.body
+                    else: ClothingSlot.feet
+                let current = activeChar.clothes[itemSlot]
+                activeChar.backpack[firstOpenSlot] = current
+                activeChar.clothes[itemSlot] = NONE_ITEM
+            else:
+                discard #TODO allow equipping weapons
 
 
 proc loopInventory*(game: Game) =

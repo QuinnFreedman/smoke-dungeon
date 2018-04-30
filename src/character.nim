@@ -8,7 +8,7 @@ import
     constants,
     utils,
     textures,
-    clothing,
+    item,
     matrix,
     simple_types,
     astar,
@@ -23,8 +23,8 @@ type Character* = object
     speed*: float
     race*: Race
     sex*: Sex
-    clothes*: array[ClothingSlot, Clothing]
-    backpack*: Matrix[Clothing] #TODO make Item type
+    clothes*: array[ClothingSlot, Item]
+    backpack*: Matrix[Item] #TODO make Item type
     spritesheet*: TextureAlias
     following*: ref Character
 
@@ -49,7 +49,7 @@ proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):
     result.speed = speed
     result.race = race
     result.sex = sex
-    result.backpack = newMatrix[Clothing](4, 2)
+    result.backpack = newMatrix[Item](4, 2)
     result.spritesheet = getBaseSpriteSheet(race, sex)
 
 
@@ -146,13 +146,13 @@ proc getDestRect*(self: Character): sdl2.Rect =
                  int(round(self.actualPos.y * TILE_SIZE)),
                  TILE_SIZE)
 
-proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Clothing) =
+proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Item) =
     let item = self.clothes[slot]
     result[0] = item.name != nil
     result[1] = item
 
 
-iterator iterWornItems*(self: Character): Clothing =
+iterator iterWornItems*(self: Character): Item =
     for slot in ClothingSlot.items:
         let (exists, item) = self.getWornItem(slot)
         if exists:

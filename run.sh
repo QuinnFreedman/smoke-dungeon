@@ -1,1 +1,2 @@
-nimble build && mv smoke.exe bin/ && bin/smoke.exe
+nimble build --warning[ProveField]: on \
+&& mv smoke.exe bin/ && bin/smoke.exe

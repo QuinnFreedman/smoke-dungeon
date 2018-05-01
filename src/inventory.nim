@@ -55,10 +55,12 @@ const previewRects = [
     v(160, 11),
 ]
 
-const clothingPositions = [
+const equippedItemPreviewRects = [
     v(3, 8),
     v(4, 17),
-    v(4, 26)
+    v(4, 26),
+    v(4, 35),
+    v(3, 44)
 ]
 
 proc renderCursor(inv: Inventory,
@@ -73,11 +75,57 @@ proc renderCursor(inv: Inventory,
             if not inv.cursorInSidePane:
                 getItemSlotPosition(inv.curBackpack, inv.curX, inv.curY)
             else:
-                newSdlSquare(clothingPositions[inv.curI].x,
-                            clothingPositions[inv.curI].y,
+                newSdlSquare(equippedItemPreviewRects[inv.curI].x,
+                            equippedItemPreviewRects[inv.curI].y,
                             ITEM_ICON_SIZE)
         var srect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
         drawImage(TextureAlias.inventoryCursor, srect, drect, renderer, transform)
+
+type MenuAction {.pure.} = enum
+    equip = "Equip"
+    unequip = "Unequip"
+    equipRight = "Equip right"
+    equipLeft = "Equip left"
+    inspect = "Inspect"
+    quit = "Nevermind"
+
+const MENU_GENERIC_ITEM = @[
+        MenuAction.equip, MenuAction.inspect, MenuAction.quit
+]
+
+const MENU_EQUIPPED_ITEM = @[
+        MenuAction.unequip,
+        MenuAction.inspect, MenuAction.quit
+]
+
+const MENU_HANDED_WEAPON = @[
+        MenuAction.equipLeft, MenuAction.equipRight,
+        MenuAction.inspect, MenuAction.quit
+]
+
+
+proc getMenuItems(subject: Item, itemIsEquipped: bool): seq[MenuAction] =
+    let isHandedWeapon = subject.kind == ItemType.weapon and
+        subject.weaponInfo.handedness == Handed.single
+
+    if itemIsEquipped:
+        MENU_EQUIPPED_ITEM
+    elif isHandedWeapon:
+        MENU_HANDED_WEAPON
+    else:
+        MENU_GENERIC_ITEM
+
+
+proc renderMenu(inv: Inventory, tr: TextRenderer, transform: Vec2) =
+    let menuItems = getMenuItems(inv.menuSubject, inv.cursorInSidePane)
+
+    let upperLeft = v(10, 60) + transform
+
+    for i, option in menuItems:
+        let pos = upperLeft + v(0, 10 * i)
+        if i == inv.menuCursor:
+            tr.renderText("*", pos + v(-8, 0), color(0,0,0,255))
+        tr.renderText($option, pos, color(0,0,0,255))
 
 proc renderInventory*(game: Game) =
     let renderer = game.renderer
@@ -88,7 +136,10 @@ proc renderInventory*(game: Game) =
     var drect = srect
     drawImage(bgTexture, srect, drect, renderer, transform)
 
-    renderCursor(game.inventory, renderer, transform)
+    if game.inventory.inMenu:
+        renderMenu(game.inventory, game.getTextRenderer, transform)
+    else:
+        renderCursor(game.inventory, renderer, transform)
 
     let activeCharacter = game.gamestate.playerParty[game.inventory.activeCharacter]
     if not activeCharacter.isNil:
@@ -97,8 +148,16 @@ proc renderInventory*(game: Game) =
         for item in activeCharacter.clothes:
             assert item.kind == ItemType.clothing
             renderItemPreview(item,
-                    clothingPositions[ord(item.clothingInfo.slot)],
+                    equippedItemPreviewRects[ord(item.clothingInfo.slot)],
                     renderer, transform)
+
+        renderItemPreview(activeCharacter.rightHand,
+                equippedItemPreviewRects[3],
+                renderer, transform)
+
+        renderItemPreview(activeCharacter.leftHand,
+                equippedItemPreviewRects[4],
+                renderer, transform)
 
     for i, character in game.gameState.playerParty:
         if character.isNil: continue
@@ -114,41 +173,56 @@ proc renderInventory*(game: Game) =
                 drawImage(item.icon, srect, drect, renderer, transform)
 
 
-proc trySwapItem(playerParty: seq[ref Character], inv: Inventory) =
-    template activeChar: untyped = playerParty[inv.activeCharacter]
-    if not inv.cursorInSidePane:
-        template bag: untyped = playerParty[inv.curBackpack].backpack
-        let item = bag[inv.curX, inv.curY]
-        if not item.isNone:
-            case item.kind
-            of ItemType.clothing:
-                let itemSlot = item.clothingInfo.slot
-                let current = activeChar.clothes[itemSlot]
-                activeChar.clothes[itemSlot] = item
-                bag[inv.curX, inv.curY] = current
-            of ItemType.weapon:
-                discard #TODO allow equipping weapons
-    else:
-        var firstOpenSlot: Vec2 = v(-1, -1)
-        for slot in activeChar.backpack.indices:
-            if activeChar.backpack[slot].isNone:
-                firstOpenSlot = slot
-                break
+# proc getItemAtCursorAddr(inv: Inventory, playerParty: seq[ref Character]): ptr Item =
+    # template activeChar: untyped = playerParty[inv.activeCharacter]
+    #
+    # if inv.cursorInTopRow:
+    #      nil
+    # elif inv.cursorInSidePane:
+    #     case inv.curI
+    #     of 0: addr activeChar.clothes[ClothingSlot.head]
+    #     of 1: addr activeChar.clothes[ClothingSlot.body]
+    #     of 2: addr activeChar.clothes[ClothingSlot.feet]
+    #     of 3: addr activeChar.rightHand
+    #     of 4: addr activeChar.leftHand
+    #     else: raise IndexError.newException("item slot index out of bounds")
+    # else:
+    #     playerParty[inv.curBackpack].backpack.unsafeGetAddr(inv.curX, inv.curY)
 
-        if firstOpenSlot != v(-1, -1):
-            if inv.curI < 3:
-                #TODO there has to be a cleaner way to do this
-                #how to get enum item by index?
-                let itemSlot =
-                    case inv.curI
-                    of 0: ClothingSlot.head
-                    of 1: ClothingSlot.body
-                    else: ClothingSlot.feet
-                let current = activeChar.clothes[itemSlot]
-                activeChar.backpack[firstOpenSlot] = current
-                activeChar.clothes[itemSlot] = NONE_ITEM
-            else:
-                discard #TODO allow equipping weapons
+
+proc getItemAtCursor(inv: Inventory, playerParty: seq[ref Character]): Item =
+    template activeChar: untyped = playerParty[inv.activeCharacter]
+
+    if inv.cursorInTopRow:
+         NONE_ITEM
+    elif inv.cursorInSidePane:
+        case inv.curI
+        of 0: activeChar.clothes[ClothingSlot.head]
+        of 1: activeChar.clothes[ClothingSlot.body]
+        of 2: activeChar.clothes[ClothingSlot.feet]
+        of 3: activeChar.rightHand
+        of 4: activeChar.leftHand
+        else: raise IndexError.newException("item slot index out of bounds")
+    else:
+        playerParty[inv.curBackpack].backpack[inv.curX, inv.curY]
+
+
+proc setItemAtCursor(inv: Inventory, playerParty: seq[ref Character], item: Item) =
+    template activeChar: untyped = playerParty[inv.activeCharacter]
+
+    if inv.cursorInTopRow:
+         discard
+    elif inv.cursorInSidePane:
+        case inv.curI
+        of 0: activeChar.clothes[ClothingSlot.head] = item
+        of 1: activeChar.clothes[ClothingSlot.body] = item
+        of 2: activeChar.clothes[ClothingSlot.feet] = item
+        of 3: activeChar.rightHand = item
+        of 4: activeChar.leftHand = item
+        else: raise IndexError.newException("item slot index out of bounds")
+    else:
+        playerParty[inv.curBackpack].backpack[inv.curX, inv.curY] = item
+
 
 proc getCurrentBackpack(inv: Inventory, playerParty: seq[ref Character]): Matrix[Item] =
     playerParty[inv.curBackpack].backpack
@@ -158,7 +232,7 @@ proc updateInvCursor(inv: var Inventory,
                      moveX, moveY: int, enter: bool) =
     if inv.cursorInSidePane:
         if moveX > 0: inv.cursorInSidePane = false
-        inv.curI = (inv.curI + moveY) mod clothingPositions.len
+        inv.curI = (inv.curI + moveY) mod equippedItemPreviewRects.len
     elif inv.cursorInTopRow:
         if moveY > 0:
             inv.curX = 0
@@ -195,10 +269,66 @@ proc updateInvCursor(inv: var Inventory,
         if inv.cursorInTopRow:
             inv.activeCharacter = inv.curBackpack
         else:
-            trySwapItem(playerParty, inv)
+            inv.menuSubject = inv.getItemAtCursor(playerParty)
+            if not inv.menuSubject.isNone:
+                inv.inMenu = true
 
-proc updateMenu(inv: Inventory, moveX, moveY: int, enter: bool) =
-    discard
+
+proc updateMenu(inv: var Inventory, playerParty: seq[ref Character],
+                moveX, moveY: int, enter: bool) =
+    let menuItems = getMenuItems(inv.menuSubject, inv.cursorInSidePane)
+    inv.menuCursor = (inv.menuCursor + moveY) mod menuItems.len
+
+    if enter:
+        inv.inMenu = false
+
+        # the character that is SELECTED/previewed
+        template activeChar: untyped = playerParty[inv.activeCharacter]
+        # first two available slots in SELECTED PLAYER's backpack
+        var firstOpenSlots = [v(-1, -1), v(-1, -1)]
+        var numOpenSlots = 0
+        for slot in activeChar.backpack.indices:
+            if activeChar.backpack[slot].isNone:
+                firstOpenSlots[numOpenSlots] = slot
+                numOpenSlots += 1
+                if numOpenSlots == 2: break
+
+        # the bag where the CURSOR is
+        template activeBag: untyped = playerParty[inv.curBackpack].backpack
+        let item = inv.menuSubject
+        let cursor = v(inv.curX, inv.curY)
+        let menuAction = menuItems[inv.menuCursor]
+        case menuAction
+        of MenuAction.equip:
+            case item.kind:
+            of ItemType.weapon:
+                if numOpenSlots >= 2:
+                    activeChar.backpack[firstOpenSlots[0]] = activeChar.rightHand
+                    activeChar.backpack[firstOpenSlots[1]] = activeChar.leftHand
+                    activeChar.rightHand = item
+                    activeChar.leftHand = NONE_ITEM
+            of ItemType.clothing:
+                let clothingSlot = item.clothingInfo.slot
+                let currentlyEquipped = activeChar.clothes[clothingSlot]
+                activeChar.clothes[clothingSlot] = item
+                # activeBag[cursor] = currentlyEquipped
+                inv.setItemAtCursor(playerParty, currentlyEquipped)
+        of MenuAction.unequip:
+            if numOpenSlots >= 1:
+                activeChar.backpack[firstOpenSlots[0]] = item
+                inv.setItemAtCursor(playerParty, NONE_ITEM)
+        of MenuAction.equipRight:
+            let currentlyEquipped = activeChar.rightHand
+            activeChar.rightHand = item
+            inv.setItemAtCursor(playerParty, currentlyEquipped)
+        of MenuAction.equipLeft:
+            let currentlyEquipped = activeChar.leftHand
+            activeChar.leftHand = item
+            inv.setItemAtCursor(playerParty, currentlyEquipped)
+        of MenuAction.quit:
+            discard
+        of MenuAction.inspect:
+            discard #TODO allow inspect
 
 
 proc loopInventory*(game: Game) =
@@ -221,6 +351,6 @@ proc loopInventory*(game: Game) =
 
     template inv: untyped = game.inventory
     if inv.inMenu:
-        updateMenu(inv, moveX, moveY, enter)
+        updateMenu(inv, game.gamestate.playerParty, moveX, moveY, enter)
     else:
         updateInvCursor(inv, game.gamestate.playerParty, moveX, moveY, enter)

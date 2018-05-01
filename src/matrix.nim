@@ -78,3 +78,14 @@ iterator indices*[T](self: Matrix[T]): Vec2 =
         let x = i mod width - self.offset.x
         let y = i div width - self.offset.y
         yield (x, y)
+#
+# proc unsafeGetAddr*[T](self: Matrix[T], x, y: int): ptr T =
+#     let x2 = x - self.offset.x
+#     let y2 = y - self.offset.y
+#     if x2 < 0 or x2 >= self.width:
+#         raise IndexError.newException(
+#             "x index: $1 out of bounds for matrix: $2".format(x, self))
+#     if y2 < 0 or y2 >= self.height:
+#         raise IndexError.newException(
+#             "y index: $1 out of bounds for matrix: $2".format(y, self))
+#     return addr(self.data[y2 * self.width + x2])

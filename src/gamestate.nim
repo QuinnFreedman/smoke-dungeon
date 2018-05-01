@@ -49,6 +49,23 @@ type
         level*: Level
         playerParty*: seq[ref Character]
 
+    TextRenderer* = object
+        renderer*: RendererPtr
+        font*: FontPtr
+        textCache*: TextCache
+
+
+proc getTextRenderer*(self: Game): TextRenderer {.inline.} =
+    result.renderer = self.renderer
+    result.font = self.font
+    result.textCache = self.textCache
+
+
+proc renderText*(self: TextRenderer, text: string,
+                 pos: Vec2, color: Color) {.inline.} =
+    renderText(self.renderer, self.font, text,
+               pos.x.cint, pos.y.cint, color, self.textCache)
+
 
 proc handleInput*(self: var Game, input: Input, keyDown: bool) {.inline.} =
     if keyDown and not self.inputs[input]:

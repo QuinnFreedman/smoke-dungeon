@@ -109,7 +109,7 @@ proc main =
     initTextures(renderer)
 
     let font = openFontRW(
-        staticReadRW("../assets/Helvetica.ttf"), freesrc = 1, 8)
+        staticReadRW("../assets/font/pixelated.ttf"), freesrc = 1, 8)
 
     sdlFailIf font.isNil: "Failed to load font"
 

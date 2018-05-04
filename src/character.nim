@@ -39,6 +39,8 @@ proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
             TextureAlias.humanMaleBase
         of female:
             TextureAlias.humanFemaleBase
+    of spider:
+        TextureAlias.spider
 
 
 proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):

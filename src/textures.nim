@@ -33,6 +33,9 @@ type TextureAlias* {.pure.} = enum
     inventoryBackground = IMAGES & "inventory.png"
     inventoryCursor = IMAGES & "inventory_cursor.png"
     inventoryCursorBig = IMAGES & "inventory_cursor_big.png"
+    # Spider
+    spider = SPRITESHEETS & "spider.png"
+    # Human
     humanFemaleBase = SPRITESHEETS & "base_human_female.png"
     humanMaleBase = SPRITESHEETS & "base_human_male.png"
 

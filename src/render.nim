@@ -82,6 +82,10 @@ proc renderGameFrame*(game: Game) =
         if not character.isNil:
             renderCharacter(character[], game.renderer, transform)
 
+    for character in gamestate.monsters:
+        if not character.isNil:
+            renderCharacter(character[], game.renderer, transform)
+
     #TODO don't alloc these every frame
     var shadowMask1 = newMatrixWithOffset[bool](window.w, window.h,
                                                 v(window.x, window.y))

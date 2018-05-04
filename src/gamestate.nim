@@ -48,6 +48,7 @@ type
     GameState* = object
         level*: Level
         playerParty*: seq[ref Character]
+        monsters*: seq[ref Character]
 
     TextRenderer* = object
         renderer*: RendererPtr
@@ -119,3 +120,9 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     companion1.backpack[1, 0] = KNIGHT_HELMET
     companion1.following = playerCharacter
     result.gameState.playerParty.add(companion1)
+
+    var spider = newCharacter(
+        v(levelWidth div 2, levelHeight div 2 - 1), 2, Race.spider, Sex.male)
+
+    result.gameState.monsters = newSeq[ref Character]()
+    result.gameState.monsters.add(spider)

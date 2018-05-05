@@ -279,6 +279,7 @@ proc updateInvCursor(inv: var Inventory,
         else:
             inv.menuSubject = inv.getItemAtCursor(playerParty)
             if not inv.menuSubject.isNone:
+                inv.menuCursor = 0
                 inv.inMenu = true
 
 

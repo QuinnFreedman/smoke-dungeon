@@ -126,6 +126,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     var spider = newCharacter(
         v(levelWidth div 2, levelHeight div 2 - 1), 2, Race.spider, Sex.male)
     spider.ai = AI.random
+    spider.kind = CharacterType.animal
 
     result.gameState.entities = concat(result.gameState.playerParty)
     result.gameState.entities.add(spider)

@@ -20,6 +20,8 @@ import
 type
     AI* {.pure.} = enum none, follow, random
 
+    CharacterType* {.pure.} = enum humanoid, animal
+
     Character* = ref object
         currentTile*: Vec2
         nextTile*: Vec2
@@ -28,11 +30,15 @@ type
         speed*: float
         race*: Race
         sex*: Sex
-        clothes*: array[ClothingSlot, Item]
-        leftHand*: Item
-        rightHand*: Item
         backpack*: Matrix[Item]
         spritesheet*: TextureAlias
+
+        case kind*: CharacterType
+        of humanoid:
+            clothes*: array[ClothingSlot, Item]
+            leftHand*: Item
+            rightHand*: Item
+        of animal: discard
 
         case ai*: AI
         of AI.follow: following*: Character
@@ -166,9 +172,13 @@ proc getDestRect*(self: Character): sdl2.Rect =
                  TILE_SIZE)
 
 proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Item) =
-    let item = self.clothes[slot]
-    result[0] = item.name != nil
-    result[1] = item
+    case self.kind
+    of CharacterType.humanoid:
+        let item = self.clothes[slot]
+        result[0] = item.name != nil
+        result[1] = item
+    of CharacterType.animal:
+        discard
 
 
 iterator iterWornItems*(self: Character): Item =

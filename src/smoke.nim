@@ -87,7 +87,7 @@ proc main =
 
     let window = createWindow(title = "Smoke",
         x = SDL_WINDOWPOS_CENTERED, y = SDL_WINDOWPOS_CENTERED,
-        w = 1280, h = 720, flags = SDL_WINDOW_SHOWN)
+        w = 1280, h = 720, flags = SDL_WINDOW_SHOWN or SDL_WINDOW_RESIZABLE)
     sdlFailIf window.isNil: "Window could not be created"
     defer: window.destroy()
 

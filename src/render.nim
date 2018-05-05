@@ -70,7 +70,7 @@ proc getRenderWindow(playerPos: Vec2): Rect =
 proc renderGameFrame*(game: Game) =
     let gamestate: GameState = game.gameState
     let level = gamestate.level
-    let pc: Character = gamestate.playerParty[0][]
+    let pc: Character = gamestate.playerParty[0]
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
                                .scale(TILE_SIZE / 2)
     var transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter)
@@ -78,13 +78,8 @@ proc renderGameFrame*(game: Game) =
     let window = getRenderWindow(pc.currentTile)
 
     renderMap(level.textures, window, game.renderer, transform)
-    for character in gamestate.playerParty:
-        if not character.isNil:
-            renderCharacter(character[], game.renderer, transform)
-
-    for character in gamestate.monsters:
-        if not character.isNil:
-            renderCharacter(character[], game.renderer, transform)
+    for character in gamestate.entities:
+        renderCharacter(character, game.renderer, transform)
 
     #TODO don't alloc these every frame
     var shadowMask1 = newMatrixWithOffset[bool](window.w, window.h,

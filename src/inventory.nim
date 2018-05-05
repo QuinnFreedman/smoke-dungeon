@@ -143,7 +143,7 @@ proc renderInventory*(game: Game) =
 
     let activeCharacter = game.gamestate.playerParty[game.inventory.activeCharacter]
     if not activeCharacter.isNil:
-        renderCharacterFullPreview(activeCharacter[], mainPreviewRect, renderer, transform)
+        renderCharacterFullPreview(activeCharacter, mainPreviewRect, renderer, transform)
 
         for item in activeCharacter.clothes:
             assert item.kind == ItemType.clothing
@@ -162,7 +162,7 @@ proc renderInventory*(game: Game) =
     for i, character in game.gameState.playerParty:
         if character.isNil: continue
 
-        character[].renderCharacterCroppedPreview(
+        character.renderCharacterCroppedPreview(
             previewRects[i], renderer, transform)
 
         for slot in character.backpack.indices:
@@ -173,7 +173,7 @@ proc renderInventory*(game: Game) =
                 drawImage(item.icon, srect, drect, renderer, transform)
 
 
-# proc getItemAtCursorAddr(inv: Inventory, playerParty: seq[ref Character]): ptr Item =
+# proc getItemAtCursorAddr(inv: Inventory, playerParty: seq[Character]): ptr Item =
     # template activeChar: untyped = playerParty[inv.activeCharacter]
     #
     # if inv.cursorInTopRow:
@@ -190,7 +190,7 @@ proc renderInventory*(game: Game) =
     #     playerParty[inv.curBackpack].backpack.unsafeGetAddr(inv.curX, inv.curY)
 
 
-proc getItemAtCursor(inv: Inventory, playerParty: seq[ref Character]): Item =
+proc getItemAtCursor(inv: Inventory, playerParty: seq[Character]): Item =
     template activeChar: untyped = playerParty[inv.activeCharacter]
 
     if inv.cursorInTopRow:
@@ -207,7 +207,7 @@ proc getItemAtCursor(inv: Inventory, playerParty: seq[ref Character]): Item =
         playerParty[inv.curBackpack].backpack[inv.curX, inv.curY]
 
 
-proc setItemAtCursor(inv: Inventory, playerParty: seq[ref Character], item: Item) =
+proc setItemAtCursor(inv: Inventory, playerParty: seq[Character], item: Item) =
     template activeChar: untyped = playerParty[inv.activeCharacter]
 
     if inv.cursorInTopRow:
@@ -224,11 +224,11 @@ proc setItemAtCursor(inv: Inventory, playerParty: seq[ref Character], item: Item
         playerParty[inv.curBackpack].backpack[inv.curX, inv.curY] = item
 
 
-proc getCurrentBackpack(inv: Inventory, playerParty: seq[ref Character]): Matrix[Item] =
+proc getCurrentBackpack(inv: Inventory, playerParty: seq[Character]): Matrix[Item] =
     playerParty[inv.curBackpack].backpack
 
 proc updateInvCursor(inv: var Inventory,
-                     playerParty: seq[ref Character],
+                     playerParty: seq[Character],
                      moveX, moveY: int, enter: bool) =
     if inv.cursorInSidePane:
         if moveX > 0: inv.cursorInSidePane = false
@@ -274,7 +274,7 @@ proc updateInvCursor(inv: var Inventory,
                 inv.inMenu = true
 
 
-proc updateMenu(inv: var Inventory, playerParty: seq[ref Character],
+proc updateMenu(inv: var Inventory, playerParty: seq[Character],
                 moveX, moveY: int, enter: bool) =
     let menuItems = getMenuItems(inv.menuSubject, inv.cursorInSidePane)
     inv.menuCursor = (inv.menuCursor + moveY) mod menuItems.len

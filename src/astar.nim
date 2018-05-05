@@ -1,6 +1,7 @@
 import
     binaryheap,
-    tables
+    tables,
+    random
 
 import
     vector,
@@ -8,10 +9,11 @@ import
     direction
 
 proc heuristic(a, b: Vec2): int =
-    return int(abs(a.x - b.x) + abs(a.y - b.y))
+    return int(abs(a.x - b.x) + abs(a.y - b.y)) * 10
 
 
-proc aStarSearch*(collision: Matrix[bool], start, goal: Vec2): seq[Vec2] =
+proc aStarSearch*(collision: Matrix[bool], start, goal: Vec2,
+                  randomize: int): seq[Vec2] =
     #TODO: don't alloc a new heap every time; just clear it
     var frontier = newHeap[(Vec2, int)]() do (a, b: (Vec2, int)) -> int:
         return a[1] - b[1]
@@ -41,7 +43,7 @@ proc aStarSearch*(collision: Matrix[bool], start, goal: Vec2): seq[Vec2] =
 
         for i in 0..<numNeighbors:
             let next = neighbors[i]
-            let newCost = costSoFar[current] + 1
+            let newCost = costSoFar[current] + 10 + rand(randomize)
             if not (next in costSoFar) or newCost < costSoFar[next]:
                 costSoFar[next] = newCost
                 let priority = newCost + heuristic(goal, next)

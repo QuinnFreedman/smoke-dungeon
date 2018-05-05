@@ -6,12 +6,8 @@ import
     character,
     direction,
     render,
-    render_utils,
-    times,
-    random
+    render_utils
 
-# TODO temp hack
-var rng: Rand = initRand(int64(epochTime()))
 
 proc loopMainGame(self: var Game, dt: float) =
     if self.keyPressed(Input.tab):
@@ -30,19 +26,8 @@ proc loopMainGame(self: var Game, dt: float) =
         self.gameState.playerParty[0].move(Direction.right,
                                            self.gamestate.level.walls)
 
-    for i in 0..<self.gameState.playerParty.len:
-        if not self.gameState.playerParty[i].isNil:
-            (self.gameState.playerParty[i][]).doLogic(self.gameState.level)
-
-    for i in 0..<self.gameState.playerParty.len:
-        if not self.gameState.playerParty[i].isNil:
-            self.gameState.playerParty[i][].update(dt)
-
-    for i in 0..<self.gameState.monsters.len:
-        if not self.gameState.monsters[i].isNil:
-            self.gameState.monsters[i].move(randomDirection(rng),
-                    self.gamestate.level.walls)
-            self.gameState.monsters[i][].update(dt)
+    for entity in self.gameState.entities:
+        entity.update(self.gamestate.level, dt)
 
 
 proc loop*(self: var Game, dt: float) =

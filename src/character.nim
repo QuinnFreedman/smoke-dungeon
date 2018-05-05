@@ -12,23 +12,31 @@ import
     matrix,
     simple_types,
     astar,
-    level
+    level,
+    times,
+    random
 
 
-type Character* = object
-    currentTile*: Vec2
-    nextTile*: Vec2
-    actualPos*: Vec2f
-    facing*: Direction
-    speed*: float
-    race*: Race
-    sex*: Sex
-    clothes*: array[ClothingSlot, Item]
-    leftHand*: Item
-    rightHand*: Item
-    backpack*: Matrix[Item]
-    spritesheet*: TextureAlias
-    following*: ref Character
+type
+    AI* {.pure.} = enum none, follow, random
+
+    Character* = ref object
+        currentTile*: Vec2
+        nextTile*: Vec2
+        actualPos*: Vec2f
+        facing*: Direction
+        speed*: float
+        race*: Race
+        sex*: Sex
+        clothes*: array[ClothingSlot, Item]
+        leftHand*: Item
+        rightHand*: Item
+        backpack*: Matrix[Item]
+        spritesheet*: TextureAlias
+
+        case ai*: AI
+        of AI.follow: following*: Character
+        else: discard
 
 
 proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
@@ -44,7 +52,7 @@ proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
 
 
 proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):
-        ref Character =
+        Character =
     new result
     result.currentTile = pos
     result.nextTile = pos
@@ -61,7 +69,7 @@ proc isMoving(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
 
 
-proc move*(self: ref Character, dir: Direction, collision: Matrix[bool]) =
+proc move*(self: Character, dir: Direction, collision: Matrix[bool]) =
     if self.currentTile != self.nextTile:
         return
 
@@ -84,32 +92,39 @@ proc directionTo(f, t: Vec2): Direction =
         else: Direction.down
 
 
-proc doLogic*(self: var Character, level: Level) =
-    if not self.isMoving:
-        if not self.following.isNil:
-            let path = aStarSearch(level.walls, self.currentTile,
-                                   self.following.nextTile)
-            if path.len > 4:
-                self.nextTile = path[path.len - 2]
-                self.facing = self.currentTile.directionTo(self.nextTile)
+proc update*(self: Character, level: Level, dt: float) =
+    if self.isMoving:
+        let dif = vecFloat(self.nextTile) - self.actualPos
 
-proc update*(self: var Character, dt: float) =
-    let dif = vecFloat(self.nextTile) - self.actualPos
+        let moveAmount = self.speed * dt
 
-    let moveAmount = self.speed * dt
+        if abs(dif.x) < moveAmount:
+            self.actualPos.x = float(self.nextTile.x)
+        else:
+            self.actualPos.x += float(sgn(dif.x)) * moveAmount
 
-    if abs(dif.x) < moveAmount:
-        self.actualPos.x = float(self.nextTile.x)
+        if abs(dif.y) < moveAmount:
+            self.actualPos.y = float(self.nextTile.y)
+        else:
+            self.actualPos.y += float(sgn(dif.y)) * moveAmount
+
+        if abs(dif.x) < moveAmount and abs(dif.y) < moveAmount:
+            self.currentTile = self.nextTile
     else:
-        self.actualPos.x += float(sgn(dif.x)) * moveAmount
+        case self.ai
+        of AI.follow:
+            if not self.following.isNil:
+                let path = aStarSearch(level.walls, self.currentTile,
+                                       self.following.nextTile, 3)
+                if path.len > 3:
+                    self.nextTile = path[path.len - 2]
+                    self.facing = self.currentTile.directionTo(self.nextTile)
+        of AI.random:
+            if rand(100) < 1:
+                self.move(randomDirection(), level.walls)
+        else: discard
 
-    if abs(dif.y) < moveAmount:
-        self.actualPos.y = float(self.nextTile.y)
-    else:
-        self.actualPos.y += float(sgn(dif.y)) * moveAmount
 
-    if abs(dif.x) < moveAmount and abs(dif.y) < moveAmount:
-        self.currentTile = self.nextTile
 
 
 proc animationTimer*(self: Character): float {.inline.} =

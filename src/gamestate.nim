@@ -3,7 +3,8 @@ import
     sdl2.ttf,
     random,
     times,
-    strutils
+    strutils,
+    sequtils
 
 import
     matrix,
@@ -47,8 +48,8 @@ type
 
     GameState* = object
         level*: Level
-        playerParty*: seq[ref Character]
-        monsters*: seq[ref Character]
+        playerParty*: seq[Character]
+        entities*: seq[Character]
 
     TextRenderer* = object
         renderer*: RendererPtr
@@ -101,7 +102,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     let levelHeight = 100
     result.gameState.level = generateLevel(levelWidth, levelHeight, rng)
 
-    result.gameState.playerParty = newSeq[ref Character]()
+    result.gameState.playerParty = newSeq[Character]()
 
     var playerCharacter = newCharacter(
         v(levelWidth div 2, levelHeight div 2), 2, Race.human, Sex.male)
@@ -118,11 +119,13 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     var companion1 = newCharacter(
         v(levelWidth div 2 + 1, levelHeight div 2), 2, Race.human, Sex.male)
     companion1.backpack[1, 0] = KNIGHT_HELMET
+    companion1.ai = AI.follow
     companion1.following = playerCharacter
     result.gameState.playerParty.add(companion1)
 
     var spider = newCharacter(
         v(levelWidth div 2, levelHeight div 2 - 1), 2, Race.spider, Sex.male)
+    spider.ai = AI.random
 
-    result.gameState.monsters = newSeq[ref Character]()
-    result.gameState.monsters.add(spider)
+    result.gameState.entities = concat(result.gameState.playerParty)
+    result.gameState.entities.add(spider)

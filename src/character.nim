@@ -137,8 +137,10 @@ proc update*(self: Character, level: Level, dt: float) =
                     self.nextTile = path[path.len - 2]
                     self.facing = self.currentTile.directionTo(self.nextTile)
         of AI.random:
-            if rand(100) < 1:
-                self.move(randomDirection(), level.walls)
+            if rand(60) < 1:
+                # quick hack so that being near walls doesnt make you move less
+                for _ in 0..10:
+                    self.move(randomDirection(), level.walls)
         else: discard
 
 

@@ -124,7 +124,7 @@ proc getMenuItems(subject: Item, itemIsEquipped: bool, activeChar: Character):
 
 
 proc renderMenu(inv: Inventory, activeChar: Character,
-                tr: TextRenderer, transform: Vec2) =
+                renderer: RenderInfo, transform: Vec2) =
 
     let menuItems = getMenuItems(inv.menuSubject,
                                  inv.cursorInSidePane,
@@ -135,11 +135,13 @@ proc renderMenu(inv: Inventory, activeChar: Character,
     for i, option in menuItems:
         let pos = upperLeft + v(0, 10 * i)
         if i == inv.menuCursor:
-            tr.renderText("*", pos + v(-8, 0), color(0,0,0,255))
-        tr.renderText($option, pos, color(0,0,0,255))
+            renderer.renderText("*", pos + v(-8, 0), color(0,0,0,255))
+        renderer.renderText($option, pos, color(0,0,0,255))
 
-proc renderInventory*(game: Game) =
-    let renderer = game.renderer
+proc renderInventory*(inventory: var Inventory,
+                      playerParty: seq[Character],
+                      renderInfo: RenderInfo) =
+    let renderer = renderInfo.renderer
     let transform = ZERO
 
     let bgTexture = TextureAlias.inventoryBackground
@@ -148,13 +150,13 @@ proc renderInventory*(game: Game) =
     var drect = srect
     drawImage(bgTexture, srect, drect, renderer, transform)
 
-    let activeCharacter = game.gamestate.playerParty[game.inventory.activeCharacter]
+    let activeCharacter = playerParty[inventory.activeCharacter]
 
-    if game.inventory.inMenu:
-        renderMenu(game.inventory, activeCharacter,
-                   game.getTextRenderer, transform)
+    if inventory.inMenu:
+        renderMenu(inventory, activeCharacter,
+                   renderInfo, transform)
     else:
-        renderCursor(game.inventory, renderer, transform)
+        renderCursor(inventory, renderer, transform)
 
     if not activeCharacter.isNil:
         renderCharacterFullPreview(activeCharacter, mainPreviewRect,
@@ -175,7 +177,7 @@ proc renderInventory*(game: Game) =
                     equippedItemPreviewRects[4],
                     renderer, transform)
 
-    for i, character in game.gameState.playerParty:
+    for i, character in playerParty:
         if character.isNil: continue
 
         character.renderCharacterCroppedPreview(
@@ -342,26 +344,28 @@ proc updateMenu(inv: var Inventory, playerParty: seq[Character],
             discard #TODO allow inspect
 
 
-proc loopInventory*(game: Game) =
-    if game.keyPressed(Input.tab):
-        game.screen = Screen.world
+proc loopInventory*(inv: var Inventory, playerParty: seq[Character],
+                    keyboard: Keyboard): Screen =
+    if keyboard.keyPressed(Input.tab):
+        result = Screen.world
+    else:
+        result = Screen.inventory
 
     let moveX =
-        if game.keyPressed(Input.right): 1
-        elif game.keyPressed(Input.left): -1
+        if keyboard.keyPressed(Input.right): 1
+        elif keyboard.keyPressed(Input.left): -1
         else: 0
 
     let moveY =
-        if game.keyPressed(Input.up): -1
-        elif game.keyPressed(Input.down): 1
+        if keyboard.keyPressed(Input.up): -1
+        elif keyboard.keyPressed(Input.down): 1
         else: 0
 
-    let enter = game.keyPressed(Input.enter)
+    let enter = keyboard.keyPressed(Input.enter)
 
     if moveX == 0 and moveY == 0 and not enter: return
 
-    template inv: untyped = game.inventory
     if inv.inMenu:
-        updateMenu(inv, game.gamestate.playerParty, moveX, moveY, enter)
+        updateMenu(inv, playerParty, moveX, moveY, enter)
     else:
-        updateInvCursor(inv, game.gamestate.playerParty, moveX, moveY, enter)
+        updateInvCursor(inv, playerParty, moveX, moveY, enter)

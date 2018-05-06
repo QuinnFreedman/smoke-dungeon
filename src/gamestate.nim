@@ -24,7 +24,21 @@ import
 type
     Input* {.pure.} = enum none, left, right, up, down, tab, enter
 
-    Screen* {.pure.} = enum world, inventory
+    Screen* {.pure.} = enum world, inventory, combat
+
+    Game* = ref object
+        shouldQuit*: bool
+        keyboard*: Keyboard
+        renderInfo*: RenderInfo
+        screen*: Screen
+        inventory*: Inventory
+        combat*: CombatScreen
+        gameState*: GameState
+
+    GameState* = object
+        level*: Level
+        playerParty*: seq[Character]
+        entities*: seq[Character]
 
     Inventory* = object
         curBackpack*: int
@@ -35,63 +49,67 @@ type
         menuCursor*: int
         menuSubject*: Item
 
-    Game* = ref object
-        shouldQuit*: bool
-        inputs*: array[Input, bool]
-        inputsSinceLastFrame: array[Input, bool]
-        renderer*: RendererPtr
-        font*: FontPtr
-        textCache*: TextCache
-        screen*: Screen
-        inventory*: Inventory
-        gameState*: GameState
-
-    GameState* = object
-        level*: Level
+    CombatScreen* = object
         playerParty*: seq[Character]
-        entities*: seq[Character]
+        enemyParty*: seq[Character]
+        turnOrder*: seq[Character]
+        playerPartyMatrix*: Matrix[Character]
+        enemyPartyMatrix*: Matrix[Character]
+        setupDone*: bool
 
-    TextRenderer* = object
+    RenderInfo* = object
         renderer*: RendererPtr
         font*: FontPtr
         textCache*: TextCache
 
-
-proc getTextRenderer*(self: Game): TextRenderer {.inline.} =
-    result.renderer = self.renderer
-    result.font = self.font
-    result.textCache = self.textCache
+    Keyboard* = object
+        inputs: array[Input, bool]
+        inputsSinceLastFrame: array[Input, bool]
 
 
-proc renderText*(self: TextRenderer, text: string,
+proc renderer*(self: Game): RendererPtr {.inline.} =
+    self.renderInfo.renderer
+
+
+proc renderText*(self: RenderInfo, text: string,
                  pos: Vec2, color: Color) {.inline.} =
     renderText(self.renderer, self.font, text,
                pos.x.cint, pos.y.cint, color, self.textCache)
 
 
 proc handleInput*(self: var Game, input: Input, keyDown: bool) {.inline.} =
-    if keyDown and not self.inputs[input]:
-        self.inputsSinceLastFrame[input] = true
-    self.inputs[input] = keyDown
+    if keyDown and not self.keyboard.inputs[input]:
+        self.keyboard.inputsSinceLastFrame[input] = true
+    self.keyboard.inputs[input] = keyDown
 
 
-proc keyDown*(self: Game, key: Input): bool {.inline.} =
+proc keyDown*(self: Keyboard, key: Input): bool {.inline.} =
     self.inputs[key]
 
 
-proc keyPressed*(self: Game, key: Input): bool {.inline.} =
+proc keyPressed*(self: Keyboard, key: Input): bool {.inline.} =
     self.inputsSinceLastFrame[key]
 
 
+proc keyDown*(self: Game, key: Input): bool {.inline.} =
+    self.keyboard.inputs[key]
+
+
+proc keyPressed*(self: Game, key: Input): bool {.inline.} =
+    self.keyboard.inputsSinceLastFrame[key]
+
+
 proc resetInputs*(self: Game) =
-    self.inputsSinceLastFrame.zero()
+    self.keyboard.inputsSinceLastFrame.zero()
 
 
 proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     new result
-    result.renderer = renderer
-    result.font = font
-    result.textCache = newTextCache()
+    result.renderInfo = RenderInfo(
+        renderer: renderer,
+        font: font,
+        textCache: newTextCache()
+    )
 
     let seed = int64(epochTime())
     # let seed = int64(1524099821)

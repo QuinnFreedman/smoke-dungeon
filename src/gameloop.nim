@@ -3,39 +3,42 @@ import sdl2
 import
     gamestate,
     inventory,
+    combat,
     character,
     direction,
     render,
     render_utils
 
 
-proc loopMainGame(self: var Game, dt: float) =
-    if self.keyPressed(Input.tab):
-        self.screen = Screen.inventory
+proc loopMainGame(gameState: var GameState,
+                  keyboard: Keyboard, dt: float): Screen =
+    if keyboard.keyPressed(Input.tab):
+        result = Screen.inventory
+    else:
+        result = Screen.world
 
-    if self.keyDown(Input.up):
-        self.gameState.playerParty[0].move(Direction.up,
-                                           self.gamestate.level.walls)
-    if self.keyDown(Input.down):
-        self.gameState.playerParty[0].move(Direction.down,
-                                           self.gamestate.level.walls)
-    if self.keyDown(Input.left):
-        self.gameState.playerParty[0].move(Direction.left,
-                                           self.gamestate.level.walls)
-    if self.keyDown(Input.right):
-        self.gameState.playerParty[0].move(Direction.right,
-                                           self.gamestate.level.walls)
+    if keyboard.keyDown(Input.up):
+        gameState.playerParty[0].move(Direction.up, gamestate.level.walls)
+    if keyboard.keyDown(Input.down):
+        gameState.playerParty[0].move(Direction.down, gamestate.level.walls)
+    if keyboard.keyDown(Input.left):
+        gameState.playerParty[0].move(Direction.left, gamestate.level.walls)
+    if keyboard.keyDown(Input.right):
+        gameState.playerParty[0].move(Direction.right, gamestate.level.walls)
 
-    for entity in self.gameState.entities:
-        entity.update(self.gamestate.level, dt)
+    for entity in gameState.entities:
+        entity.update(gamestate.level, dt)
 
 
 proc loop*(self: var Game, dt: float) =
-    case self.screen
-    of Screen.world:
-        loopMainGame(self, dt)
-    of Screen.inventory:
-        loopInventory(self)
+    self.screen =
+        case self.screen
+        of Screen.world:
+            loopMainGame(self.gameState, self.keyboard, dt)
+        of Screen.inventory:
+            loopInventory(self.inventory, self.gamestate.playerParty, self.keyboard)
+        of Screen.combat:
+            updateCombatScreen(self.combat, self.keyboard, dt)
 
     self.resetInputs()
 
@@ -47,9 +50,13 @@ proc render*(self: Game, debugFps: float) =
 
     case self.screen
     of Screen.world:
-        renderGameFrame(self)
+        renderGameFrame(self.gameState, self.renderer)
     of Screen.inventory:
-        renderInventory(self)
+        renderInventory(self.inventory,
+                        self.gamestate.playerParty,
+                        self.renderInfo)
+    of Screen.combat:
+        renderCombatScreen(self.combat, self.renderer)
 
     # renderText(self.renderer, self.font, "fps: " & $debugFps,
     #            100.cint, 100.cint, color(255,255,255,255), self.textCache)

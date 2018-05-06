@@ -44,6 +44,17 @@ type
         of AI.follow: following*: Character
         else: discard
 
+# -------------------------------------
+# Combat stats
+# -------------------------------------
+
+proc getInitiative*(self: Character): int =
+    0 #TODO: use dexterity, class/race modifyer, initiative modifier, speed, etc
+
+
+# -------------------------------------
+# Rendering
+# -------------------------------------
 
 proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
     case race
@@ -122,7 +133,7 @@ proc update*(self: Character, level: Level, dt: float) =
             if not self.following.isNil:
                 let path = aStarSearch(level.walls, self.currentTile,
                                        self.following.nextTile, 3)
-                if path.len > 3:
+                if path.len > 4:
                     self.nextTile = path[path.len - 2]
                     self.facing = self.currentTile.directionTo(self.nextTile)
         of AI.random:

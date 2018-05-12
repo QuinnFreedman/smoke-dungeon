@@ -32,6 +32,7 @@ type
         sex*: Sex
         backpack*: Matrix[Item]
         spritesheet*: TextureAlias
+        health*: int
 
         case kind*: CharacterType
         of humanoid:
@@ -44,6 +45,9 @@ type
         of AI.follow: following*: Character
         else: discard
 
+
+
+
 # -------------------------------------
 # Combat stats
 # -------------------------------------
@@ -53,34 +57,8 @@ proc getInitiative*(self: Character): int =
 
 
 # -------------------------------------
-# Rendering
+# Utils
 # -------------------------------------
-
-proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
-    case race
-    of human:
-        case sex
-        of male:
-            TextureAlias.humanMaleBase
-        of female:
-            TextureAlias.humanFemaleBase
-    of spider:
-        TextureAlias.spider
-
-
-proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):
-        Character =
-    new result
-    result.currentTile = pos
-    result.nextTile = pos
-    result.actualPos = vecFloat(pos)
-    result.facing = Direction.down
-    result.speed = speed
-    result.race = race
-    result.sex = sex
-    result.backpack = newMatrix[Item](4, 2)
-    result.spritesheet = getBaseSpriteSheet(race, sex)
-
 
 proc isMoving*(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
@@ -98,6 +76,34 @@ proc move*(self: Character, dir: Direction, collision: Matrix[bool]) =
         if not collision[dest]:
             self.nextTile = dest
 
+proc moveToward*(self: Character, dest: Vec2, collision: Matrix[bool]) =
+    self.move(self.currentTile.directionTo(dest), collision)
+
+
+proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Item) =
+    case self.kind
+    of CharacterType.humanoid:
+        let item = self.clothes[slot]
+        result[0] = item.name != nil
+        result[1] = item
+    of CharacterType.animal:
+        discard
+
+
+iterator iterWornItems*(self: Character): Item =
+    for slot in ClothingSlot.items:
+        let (exists, item) = self.getWornItem(slot)
+        if exists:
+            yield item
+
+proc `$` *(self: Character): string =
+    if self.isNil: "nil"
+    else: $self.sex & " " & $self.race
+
+
+# -------------------------------------
+# Update
+# -------------------------------------
 
 proc update*(self: Character, level: Level, dt: float) =
     if self.isMoving:
@@ -134,9 +140,24 @@ proc update*(self: Character, level: Level, dt: float) =
         else: discard
 
 
-proc moveToward*(self: Character, dest: Vec2, collision: Matrix[bool]) =
-    echo "move: " & $self.currentTile & " -> " & $dest & " : " & $self.currentTile.directionTo(dest)
-    self.move(self.currentTile.directionTo(dest), collision)
+
+# -------------------------------------
+# Rendering
+# -------------------------------------
+
+proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
+    case race
+    of human:
+        case sex
+        of male:
+            TextureAlias.humanMaleBase
+        of female:
+            TextureAlias.humanFemaleBase
+    of spider:
+        TextureAlias.spider
+
+proc getStaticSrcRect*(self: Character): sdl2.Rect =
+    newSdlSquare(0, 0, TILE_SIZE)
 
 
 proc animationTimer*(self: Character): float {.inline.} =
@@ -149,10 +170,6 @@ proc animationTimer*(self: Character): float {.inline.} =
         abs(distanceMoved.y / distanceToMove.y)
     else:
         0
-
-
-proc getStaticSrcRect*(self: Character): sdl2.Rect =
-    newSdlSquare(0, 0, TILE_SIZE)
 
 
 proc getSrcRect*(self: Character): sdl2.Rect =
@@ -177,22 +194,20 @@ proc getDestRect*(self: Character): sdl2.Rect =
                  int(round(self.actualPos.y * TILE_SIZE)),
                  TILE_SIZE)
 
-proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Item) =
-    case self.kind
-    of CharacterType.humanoid:
-        let item = self.clothes[slot]
-        result[0] = item.name != nil
-        result[1] = item
-    of CharacterType.animal:
-        discard
 
+# -------------------------------------
+# Initialization
+# -------------------------------------
 
-iterator iterWornItems*(self: Character): Item =
-    for slot in ClothingSlot.items:
-        let (exists, item) = self.getWornItem(slot)
-        if exists:
-            yield item
-
-proc `$` *(self: Character): string =
-    if self.isNil: "nil"
-    else: $self.sex & " " & $self.race
+proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):
+        Character =
+    new result
+    result.currentTile = pos
+    result.nextTile = pos
+    result.actualPos = vecFloat(pos)
+    result.facing = Direction.down
+    result.speed = speed
+    result.race = race
+    result.sex = sex
+    result.backpack = newMatrix[Item](4, 2)
+    result.spritesheet = getBaseSpriteSheet(race, sex)

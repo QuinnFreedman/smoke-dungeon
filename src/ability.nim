@@ -10,7 +10,19 @@ type
         energyCost*: int
         manaCost*: int
         healthCost*: int
-        applyEffect*: proc(target: Character, caster: Character, weapon: Item)
+        applyEffect*: proc(target, caster: var Character, weapon: Item)
 
     AbilityType* {.pure.} = enum
-        aoe, enemyTarget, allyTarget
+        enemyTarget, allyTarget, aoe
+
+let BASIC_ATTACK: Ability =
+    Ability(
+        useWeaponRange: true,
+        abilityType: AbilityType.enemyTarget,
+        applyEffect: proc (target, caster: var Character, weapon: Item) =
+            target.health -= 1
+    )
+
+#TODO awkawrd to have this here
+iterator iterAbilities(self: Character): Ability =
+    yield BASIC_ATTACK

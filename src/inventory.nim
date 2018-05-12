@@ -9,20 +9,11 @@ import
     render_utils,
     textures,
     item,
-    gamestate
+    gamestate,
+    render_character
 
 
 const ITEM_ICON_SIZE = TILE_SIZE div 4
-
-proc renderCharacterFullPreview(character: Character, pos: Vec2,
-                                renderer: RendererPtr, transform: Vec2) =
-    let srcRect = character.getStaticSrcRect
-
-    drawTile(character.spritesheet, srcRect, pos, renderer, transform)
-
-    for item in character.iterWornItems:
-        drawTile(item.getTexture(character.sex), srcRect, pos,
-                 renderer, transform)
 
 
 proc renderCharacterCroppedPreview(character: Character, pos: Vec2,
@@ -159,8 +150,8 @@ proc renderInventory*(inventory: var Inventory,
         renderCursor(inventory, renderer, transform)
 
     if not activeCharacter.isNil:
-        renderCharacterFullPreview(activeCharacter, mainPreviewRect,
-                                   renderer, transform)
+        renderStaticCharacter(activeCharacter, mainPreviewRect,
+                              renderer, transform)
 
         for item in activeCharacter.iterWornItems:
             assert item.kind == ItemType.clothing

@@ -19,7 +19,8 @@ import
     utils,
     simple_types,
     level,
-    render_utils
+    render_utils,
+    ability
 
 type
     Input* {.pure.} = enum none, left, right, up, down, tab, enter
@@ -53,9 +54,21 @@ type
         playerParty*: seq[Character]
         enemyParty*: seq[Character]
         turnOrder*: seq[Character]
-        playerPartyMatrix*: Matrix[Character]
-        enemyPartyMatrix*: Matrix[Character]
-        setupDone*: bool
+        center*: Vec2
+        state*: CombatState
+        turn*: int
+        activeWeapon*: Item
+        activeAbility*: Ability
+        mapCursor*: Vec2
+        menuCursor*: int
+        path*: seq[Vec2]
+
+    CombatState* {.pure.} = enum
+        waiting,
+        pickingMovement,
+        pickingAttack,
+        pickingWeapon,
+        pickingTarget
 
     RenderInfo* = object
         renderer*: RendererPtr
@@ -66,6 +79,12 @@ type
         inputs: array[Input, bool]
         inputsSinceLastFrame: array[Input, bool]
 
+
+proc width*(self: Level): int {.inline.} =
+    self.walls.width
+
+proc height*(self: Level): int {.inline.} =
+    self.walls.height
 
 proc renderer*(self: Game): RendererPtr {.inline.} =
     self.renderInfo.renderer

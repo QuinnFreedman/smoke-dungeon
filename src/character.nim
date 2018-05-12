@@ -82,7 +82,7 @@ proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):
     result.spritesheet = getBaseSpriteSheet(race, sex)
 
 
-proc isMoving(self: Character): bool {.inline.} =
+proc isMoving*(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
 
 
@@ -97,16 +97,6 @@ proc move*(self: Character, dir: Direction, collision: Matrix[bool]) =
     if collision.contains(dest):
         if not collision[dest]:
             self.nextTile = dest
-
-# TODO move to util or vector/direction
-proc directionTo(f, t: Vec2): Direction =
-    let delta = t - f
-    if abs(delta.x) > abs(delta.y):
-        if delta.x < 0: Direction.left
-        else: Direction.right
-    else:
-        if delta.y < 0: Direction.up
-        else: Direction.down
 
 
 proc update*(self: Character, level: Level, dt: float) =
@@ -144,6 +134,9 @@ proc update*(self: Character, level: Level, dt: float) =
         else: discard
 
 
+proc moveToward*(self: Character, dest: Vec2, collision: Matrix[bool]) =
+    echo "move: " & $self.currentTile & " -> " & $dest & " : " & $self.currentTile.directionTo(dest)
+    self.move(self.currentTile.directionTo(dest), collision)
 
 
 proc animationTimer*(self: Character): float {.inline.} =
@@ -199,3 +192,7 @@ iterator iterWornItems*(self: Character): Item =
         let (exists, item) = self.getWornItem(slot)
         if exists:
             yield item
+
+proc `$` *(self: Character): string =
+    if self.isNil: "nil"
+    else: $self.sex & " " & $self.race

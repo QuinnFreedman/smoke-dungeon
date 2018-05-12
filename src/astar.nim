@@ -9,9 +9,10 @@ import
     direction
 
 proc heuristic(a, b: Vec2): int =
-    return int(abs(a.x - b.x) + abs(a.y - b.y)) * 10
+    int(abs(a.x - b.x) + abs(a.y - b.y)) * 10
 
 
+#TODO make seedable: pass in rng
 proc aStarSearch*(collision: Matrix[bool], start, goal: Vec2,
                   randomize: int): seq[Vec2] =
     #TODO: don't alloc a new heap every time; just clear it

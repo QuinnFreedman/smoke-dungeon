@@ -21,7 +21,7 @@ const DOWN* = S
 const LEFT* = W
 const RIGHT* = E
 
-proc directionVector*(dir: Direction): Vec2 = 
+proc directionVector*(dir: Direction): Vec2 =
     case dir
     of up: UP
     of down: DOWN
@@ -91,5 +91,17 @@ proc `==` *(self, other: Vec2f): bool =
 proc vecFloat*(x, y: float): Vec2f =
     (x: x, y: y)
 
+proc vf*(x, y: float): Vec2f = (x: x, y : y)
+
 proc vecFloat*(v: Vec2): Vec2f =
     (x: float(v.x), y: float(v.y))
+
+proc distance*(a, b: Vec2): float =
+    let dx = float(a.x - b.x)
+    let dy = float(a.y - b.y)
+    sqrt(dx * dx + dy * dy)
+
+proc distance*(a, b: Vec2f): float =
+    let dx = a.x - b.x
+    let dy = a.y - b.y
+    sqrt(dx * dx + dy * dy)

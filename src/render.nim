@@ -13,8 +13,8 @@ import gamestate,
        shadowcasting,
        item
 
-proc renderMap(map: Matrix[sdl2.Rect], window: Rect,
-               renderer: RendererPtr, transfrom: Vec2) =
+proc renderMap*(map: Matrix[sdl2.Rect], window: Rect,
+                renderer: RendererPtr, transfrom: Vec2) =
     for pos in window.iterRect:
         if map.contains(pos):
             let srect = map[pos]
@@ -23,8 +23,8 @@ proc renderMap(map: Matrix[sdl2.Rect], window: Rect,
                     srect, tilePos, renderer, transfrom)
 
 
-proc renderCharacter(character: Character,
-                     renderer: RendererPtr, transfrom: Vec2) =
+proc renderCharacter*(character: Character,
+                      renderer: RendererPtr, transfrom: Vec2) =
     var srect = character.getSrcRect
     var drect = character.getDestRect
     drawImage(character.spritesheet,
@@ -72,7 +72,7 @@ proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
     let pc: Character = gamestate.playerParty[0]
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
                                .scale(TILE_SIZE / 2)
-    var transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter)
+    let transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter)
 
     let window = getRenderWindow(pc.currentTile)
 

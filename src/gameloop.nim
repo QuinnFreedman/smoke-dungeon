@@ -1,6 +1,7 @@
 import sdl2
 
 import
+    vector,
     gamestate,
     inventory,
     combat,
@@ -10,21 +11,32 @@ import
     render_utils
 
 
-proc loopMainGame(gameState: var GameState,
+proc loopMainGame(gameState: var GameState, combatInfo: var CombatScreen,
                   keyboard: Keyboard, dt: float): Screen =
     if keyboard.keyPressed(Input.tab):
         result = Screen.inventory
     else:
         result = Screen.world
 
+    let pc = gamestate.playerParty[0]
+    for entity in gameState.entities:
+        if not (entity in gameState.playerParty):
+            if distance(pc.currentTile, entity.currentTile) <= 1.0 or
+                    distance(pc.currentTile, entity.nextTile) <= 1.0:
+                result = Screen.combat
+                echo "combat with: " & $entity.race
+                combatInfo.playerParty = gameState.playerParty
+                combatInfo.enemyParty = @[entity]
+                return
+
     if keyboard.keyDown(Input.up):
-        gameState.playerParty[0].move(Direction.up, gamestate.level.walls)
+        pc.move(Direction.up, gamestate.level.walls)
     if keyboard.keyDown(Input.down):
-        gameState.playerParty[0].move(Direction.down, gamestate.level.walls)
+        pc.move(Direction.down, gamestate.level.walls)
     if keyboard.keyDown(Input.left):
-        gameState.playerParty[0].move(Direction.left, gamestate.level.walls)
+        pc.move(Direction.left, gamestate.level.walls)
     if keyboard.keyDown(Input.right):
-        gameState.playerParty[0].move(Direction.right, gamestate.level.walls)
+        pc.move(Direction.right, gamestate.level.walls)
 
     for entity in gameState.entities:
         entity.update(gamestate.level, dt)
@@ -34,11 +46,11 @@ proc loop*(self: var Game, dt: float) =
     self.screen =
         case self.screen
         of Screen.world:
-            loopMainGame(self.gameState, self.keyboard, dt)
+            loopMainGame(self.gameState, self.combat, self.keyboard, dt)
         of Screen.inventory:
             loopInventory(self.inventory, self.gamestate.playerParty, self.keyboard)
         of Screen.combat:
-            updateCombatScreen(self.combat, self.keyboard, dt)
+            updateCombatScreen(self.combat, self.gameState.level, self.keyboard, dt)
 
     self.resetInputs()
 
@@ -56,7 +68,7 @@ proc render*(self: Game, debugFps: float) =
                         self.gamestate.playerParty,
                         self.renderInfo)
     of Screen.combat:
-        renderCombatScreen(self.combat, self.renderer)
+        renderCombatScreen(self.gameState, self.combat, self.renderer)
 
     # renderText(self.renderer, self.font, "fps: " & $debugFps,
     #            100.cint, 100.cint, color(255,255,255,255), self.textCache)

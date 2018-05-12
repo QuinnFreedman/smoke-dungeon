@@ -1,7 +1,8 @@
 import sdl2
 
 import
-    vector
+    vector,
+    direction
 
 proc newSdlRect*(x, y, w, h: int): Rect {.inline.} =
     rect(cint(x), cint(y), cint(w), cint(h))
@@ -22,6 +23,22 @@ iterator iterRect*(self: Rect): Vec2 =
         let y = i div width + self.y
         yield v(x, y)
 
+
 proc zero*(a: var openArray[bool]) =
     for i in 0..<a.len:
         a[i] = false
+
+
+proc directionTo*(f, t: Vec2): Direction =
+    let delta = t - f
+    if abs(delta.x) > abs(delta.y):
+        if delta.x < 0: Direction.left
+        else: Direction.right
+    else:
+        if delta.y < 0: Direction.up
+        else: Direction.down
+
+proc pop*[T](self: seq[T]): T =
+    let lastIndex = self.len - 1
+    result = self[lastIndex]
+    self.delete(lastIndex, lastIndex)

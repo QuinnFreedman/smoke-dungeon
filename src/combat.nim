@@ -15,7 +15,8 @@ import
     render_character,
     textures,
     astar,
-    level
+    level,
+    ability
 
 proc getCombatWindow(combat: CombatScreen): Rect =
     const radiusX = 3
@@ -25,26 +26,45 @@ proc getCombatWindow(combat: CombatScreen): Rect =
             combat.center.y - radiusY,
             2 * radiusX + 1, 2 * radiusY + 1)
 
+
+const MENU_LOCATION = v(100, 100)
+
+template drawMenu(abilities: untyped, renderInfo: RenderInfo) =
+    ## abilities should be an iterator
+    ## this has to be a template because iterators are not fist class
+    var i = 0
+    for ability in abilities:
+        renderText(renderInfo, ability.name,
+                   MENU_LOCATION + v(0, i * 12),
+                   color(r=255, g=255, b=255, a=255))
+        inc(i)
+
 proc renderCombatScreen*(gameState: GameState,
-                         info: CombatScreen,
-                         renderer: RendererPtr) =
+                         combat: CombatScreen,
+                         renderInfo: RenderInfo) =
+
+    template activeChar: untyped = combat.turnOrder[combat.turn]
 
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
                                .scale(TILE_SIZE / 2)
     let transform = round(
-        (vecFloat(info.center) + vf(0.5, 0.5))
+        (vecFloat(combat.center) + vf(0.5, 0.5))
             .scale(float(-TILE_SIZE)) + screenCenter)
 
-    let window = getCombatWindow(info)
+    let window = getCombatWindow(combat)
 
-    renderMap(gameState.level.textures, window, renderer, transform)
+    renderMap(gameState.level.textures, window, renderInfo.renderer, transform)
 
-    if info.state == CombatState.pickingMovement:
-        drawImage(TextureAlias.mapCursor, info.mapCursor.scale(TILE_SIZE),
-                  renderer, transform)
+    case combat.state
+    of CombatState.pickingMovement:
+        drawImage(TextureAlias.mapCursor, combat.mapCursor.scale(TILE_SIZE),
+                  renderInfo.renderer, transform)
+    of CombatState.pickingAbility:
+        drawMenu(activeChar.iterAbilities(), renderInfo)
+    else: discard
 
-    for character in info.turnOrder:
-        renderCharacter(character, renderer, transform)
+    for character in combat.turnOrder:
+        renderCharacter(character, renderInfo.renderer, transform)
 
 
 proc setupCombat(info: var CombatScreen) =
@@ -56,7 +76,6 @@ proc setupCombat(info: var CombatScreen) =
     info.center = info.playerParty[0].currentTile
     info.state = CombatState.waiting
     info.turn = 0
-    info.menuCursor = 0
 
     #TODO
     info.mapCursor = info.turnOrder[0].currentTile
@@ -99,7 +118,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
         if combat.path.isNil:
             combat.path = aStarSearch(level.walls,
                                       activeChar.currentTile,
-                                      combat.mapCursor, 0)
+                                      combat.mapCursor, 1)
             if combat.path.len == 0:
                 combat.state = CombatState.pickingMovement
                 return
@@ -108,12 +127,23 @@ proc updateCombatScreen*(combat: var CombatScreen,
         if not activeChar.isMoving:
             echo combat.path
             if combat.path.len == 0:
-                combat.state = CombatState.pickingMovement
                 combat.path = nil
+                combat.state = CombatState.pickingAbility
+                combat.menuCursor = 0
             else:
                 let nextTile = combat.path.pop()
                 activeChar.moveToward(nextTile, level.walls)
 
-        activeChar.update(level, dt)
+        if activeChar.isMoving:
+            activeChar.update(level, dt)
+
+    of CombatState.pickingAbility:
+        combat.menuCursor =
+            (combat.menuCursor + moveY) mod activeChar.numAbilites
+        if enterPressed:
+            combat.activeAbility = activeChar.getAbility(combat.menuCursor)
+            combat.state = CombatState.pickingWeapon
+
+
 
     else: discard #TODO implement other states

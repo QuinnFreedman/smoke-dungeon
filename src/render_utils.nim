@@ -47,46 +47,50 @@ proc drawImage*(texture: TextureAlias, pos: Vec2,
 
 
 type
+    RenderInfo* = object
+        renderer*: RendererPtr
+        font*: FontPtr
+        textCache*: TextCache
+
+    TextCache = ref object
+        text: string
+        cache: CacheLine
+
     CacheLine = object
         texture: TexturePtr
         w, h: cint
-
-    TextCache* = ref object
-        text: string
-        cache: CacheLine
 
 
 proc newTextCache*: TextCache =
   new result
 
 
-proc renderText(renderer: RendererPtr, font: FontPtr,
-                text: string, color: Color): CacheLine =
-    let surface = font.renderUtf8Solid(text.cstring, color)
-    sdlFailIf surface.isNil: "Could not render text surface"
+proc renderText*(renderInfo: RenderInfo, text: string,
+                 pos: Vec2, color: Color) =
+    proc simpleRenderText(renderer: RendererPtr, font: FontPtr,
+                          text: string, color: Color): CacheLine {.nimcall.} =
+        let surface = font.renderUtf8Solid(text.cstring, color)
+        sdlFailIf surface.isNil: "Could not render text surface"
 
-    discard surface.setSurfaceAlphaMod(color.a)
+        discard surface.setSurfaceAlphaMod(color.a)
 
-    result.w = surface.w
-    result.h = surface.h
-    result.texture = renderer.createTextureFromSurface(surface)
-    sdlFailIf result.texture.isNil:
-        "Could not create texture from rendered text"
+        result.w = surface.w
+        result.h = surface.h
+        result.texture = renderer.createTextureFromSurface(surface)
+        sdlFailIf result.texture.isNil:
+            "Could not create texture from rendered text"
 
-    surface.freeSurface()
+        surface.freeSurface()
 
 
-proc renderText*(renderer: RendererPtr, font: FontPtr,
-                 text: string, x, y: cint, color: Color,
-                 tc: TextCache) =
+    let tc = renderInfo.textCache
 
     if text != tc.text:
         tc.cache.texture.destroy()
-        tc.cache = renderer.renderText(
-            font, text, color)
+        tc.cache = simpleRenderText(renderInfo.renderer,
+                renderInfo.font, text, color)
         tc.text = text
 
     var source = rect(0, 0, tc.cache.w, tc.cache.h)
-    var dest = rect(x, y, tc.cache.w, tc.cache.h)
-    renderer.copyEx(tc.cache.texture, source, dest,
-                    angle = 0.0, center = nil)
+    var dest = rect(pos.x.cint, pos.y.cint, tc.cache.w, tc.cache.h)
+    renderInfo.renderer.copy(tc.cache.texture, addr source, addr dest)

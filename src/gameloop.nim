@@ -68,7 +68,7 @@ proc render*(self: Game, debugFps: float) =
                         self.gamestate.playerParty,
                         self.renderInfo)
     of Screen.combat:
-        renderCombatScreen(self.gameState, self.combat, self.renderer)
+        renderCombatScreen(self.gameState, self.combat, self.renderInfo)
 
     # renderText(self.renderer, self.font, "fps: " & $debugFps,
     #            100.cint, 100.cint, color(255,255,255,255), self.textCache)

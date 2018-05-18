@@ -42,3 +42,7 @@ proc pop*[T](self: seq[T]): T =
     let lastIndex = self.len - 1
     result = self[lastIndex]
     self.delete(lastIndex, lastIndex)
+
+proc cycle*(it: iterator): int =
+    for _ in it:
+        result += 1

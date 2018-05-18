@@ -66,14 +66,9 @@ type
     CombatState* {.pure.} = enum
         waiting,
         pickingMovement,
-        pickingAttack,
+        pickingAbility,
         pickingWeapon,
         pickingTarget
-
-    RenderInfo* = object
-        renderer*: RendererPtr
-        font*: FontPtr
-        textCache*: TextCache
 
     Keyboard* = object
         inputs: array[Input, bool]
@@ -88,12 +83,6 @@ proc height*(self: Level): int {.inline.} =
 
 proc renderer*(self: Game): RendererPtr {.inline.} =
     self.renderInfo.renderer
-
-
-proc renderText*(self: RenderInfo, text: string,
-                 pos: Vec2, color: Color) {.inline.} =
-    renderText(self.renderer, self.font, text,
-               pos.x.cint, pos.y.cint, color, self.textCache)
 
 
 proc handleInput*(self: var Game, input: Input, keyDown: bool) {.inline.} =

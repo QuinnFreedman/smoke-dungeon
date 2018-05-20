@@ -31,13 +31,11 @@ proc getCombatWindow(combat: CombatScreen): Rect =
 const MENU_LOCATION = v(50, 100)
 const WHITE = color(r=255, g=255, b=255, a=255)
 
-template drawMenu(abilities: untyped, cursor: int, renderInfo: RenderInfo) =
-    ## abilities should be an iterator
-    ## this has to be a template because iterators are not fist class
+template drawMenu(namedItems: untyped, cursor: int, renderInfo: RenderInfo) =
     const lineSpacing = 12
     var i = 0
-    for ability in abilities:
-        renderText(renderInfo, ability.name,
+    for thing in namedItems:
+        renderText(renderInfo, thing.name,
                    MENU_LOCATION + v(0, i * lineSpacing), WHITE)
         if i == cursor:
             renderText(renderInfo, "*",
@@ -52,6 +50,10 @@ proc drawMessage(message: string, renderInfo: RenderInfo) =
 
 proc drawMapCursor(mapCursor: Vec2, renderInfo: RenderInfo, transform: Vec2) {.inline.} =
     drawImage(TextureAlias.mapCursor, mapCursor.scale(TILE_SIZE),
+              renderInfo.renderer, transform)
+
+proc drawMapMarker(mapCursor: Vec2, renderInfo: RenderInfo, transform: Vec2) {.inline.} =
+    drawImage(TextureAlias.mapMarker, mapCursor.scale(TILE_SIZE),
               renderInfo.renderer, transform)
 
 
@@ -73,12 +75,16 @@ proc renderCombatScreen*(gameState: GameState,
 
     case combat.state
     of CombatState.pickingMovement:
+        drawMapMarker(activeChar.currentTile, renderInfo, transform)
         drawMapCursor(combat.mapCursor, renderInfo, transform)
     of CombatState.pickingAbility:
+        drawMapMarker(activeChar.currentTile, renderInfo, transform)
         drawMenu(activeChar.iterAbilities(), combat.menuCursor, renderInfo)
     of CombatState.pickingWeapon:
+        drawMapMarker(activeChar.currentTile, renderInfo, transform)
         drawMenu(activeChar.iterWeapons(), combat.menuCursor, renderInfo)
     of CombatState.pickingTarget:
+        drawMapMarker(activeChar.currentTile, renderInfo, transform)
         drawMapCursor(combat.mapCursor, renderInfo, transform)
         drawMessage(combat.message, renderInfo)
     else: discard
@@ -95,7 +101,7 @@ proc getCharacterAtTile(combat: CombatScreen, v: Vec2): Character =
 
 
 proc isValidCasting(caster: Character, target: Character,
-                    ability: Ability, weapon: Item): (bool, string) =
+                    ability: Ability, weapon: WeaponInfo): (bool, string) =
     if target.isNil:
         (false, "No one is there!")
     elif caster.health < ability.healthCost or
@@ -103,11 +109,19 @@ proc isValidCasting(caster: Character, target: Character,
             caster.energy < ability.energyCost:
         (false, "Too exhausted")
     elif distance(caster.currentTile,
-                  target.currentTile) > ability.abilityRange:
+                  target.currentTile) > ability.getRange(weapon):
         (false, "Out of range")
     else: (true, nil)
 
 
+proc goToNextTurn(combat: var CombatScreen) =
+    combat.turn = (combat.turn + 1) mod combat.turnOrder.len
+    #TODO check if enemy turn; handle enemy AI
+    while combat.turnOrder[combat.turn] in combat.enemyParty:
+        combat.turn = (combat.turn + 1) mod combat.turnOrder.len
+    combat.menuCursor = 0
+    combat.mapCursor = combat.turnOrder[combat.turn].currentTile
+    combat.state = CombatState.pickingMovement
 
 proc setupCombat(info: var CombatScreen) =
     info.turnOrder = concat(info.playerParty, info.enemyParty)
@@ -182,8 +196,11 @@ proc updateCombatScreen*(combat: var CombatScreen,
             (combat.menuCursor + moveY) mod activeChar.numAbilites
         if enterPressed:
             combat.activeAbility = activeChar.getAbility(combat.menuCursor)
-            combat.state = CombatState.pickingWeapon
-            combat.menuCursor = 0
+            if combat.activeAbility.isNone:
+                combat.goToNextTurn()
+            else:
+                combat.state = CombatState.pickingWeapon
+                combat.menuCursor = 0
     of CombatState.pickingWeapon:
         let (numWeapons, weapons) = activeChar.getWeapons
         combat.menuCursor =
@@ -204,12 +221,10 @@ proc updateCombatScreen*(combat: var CombatScreen,
             #TODO this won't change it
             var target = combat.getCharacterAtTile(combat.mapCursor)
             let (valid, reason) = isValidCasting(activeChar, target,
-                    combat.activeAbility, combat.activeWeapon)
+                    combat.activeAbility, combat.activeWeapon.weaponInfo)
             if not valid:
                 combat.message = reason
             else:
                 combat.activeAbility.applyEffect(activeChar, target,
                                                  combat.activeWeapon)
-
-                combat.turn = (combat.turn + 1) mod combat.turnOrder.len
-                combat.state = CombatState.pickingMovement
+                combat.goToNextTurn()

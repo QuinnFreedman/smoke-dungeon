@@ -17,10 +17,8 @@ type
         baseDamage*: int
         critChance*: float
         critBonus*: float
-        weaponRange*: AttackRange
+        weaponRange*: float
         handedness*: Handed
-
-    AttackRange* {.pure.} = enum melee, short, long, ally
 
     Handed* {.pure.} = enum single, double
 

@@ -5,7 +5,7 @@ import
 type
     Ability* = object
         name*: string
-        abilityRange*: float #number of squares
+        abilityRange: float #number of squares
         useWeaponRange*: bool #if true, ignore abilityRange and use the range of the weaoon the spell is channeled throug
         abilityType*: AbilityType #TODO add required fields for AOE spells
         energyCost*: int
@@ -35,11 +35,28 @@ let HEAVY_ATTACK: Ability =
             target.health -= 2 #TODO placeholder
     )
 
+
+proc getRange*(self: Ability, weapon: WeaponInfo): float =
+    if self.useWeaponRange:
+        weapon.weaponRange
+    else:
+        self.abilityRange
+
+let NONE_ABILITY* = Ability(
+    name: "Rest"
+)
+
+proc isNone*(self: Ability): bool =
+    self.name == "Rest"
+
+
+
 #TODO awkawrd to have this here
 #TODO placeholder
 iterator iterAbilities*(self: Character): Ability =
     yield BASIC_ATTACK
     yield HEAVY_ATTACK
+    yield NONE_ABILITY
 
 proc numAbilites*(self: Character): int =
     for _ in self.iterAbilities:

@@ -10,7 +10,7 @@ let IRON_SHORTSWORD* = Item(
         baseDamage: 2,
         critChance: 0.2,
         critBonus: 0.5,
-        weaponRange: AttackRange.melee,
+        weaponRange: 1,
         handedness: Handed.single
     )
 )
@@ -23,7 +23,7 @@ let NONE_WEAPON* = Item(
         baseDamage: 1,
         critChance: 0.2,
         critBonus: 0.5,
-        weaponRange: AttackRange.melee,
+        weaponRange: 1,
         handedness: Handed.single
     )
 )

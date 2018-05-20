@@ -62,6 +62,7 @@ type
         mapCursor*: Vec2
         menuCursor*: int
         path*: seq[Vec2]
+        message*: string
 
     CombatState* {.pure.} = enum
         waiting,

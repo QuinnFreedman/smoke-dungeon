@@ -14,7 +14,8 @@ import
     astar,
     level,
     times,
-    random
+    random,
+    weapon_definitions
 
 
 type
@@ -33,6 +34,11 @@ type
         backpack*: Matrix[Item]
         spritesheet*: TextureAlias
         health*: int
+        mana*: int
+        energy*: int
+        maxHealth*: int
+        maxMana*: int
+        maxEnergy*: int
 
         case kind*: CharacterType
         of humanoid:
@@ -54,6 +60,23 @@ type
 
 proc getInitiative*(self: Character): int =
     0 #TODO: use dexterity, class/race modifyer, initiative modifier, speed, etc
+
+
+proc getWeapons*(self: Character): (int, array[2, Item]) =
+    if self.leftHand.isNone and self.rightHand.isNone:
+        (1, [NONE_WEAPON, NONE_ITEM])
+    elif self.leftHand.isNone:
+        (2, [self.rightHand, NONE_WEAPON])
+    elif self.rightHand.isNone:
+        (2, [NONE_WEAPON, self.leftHand])
+    else:
+        (2, [self.leftHand, self.rightHand])
+
+
+iterator iterWeapons*(self: Character): Item =
+    let (numWeapons, weapons) = self.getWeapons()
+    for i in 0..<numWeapons:
+        yield weapons[i]
 
 
 # -------------------------------------

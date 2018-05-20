@@ -1,4 +1,5 @@
-import sdl2
+import sdl2,
+    math
 
 import
     vector,
@@ -43,6 +44,7 @@ proc pop*[T](self: seq[T]): T =
     result = self[lastIndex]
     self.delete(lastIndex, lastIndex)
 
-proc cycle*(it: iterator): int =
-    for _ in it:
-        result += 1
+proc distance(a, b: Vec2): float =
+    let dx = float(a.x - b.x)
+    let dy = float(a.y - b.y)
+    sqrt(dx * dx  + dy * dy)

@@ -23,7 +23,7 @@ import
     ability
 
 type
-    Input* {.pure.} = enum none, left, right, up, down, tab, enter
+    Input* {.pure.} = enum none, left, right, up, down, tab, enter, back
 
     Screen* {.pure.} = enum world, inventory, combat
 
@@ -55,10 +55,11 @@ type
         enemyParty*: seq[Character]
         turnOrder*: seq[Character]
         center*: Vec2
-        state*: CombatState
+        privateState: CombatState
         turn*: int
         activeWeapon*: Item
         activeAbility*: Ability
+        movementTarget*: Vec2
         mapCursor*: Vec2
         menuCursor*: int
         path*: seq[Vec2]
@@ -75,6 +76,13 @@ type
         inputs: array[Input, bool]
         inputsSinceLastFrame: array[Input, bool]
 
+proc state*(self: CombatScreen): CombatState {.inline.} = self.privateState
+
+proc setState*(self: var CombatScreen, state: CombatState) {.inline.} =
+    template activeChar: untyped = self.turnOrder[self.turn]
+    self.menuCursor = 0
+    self.mapCursor = activeChar.currentTile
+    self.privateState = state
 
 proc width*(self: Level): int {.inline.} =
     self.walls.width

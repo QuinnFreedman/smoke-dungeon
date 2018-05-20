@@ -119,9 +119,7 @@ proc goToNextTurn(combat: var CombatScreen) =
     #TODO check if enemy turn; handle enemy AI
     while combat.turnOrder[combat.turn] in combat.enemyParty:
         combat.turn = (combat.turn + 1) mod combat.turnOrder.len
-    combat.menuCursor = 0
-    combat.mapCursor = combat.turnOrder[combat.turn].currentTile
-    combat.state = CombatState.pickingMovement
+    combat.setState(CombatState.pickingMovement)
 
 proc setupCombat(info: var CombatScreen) =
     info.turnOrder = concat(info.playerParty, info.enemyParty)
@@ -130,12 +128,9 @@ proc setupCombat(info: var CombatScreen) =
 
     # TODO this should be the average of all entities in the combat
     info.center = info.playerParty[0].currentTile
-    info.state = CombatState.waiting
     info.turn = 0
 
-    #TODO
-    info.mapCursor = info.turnOrder[0].currentTile
-    info.state = CombatState.pickingMovement
+    info.setState(CombatState.pickingMovement)
 
 proc updateCombatScreen*(combat: var CombatScreen,
                          level: Level,
@@ -158,6 +153,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
         else: 0
 
     let enterPressed = keyboard.keyPressed(Input.enter)
+    let backPressed = keyboard.keyPressed(Input.back)
 
     case combat.state
     of CombatState.pickingMovement:
@@ -166,15 +162,16 @@ proc updateCombatScreen*(combat: var CombatScreen,
                                    window.x, window.x + window.w)
         combat.mapCursor.y = clamp(combat.mapCursor.y + moveY,
                                    window.y, window.y + window.h)
-        if enterPressed: combat.state = CombatState.waiting
+        if enterPressed:
+            combat.movementTarget = combat.mapCursor
+            combat.setState(CombatState.waiting)
     of CombatState.waiting:
-        #TODO follow path
         if combat.path.isNil:
             combat.path = aStarSearch(level.walls,
                                       activeChar.currentTile,
-                                      combat.mapCursor, 1)
+                                      combat.movementTarget, 1)
             if combat.path.len == 0:
-                combat.state = CombatState.pickingMovement
+                combat.setState(CombatState.pickingMovement)
                 return
             discard combat.path.pop
             echo "path from " & $activeChar.currentTile & " to " & $combat.mapCursor & ": " & $combat.path
@@ -182,8 +179,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
             echo combat.path
             if combat.path.len == 0:
                 combat.path = nil
-                combat.state = CombatState.pickingAbility
-                combat.menuCursor = 0
+                combat.setState(CombatState.pickingAbility)
             else:
                 let nextTile = combat.path.pop()
                 activeChar.moveToward(nextTile, level.walls)
@@ -199,32 +195,38 @@ proc updateCombatScreen*(combat: var CombatScreen,
             if combat.activeAbility.isNone:
                 combat.goToNextTurn()
             else:
-                combat.state = CombatState.pickingWeapon
-                combat.menuCursor = 0
+                combat.setState(CombatState.pickingWeapon)
     of CombatState.pickingWeapon:
+        if backPressed:
+            combat.setState(CombatState.pickingAbility)
+
         let (numWeapons, weapons) = activeChar.getWeapons
         combat.menuCursor =
             (combat.menuCursor + moveY) mod numWeapons
         if enterPressed:
             combat.activeWeapon = weapons[combat.menuCursor]
-            combat.menuCursor = 0
-            combat.mapCursor = activeChar.currentTile
-            combat.state = CombatState.pickingTarget
+            combat.setState(CombatState.pickingTarget)
 
     of CombatState.pickingTarget:
-        let window = getCombatWindow(combat)
-        combat.mapCursor.x = clamp(combat.mapCursor.x + moveX,
-                                   window.x, window.x + window.w)
-        combat.mapCursor.y = clamp(combat.mapCursor.y + moveY,
-                                   window.y, window.y + window.h)
-        if enterPressed:
-            #TODO this won't change it
-            var target = combat.getCharacterAtTile(combat.mapCursor)
-            let (valid, reason) = isValidCasting(activeChar, target,
-                    combat.activeAbility, combat.activeWeapon.weaponInfo)
-            if not valid:
-                combat.message = reason
-            else:
-                combat.activeAbility.applyEffect(activeChar, target,
-                                                 combat.activeWeapon)
-                combat.goToNextTurn()
+        if not combat.message.isNil:
+            if backPressed:
+                combat.message = nil
+        else:
+            if backPressed:
+                combat.setState(CombatState.pickingWeapon)
+            let window = getCombatWindow(combat)
+            combat.mapCursor.x = clamp(combat.mapCursor.x + moveX,
+                                       window.x, window.x + window.w)
+            combat.mapCursor.y = clamp(combat.mapCursor.y + moveY,
+                                       window.y, window.y + window.h)
+            if enterPressed:
+                #TODO this won't change it
+                var target = combat.getCharacterAtTile(combat.mapCursor)
+                let (valid, reason) = isValidCasting(activeChar, target,
+                        combat.activeAbility, combat.activeWeapon.weaponInfo)
+                if not valid:
+                    combat.message = reason
+                else:
+                    combat.activeAbility.applyEffect(activeChar, target,
+                                                     combat.activeWeapon)
+                    combat.goToNextTurn()

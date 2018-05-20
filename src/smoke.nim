@@ -31,6 +31,7 @@ proc toInput(key: Scancode): Input =
     of SDL_SCANCODE_TAB: Input.tab
     of SDL_SCANCODE_RETURN,
        SDL_SCANCODE_RETURN2: Input.enter
+    of SDL_SCANCODE_BACKSPACE: Input.back
     else: Input.none
 
 

@@ -11,7 +11,8 @@ import gamestate,
        utils,
        render_utils,
        shadowcasting,
-       item
+       item,
+       textures
 
 proc renderMap*(map: Matrix[sdl2.Rect], window: Rect,
                 renderer: RendererPtr, transfrom: Vec2) =
@@ -25,13 +26,18 @@ proc renderMap*(map: Matrix[sdl2.Rect], window: Rect,
 
 proc renderCharacter*(character: Character,
                       renderer: RendererPtr, transfrom: Vec2) =
-    var srect = character.getSrcRect
     var drect = character.getDestRect
-    drawImage(character.spritesheet,
-              srect, drect, renderer, transfrom)
-    for item in character.iterWornItems:
-        let sprite = item.getTexture(character.sex)
-        drawImage(sprite, srect, drect, renderer, transfrom)
+    if character.health > 0:
+        var srect = character.getSrcRect
+        drawImage(character.spritesheet,
+                  srect, drect, renderer, transfrom)
+        for item in character.iterWornItems:
+            let sprite = item.getTexture(character.sex)
+            drawImage(sprite, srect, drect, renderer, transfrom)
+    else:
+        var srect = rect(0, 0, TILE_SIZE, TILE_SIZE)
+        drawImage(TextureAlias.bloodStain, srect, drect,
+                  renderer, transfrom)
 
 
 proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,

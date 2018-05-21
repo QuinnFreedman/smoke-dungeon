@@ -20,7 +20,7 @@ proc loopMainGame(gameState: var GameState, combatInfo: var CombatScreen,
 
     let pc = gamestate.playerParty[0]
     for entity in gameState.entities:
-        if not (entity in gameState.playerParty):
+        if entity.health > 0 and not (entity in gameState.playerParty):
             if distance(pc.currentTile, entity.currentTile) <= 1.0 or
                     distance(pc.currentTile, entity.nextTile) <= 1.0:
                 result = Screen.combat

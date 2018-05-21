@@ -20,6 +20,10 @@ import
     ability,
     item
 
+const WHITE = color(r=255, g=255, b=255, a=255)
+const RED = color(r=255, g=0, b=0, a=255)
+const BLUE = color(r=0, g=0, b=255, a=255)
+
 proc getCombatWindow(combat: CombatScreen): Rect =
     const radiusX = 3
     const radiusY = 2
@@ -29,28 +33,49 @@ proc getCombatWindow(combat: CombatScreen): Rect =
             2 * radiusX + 1, 2 * radiusY + 1)
 
 
+proc renderVerticalBar(pos: Vec2, height: int, value: float, color: Color,
+                       renderInfo: RenderInfo, transform: Vec2) =
+    let barHeight = (value * (height.float - 2)).round.cint
+
+    let bar = rect(pos.x.cint, pos.y.cint, 3, height.cint)
+    drawRect(bar, color,
+             renderInfo.renderer, transform)
+    fillRect(rect(bar.x + 1, bar.y + (bar.h - 1 - barHeight),
+                  bar.w - 2, barHeight),
+             color,
+             renderInfo.renderer, transform)
+
+proc renderHorizontalBar(pos: Vec2, width: int, value: float, color: Color,
+                         renderInfo: RenderInfo, transform: Vec2)=
+
+    let length = (value * (TILE_SIZE.float - 4)).round.cint
+    fillRect(rect(pos.x.cint, pos.y.cint, length, width.cint), color,
+             renderInfo.renderer, transform)
+
+
 proc renderCharacterVitals(character: Character,
                            renderInfo: RenderInfo, transform: Vec2) =
     let upperLeft = character.actualPos.scale(TILE_SIZE).round()
 
     if character.maxHealth != 0:
-        let barHeight = TILE_SIZE.cint
-        let scaledHealth = cint(round(
-                character.health / character.maxHealth * (barHeight.float - 2)))
+         # renderVerticalBar(upperLeft + v(3, 3), TILE_SIZE - 6,
+         #        character.health / character.maxHealth, RED,
+         #        renderInfo, transform)
+         renderHorizontalBar(upperLeft + v(2, 2), 2,
+                character.health / character.maxHealth, RED,
+                renderInfo, transform)
 
-        let bar = rect(upperLeft.x.cint, upperLeft.y.cint, 3, barHeight)
-        drawRect(bar,
-                 color(255, 0, 0, 255),
-                 renderInfo.renderer, transform)
-        fillRect(rect(bar.x + 1, bar.y + (bar.h - 1 - scaledHealth),
-                      bar.w - 2, scaledHealth),
-                 color(255, 0, 0, 255),
-                 renderInfo.renderer, transform)
+    if character.maxMana != 0:
+         renderHorizontalBar(upperLeft + v(2, 4), 2,
+                character.mana / character.maxMana, BLUE,
+                renderInfo, transform)
+         # renderVerticalBar(upperLeft + v(29, 0), TILE_SIZE,
+         #        character.mana / character.maxMana, BLUE,
+         #        renderInfo, transform)
 
 
 
 const MENU_LOCATION = v(50, 100)
-const WHITE = color(r=255, g=255, b=255, a=255)
 
 proc drawMessage(message: string, renderInfo: RenderInfo) =
     if not message.isNil:
@@ -153,7 +178,23 @@ proc validateTarget(combatInfo: CombatScreen,
     else: (true, nil)
 
 
-proc goToNextTurn(combat: var CombatScreen) =
+proc goToNextTurn(combat: var CombatScreen): Screen =
+    result = Screen.combat
+
+    #cull dead
+    # combat.turnOrder.keepIf(proc (x: Character): bool = x.health > 0)
+    var numAllies, numEnemies = 0
+    for c in combat.turnOrder:
+        if c.health > 0:
+            if c in combat.playerParty:
+                inc(numAllies)
+            elif c in combat.enemyParty:
+                inc(numEnemies)
+
+    if numEnemies == 0:
+        return Screen.world
+
+
     combat.turn = (combat.turn + 1) mod combat.turnOrder.len
     #TODO check if enemy turn; handle enemy AI
     while combat.turnOrder[combat.turn] in combat.enemyParty:
@@ -235,7 +276,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
             if enterPressed:
                 combat.activeAbility = activeChar.getAbility(combat.menuCursor)
                 if combat.activeAbility.isNone:
-                    combat.goToNextTurn()
+                    result = combat.goToNextTurn()
                 elif activeChar.canCast(combat.activeAbility):
                     combat.setState(CombatState.pickingWeapon)
                 else:
@@ -271,4 +312,4 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 combat.activeAbility.applyEffect(activeChar, target,
                                                  combat.activeWeapon)
                 activeChar.faceToward(combat.mapCursor)
-                combat.goToNextTurn()
+                result = combat.goToNextTurn()

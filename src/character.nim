@@ -133,6 +133,8 @@ proc `$` *(self: Character): string =
 # -------------------------------------
 
 proc update*(self: Character, level: Level, dt: float) =
+    if self.health <= 0: return
+
     if self.isMoving:
         let dif = vecFloat(self.nextTile) - self.actualPos
 

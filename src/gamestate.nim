@@ -83,6 +83,7 @@ proc setState*(self: var CombatScreen, state: CombatState) {.inline.} =
     self.menuCursor = 0
     self.mapCursor = activeChar.currentTile
     self.privateState = state
+    self.message = nil
 
 proc width*(self: Level): int {.inline.} =
     self.walls.width

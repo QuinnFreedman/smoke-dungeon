@@ -103,6 +103,10 @@ proc moveToward*(self: Character, dest: Vec2, collision: Matrix[bool]) =
     self.move(self.currentTile.directionTo(dest), collision)
 
 
+proc faceToward*(self: Character, target: Vec2) =
+    self.facing = self.currentTile.directionTo(target)
+
+
 proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Item) =
     case self.kind
     of CharacterType.humanoid:

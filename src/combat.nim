@@ -1,6 +1,7 @@
 import
     sdl2,
-    sequtils
+    sequtils,
+    math
 
 import
     matrix,
@@ -28,6 +29,26 @@ proc getCombatWindow(combat: CombatScreen): Rect =
             2 * radiusX + 1, 2 * radiusY + 1)
 
 
+proc renderCharacterVitals(character: Character,
+                           renderInfo: RenderInfo, transform: Vec2) =
+    let upperLeft = character.actualPos.scale(TILE_SIZE).round()
+
+    if character.maxHealth != 0:
+        let barHeight = TILE_SIZE.cint
+        let scaledHealth = cint(round(
+                character.health / character.maxHealth * (barHeight.float - 2)))
+
+        let bar = rect(upperLeft.x.cint, upperLeft.y.cint, 3, barHeight)
+        drawRect(bar,
+                 color(255, 0, 0, 255),
+                 renderInfo.renderer, transform)
+        fillRect(rect(bar.x + 1, bar.y + (bar.h - 1 - scaledHealth),
+                      bar.w - 2, scaledHealth),
+                 color(255, 0, 0, 255),
+                 renderInfo.renderer, transform)
+
+
+
 const MENU_LOCATION = v(50, 100)
 const WHITE = color(r=255, g=255, b=255, a=255)
 
@@ -44,10 +65,10 @@ template drawMenu(message: string, namedItems: untyped,
     for thing in namedItems:
         let yOffset = (i + 1) * lineSpacing
         renderText(renderInfo, thing.name,
-                   MENU_LOCATION + v(0, yOffset), WHITE)
+                   MENU_LOCATION + v(8, yOffset), WHITE)
         if i == cursor:
             renderText(renderInfo, "*",
-                       MENU_LOCATION + v(-8, yOffset), WHITE)
+                       MENU_LOCATION + v(0, yOffset), WHITE)
 
         inc(i)
 
@@ -100,6 +121,7 @@ proc renderCombatScreen*(gameState: GameState,
     else: discard
 
     for character in combat.turnOrder:
+        renderCharacterVitals(character, renderInfo, transform)
         renderCharacter(character, renderInfo.renderer, transform)
 
 

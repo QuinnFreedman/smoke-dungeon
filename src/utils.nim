@@ -44,10 +44,5 @@ proc pop*[T](self: seq[T]): T =
     result = self[lastIndex]
     self.delete(lastIndex, lastIndex)
 
-proc distance(a, b: Vec2): float =
-    let dx = float(a.x - b.x)
-    let dy = float(a.y - b.y)
-    sqrt(dx * dx  + dy * dy)
-
 proc `%%`*(a, b: int): int =
     (a + b) mod b

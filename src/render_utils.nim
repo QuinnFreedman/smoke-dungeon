@@ -46,6 +46,36 @@ proc drawImage*(texture: TextureAlias, pos: Vec2,
     let _ = sdl2.copy(renderer, texture.getTexture, nil, addr(drect))
 
 
+proc fillRect*(drect: Rect, color: Color,
+               renderer: RendererPtr, transform: Vec2) =
+    var newRect = rect(
+        drect.x + cint(transform.x),
+        drect.y + cint(transform.y),
+        drect.w,
+        drect.h
+    )
+    var r, g, b, a: uint8
+    renderer.getDrawColor(r, g, b, a)
+    renderer.setDrawColor(color)
+    renderer.fillRect(newRect)
+    renderer.setDrawColor(r, g, b, a)
+
+
+proc drawRect*(drect: Rect, color: Color,
+               renderer: RendererPtr, transform: Vec2) =
+    var newRect = rect(
+        drect.x + cint(transform.x),
+        drect.y + cint(transform.y),
+        drect.w,
+        drect.h
+    )
+    var r, g, b, a: uint8
+    renderer.getDrawColor(r, g, b, a)
+    renderer.setDrawColor(color)
+    renderer.drawRect(newRect)
+    renderer.setDrawColor(r, g, b, a)
+
+
 type
     RenderInfo* = object
         renderer*: RendererPtr

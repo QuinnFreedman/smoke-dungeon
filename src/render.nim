@@ -34,15 +34,6 @@ proc renderCharacter*(character: Character,
         drawImage(sprite, srect, drect, renderer, transfrom)
 
 
-proc renderRect(drect: Rect, renderer: RendererPtr, transform: Vec2) =
-        var newRect = rect(
-            drect.x + cint(transform.x),
-            drect.y + cint(transform.y),
-            drect.w,
-            drect.h
-        )
-        renderer.fillRect(newRect)
-
 proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
                 renderer: RendererPtr, transform: Vec2) =
 
@@ -56,8 +47,9 @@ proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
             else:
                 if mask2[pos]: blend
                 else: 0.0
-        renderer.setDrawColor(0, 0, 0, uint8(alpha * 150))
-        renderRect(r, renderer, transform)
+
+        fillRect(r, color(0, 0, 0, uint8(alpha * 150)),
+                 renderer, transform)
 
 
 proc getRenderWindow(playerPos: Vec2): Rect =

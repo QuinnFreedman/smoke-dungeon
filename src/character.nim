@@ -226,7 +226,8 @@ proc getDestRect*(self: Character): sdl2.Rect =
 # Initialization
 # -------------------------------------
 
-proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):
+proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex,
+                   health, mana, energy: int):
         Character =
     new result
     result.currentTile = pos
@@ -238,3 +239,9 @@ proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex):
     result.sex = sex
     result.backpack = newMatrix[Item](4, 2)
     result.spritesheet = getBaseSpriteSheet(race, sex)
+    result.maxHealth = health
+    result.health = health
+    result.maxMana = mana
+    result.mana = mana
+    result.maxEnergy = energy
+    result.energy = energy

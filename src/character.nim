@@ -99,6 +99,7 @@ proc move*(self: Character, dir: Direction, collision: Matrix[bool]) =
         if not collision[dest]:
             self.nextTile = dest
 
+
 proc moveToward*(self: Character, dest: Vec2, collision: Matrix[bool]) =
     self.move(self.currentTile.directionTo(dest), collision)
 
@@ -157,7 +158,7 @@ proc update*(self: Character, level: Level, dt: float) =
         of AI.follow:
             if not self.following.isNil:
                 let path = aStarSearch(level.walls, self.currentTile,
-                                       self.following.nextTile, 3)
+                                       self.following.nextTile, 3, nil)
                 if path.len > 4:
                     self.nextTile = path[path.len - 2]
                     self.facing = self.currentTile.directionTo(self.nextTile)

@@ -12,9 +12,14 @@ proc heuristic(a, b: Vec2): int =
     int(abs(a.x - b.x) + abs(a.y - b.y)) * 10
 
 
-#TODO make seedable: pass in rng
 proc aStarSearch*(collision: Matrix[bool], start, goal: Vec2,
-                  randomize: int): seq[Vec2] =
+                  randomNoise: int, rng: ptr Rand): seq[Vec2] =
+    var myRng =
+        if rng.isNil:
+            initRand(0)
+        else:
+            rng[]
+
     #TODO: don't alloc a new heap every time; just clear it
     var frontier = newHeap[(Vec2, int)]() do (a, b: (Vec2, int)) -> int:
         return a[1] - b[1]
@@ -44,7 +49,7 @@ proc aStarSearch*(collision: Matrix[bool], start, goal: Vec2,
 
         for i in 0..<numNeighbors:
             let next = neighbors[i]
-            let newCost = costSoFar[current] + 10 + rand(randomize)
+            let newCost = costSoFar[current] + 10 + myRng.rand(randomNoise)
             if not (next in costSoFar) or newCost < costSoFar[next]:
                 costSoFar[next] = newCost
                 let priority = newCost + heuristic(goal, next)

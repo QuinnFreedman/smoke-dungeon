@@ -250,7 +250,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
         if combat.path.isNil:
             combat.path = aStarSearch(level.walls,
                                       activeChar.currentTile,
-                                      combat.movementTarget, 1)
+                                      combat.movementTarget, 1, nil)
             if combat.path.len == 0:
                 combat.setState(CombatState.pickingMovement)
                 return

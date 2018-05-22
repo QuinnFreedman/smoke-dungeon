@@ -12,8 +12,7 @@ import
     level
 
 proc generateLevel*(width, height: int, rng: var Rand): Level =
-    result.textures = newMatrix[sdl2.Rect](width, height)
-    result.walls = newMatrix[bool](width, height)
+    result = newLevel(width, height)
     result.walls.setAll(true)
     result.textures.setAll(BLACK)
 
@@ -33,6 +32,10 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
         while not result.walls.contains(next):
             next = particle + directionVector(randomDirection(rng))
         particle = next
+
+
+    for p in result.walls.indices:
+        result.collision[p] = uint8(result.walls[p])
 
 
 proc debugDrawDungeon(textures: Matrix[Rect]) =

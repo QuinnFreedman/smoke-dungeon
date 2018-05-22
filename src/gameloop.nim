@@ -30,13 +30,13 @@ proc loopMainGame(gameState: var GameState, combatInfo: var CombatScreen,
                 return
 
     if keyboard.keyDown(Input.up):
-        pc.move(Direction.up, gamestate.level.walls)
+        pc.move(Direction.up, gamestate.level.collision)
     if keyboard.keyDown(Input.down):
-        pc.move(Direction.down, gamestate.level.walls)
+        pc.move(Direction.down, gamestate.level.collision)
     if keyboard.keyDown(Input.left):
-        pc.move(Direction.left, gamestate.level.walls)
+        pc.move(Direction.left, gamestate.level.collision)
     if keyboard.keyDown(Input.right):
-        pc.move(Direction.right, gamestate.level.walls)
+        pc.move(Direction.right, gamestate.level.collision)
 
     for entity in gameState.entities:
         entity.update(gamestate.level, dt)

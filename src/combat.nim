@@ -124,7 +124,10 @@ proc renderCombatScreen*(gameState: GameState,
 
     case combat.state
     of CombatState.pickingMovement:
-        drawMessage("Move where?", renderInfo)
+        if combat.message.isNil:
+            drawMessage("Move where?", renderInfo)
+        else:
+            drawMessage(combat.message, renderInfo)
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
         drawMapCursor(combat.mapCursor, renderInfo, transform)
     of CombatState.pickingAbility:
@@ -214,7 +217,7 @@ proc setupCombat(info: var CombatScreen) =
     info.setState(CombatState.pickingMovement)
 
 proc updateCombatScreen*(combat: var CombatScreen,
-                         level: Level,
+                         level: var Level,
                          keyboard: Keyboard,
                          dt: float): Screen =
     result = Screen.combat
@@ -245,23 +248,23 @@ proc updateCombatScreen*(combat: var CombatScreen,
                                    window.y, window.y + window.h - 1)
         if enterPressed:
             combat.movementTarget = combat.mapCursor
-            combat.setState(CombatState.waiting)
+            var path = aStarSearch(level.collision,
+                                   activeChar.currentTile,
+                                   combat.movementTarget, 1, nil)
+            if path.isNil:
+                combat.message = "Can't move there"
+            else:
+                discard path.pop
+                combat.path = path
+                combat.setState(CombatState.waiting)
     of CombatState.waiting:
-        if combat.path.isNil:
-            combat.path = aStarSearch(level.walls,
-                                      activeChar.currentTile,
-                                      combat.movementTarget, 1, nil)
-            if combat.path.len == 0:
-                combat.setState(CombatState.pickingMovement)
-                return
-            discard combat.path.pop
         if not activeChar.isMoving:
             if combat.path.len == 0:
                 combat.path = nil
                 combat.setState(CombatState.pickingAbility)
             else:
                 let nextTile = combat.path.pop()
-                activeChar.moveToward(nextTile, level.walls)
+                activeChar.moveToward(nextTile, level.collision)
 
         if activeChar.isMoving:
             activeChar.update(level, dt)

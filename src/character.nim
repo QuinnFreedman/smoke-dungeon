@@ -87,7 +87,7 @@ proc isMoving*(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
 
 
-proc move*(self: Character, dir: Direction, collision: Matrix[bool]) =
+proc move*(self: Character, dir: Direction, collision: var Matrix[uint8]) =
     if self.currentTile != self.nextTile:
         return
 
@@ -96,11 +96,13 @@ proc move*(self: Character, dir: Direction, collision: Matrix[bool]) =
     let dest: Vec2 = self.currentTile + directionVector(dir)
 
     if collision.contains(dest):
-        if not collision[dest]:
+        if collision[dest] == 0:
             self.nextTile = dest
+            collision.dec(self.currentTile)
+            collision.inc(self.nextTile)
 
 
-proc moveToward*(self: Character, dest: Vec2, collision: Matrix[bool]) =
+proc moveToward*(self: Character, dest: Vec2, collision: var Matrix[uint8]) =
     self.move(self.currentTile.directionTo(dest), collision)
 
 
@@ -133,7 +135,7 @@ proc `$` *(self: Character): string =
 # Update
 # -------------------------------------
 
-proc update*(self: Character, level: Level, dt: float) =
+proc update*(self: Character, level: var Level, dt: float) =
     if self.health <= 0: return
 
     if self.isMoving:
@@ -160,13 +162,14 @@ proc update*(self: Character, level: Level, dt: float) =
                 let path = aStarSearch(level.walls, self.currentTile,
                                        self.following.nextTile, 3, nil)
                 if path.len > 4:
-                    self.nextTile = path[path.len - 2]
-                    self.facing = self.currentTile.directionTo(self.nextTile)
+                    let nextTile = path[path.len - 2]
+                    self.moveToward(nextTile, level.collision)
+                    # self.facing = self.currentTile.directionTo(self.nextTile)
         of AI.random:
             if rand(60) < 1:
                 # quick hack so that being near walls doesnt make you move less
                 for _ in 0..10:
-                    self.move(randomDirection(), level.walls)
+                    self.move(randomDirection(), level.collision)
         else: discard
 
 
@@ -229,7 +232,8 @@ proc getDestRect*(self: Character): sdl2.Rect =
 # Initialization
 # -------------------------------------
 
-proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex,
+proc newCharacter*(level: var Level,
+                   pos: Vec2, speed: float, race: Race, sex: Sex,
                    health, mana, energy: int):
         Character =
     new result
@@ -248,3 +252,4 @@ proc newCharacter*(pos: Vec2, speed: float, race: Race, sex: Sex,
     result.mana = mana
     result.maxEnergy = energy
     result.energy = energy
+    level.collision.inc(pos)

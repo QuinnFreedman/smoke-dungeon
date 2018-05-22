@@ -66,6 +66,13 @@ proc contains*[T](self: Matrix[T], vec: Vec2): bool =
     let y = vec.y - self.offset.y
     x >= 0 and x < self.width and y >= 0 and y < self.height
 
+proc inc*[T](self: var Matrix[T], v: Vec2) =
+    self[v] = self[v] + 1
+
+proc dec*[T](self: var Matrix[T], v: Vec2) =
+    self[v] = self[v] - 1
+
+
 proc `$` *[T](self: Matrix[T]): string =
     "Matrix( width:$1, height:$2, offset:$3 )".format(
         self.width, self.height, self.offset)

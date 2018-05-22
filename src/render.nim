@@ -15,13 +15,23 @@ import gamestate,
        textures
 
 proc renderMap*(map: Matrix[sdl2.Rect], window: Rect,
-                renderer: RendererPtr, transfrom: Vec2) =
+                renderer: RendererPtr, transform: Vec2) =
     for pos in window.iterRect:
         if map.contains(pos):
             let srect = map[pos]
             let tilePos = pos.scale(TILE_SIZE)
             drawTile(TextureAlias.mapTiles,
-                    srect, tilePos, renderer, transfrom)
+                    srect, tilePos, renderer, transform)
+
+proc debugRenderCollision*(collision: Matrix[uint8], window: Rect,
+        renderer: RendererPtr, transform: Vec2) =
+    renderer.setDrawBlendMode(BlendMode_Blend)
+    for pos in window.iterRect:
+        if collision.contains(pos):
+            if collision[pos] > 0.uint8:
+                let tilePos = pos.scale(TILE_SIZE)
+                let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
+                fillRect(myRect, color(225, 0, 0, 100), renderer, transform)
 
 
 proc renderCharacter*(character: Character,

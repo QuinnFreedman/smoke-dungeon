@@ -129,8 +129,10 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
         textCache: newTextCache()
     )
 
-    let seed = int64(epochTime())
+    # let seed = int64(epochTime())
     # let seed = int64(1524099821)
+    # let seed = 1527012709
+    let seed = 1527012836
 
     var rng: Rand = initRand(seed)
     echo "Creating map with seed: $1".format(seed)
@@ -140,7 +142,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
 
     result.gameState.playerParty = newSeq[Character]()
 
-    var playerCharacter = newCharacter(
+    var playerCharacter = newCharacter(result.gameState.level,
         v(levelWidth div 2, levelHeight div 2), 2, Race.human, Sex.male,
         10, 10, 0)
 
@@ -153,7 +155,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     playerCharacter.backpack[2, 1] = IRON_SHORTSWORD
     result.gameState.playerParty.add(playerCharacter)
 
-    var companion1 = newCharacter(
+    var companion1 = newCharacter(result.gameState.level,
         v(levelWidth div 2 + 1, levelHeight div 2), 2, Race.human, Sex.male,
         10, 0, 10)
     companion1.backpack[1, 0] = KNIGHT_HELMET
@@ -161,7 +163,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     companion1.following = playerCharacter
     result.gameState.playerParty.add(companion1)
 
-    var spider = newCharacter(
+    var spider = newCharacter(result.gameState.level,
         v(levelWidth div 2, levelHeight div 2 - 1), 2, Race.spider, Sex.male,
         10, 0, 10)
     spider.ai = AI.random

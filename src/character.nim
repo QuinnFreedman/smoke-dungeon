@@ -15,7 +15,8 @@ import
     level,
     times,
     random,
-    weapon_definitions
+    weapon_definitions,
+    character_class
 
 
 type
@@ -33,6 +34,7 @@ type
         sex*: Sex
         backpack*: Matrix[Item]
         spritesheet*: TextureAlias
+        class*: Class
         health*: int
         mana*: int
         energy*: int
@@ -244,7 +246,7 @@ proc getDestRect*(self: Character): sdl2.Rect =
 
 proc newCharacter*(level: var Level,
                    pos: Vec2, speed: float, race: Race, sex: Sex,
-                   health, mana, energy: int):
+                   class: Class):
         Character =
     new result
     result.currentTile = pos
@@ -256,10 +258,11 @@ proc newCharacter*(level: var Level,
     result.sex = sex
     result.backpack = newMatrix[Item](4, 2)
     result.spritesheet = getBaseSpriteSheet(race, sex)
-    result.maxHealth = health
-    result.health = health
-    result.maxMana = mana
-    result.mana = mana
-    result.maxEnergy = energy
-    result.energy = energy
+    result.class = class
+    result.maxHealth = class.startingHealth
+    result.health = class.startingHealth
+    result.maxMana = class.startingMana
+    result.mana = class.startingMana
+    result.maxEnergy = class.startingEnergy
+    result.energy = class.startingEnergy
     level.collision.inc(pos)

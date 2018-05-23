@@ -73,6 +73,12 @@ proc renderCharacterVitals(character: Character,
          #        character.mana / character.maxMana, BLUE,
          #        renderInfo, transform)
 
+    if character.maxEnergy != 0:
+         renderHorizontalBar(upperLeft + v(2, 4), 2,
+                character.energy / character.maxEnergy,
+                color(200, 200, 0, 255),
+                renderInfo, transform)
+
 
 
 const MENU_LOCATION = v(50, 100)
@@ -120,8 +126,10 @@ proc renderCombatScreen*(gameState: GameState,
 
     let window = getCombatWindow(combat)
 
+    # Render map
     renderMap(gameState.level.textures, window, renderInfo.renderer, transform)
 
+    # Render markers and cursors
     case combat.state
     of CombatState.pickingMovement:
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
@@ -135,10 +143,12 @@ proc renderCombatScreen*(gameState: GameState,
         drawMapCursor(combat.mapCursor, renderInfo, transform)
     else: discard
 
+    # Render characters
     for character in combat.turnOrder:
         renderCharacterVitals(character, renderInfo, transform)
         renderCharacter(character, renderInfo.renderer, transform)
 
+    # Render text
     case combat.state
     of CombatState.pickingMovement:
         if combat.message.isNil:
@@ -191,8 +201,6 @@ proc validateTarget(combatInfo: CombatScreen,
 proc goToNextTurn(combat: var CombatScreen): Screen =
     result = Screen.combat
 
-    #cull dead
-    # combat.turnOrder.keepIf(proc (x: Character): bool = x.health > 0)
     var numAllies, numEnemies = 0
     for c in combat.turnOrder:
         if c.health > 0:
@@ -332,6 +340,9 @@ proc updateCombatScreen*(combat: var CombatScreen,
                     combat.activeWeapon.weaponInfo)
             combat.message = reason
             if valid:
+                activeChar.health -= combat.activeAbility.healthCost
+                activeChar.energy -= combat.activeAbility.energyCost
+                activeChar.mana -= combat.activeAbility.manaCost
                 combat.activeAbility.applyEffect(activeChar, target,
                                                  combat.activeWeapon)
                 activeChar.faceToward(combat.mapCursor)

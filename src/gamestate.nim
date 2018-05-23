@@ -20,7 +20,8 @@ import
     simple_types,
     level,
     render_utils,
-    ability
+    ability,
+    character_class
 
 type
     Input* {.pure.} = enum none, left, right, up, down, tab, enter, back
@@ -143,8 +144,8 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     result.gameState.playerParty = newSeq[Character]()
 
     var playerCharacter = newCharacter(result.gameState.level,
-        v(levelWidth div 2, levelHeight div 2), 2, Race.human, Sex.male,
-        10, 10, 0)
+        v(levelWidth div 2, levelHeight div 2), 2,
+        Race.human, Sex.male, ROGUE)
 
     playerCharacter.clothes[ClothingSlot. head] = MAGE_HOOD
     playerCharacter.clothes[ClothingSlot.body] = KNIGHT_CHESTPLATE
@@ -156,16 +157,16 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     result.gameState.playerParty.add(playerCharacter)
 
     var companion1 = newCharacter(result.gameState.level,
-        v(levelWidth div 2 + 1, levelHeight div 2), 2, Race.human, Sex.male,
-        10, 0, 10)
+        v(levelWidth div 2 + 1, levelHeight div 2), 2,
+        Race.human, Sex.male, ROGUE)
     companion1.backpack[1, 0] = KNIGHT_HELMET
     companion1.ai = AI.follow
     companion1.following = playerCharacter
     result.gameState.playerParty.add(companion1)
 
     var spider = newCharacter(result.gameState.level,
-        v(levelWidth div 2, levelHeight div 2 - 1), 2, Race.spider, Sex.male,
-        10, 0, 10)
+        v(levelWidth div 2, levelHeight div 2 - 1), 2,
+        Race.spider, Sex.male, ROGUE)
     spider.ai = AI.random
     spider.kind = CharacterType.animal
 

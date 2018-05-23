@@ -59,7 +59,7 @@ type
         turn*: int
         activeWeapon*: Item
         activeAbility*: Ability
-        movementTarget*: Vec2
+        movementStart*: Vec2
         mapCursor*: Vec2
         menuCursor*: int
         path*: seq[Vec2]

@@ -124,33 +124,40 @@ proc renderCombatScreen*(gameState: GameState,
 
     case combat.state
     of CombatState.pickingMovement:
-        if combat.message.isNil:
-            drawMessage("Move where?", renderInfo)
-        else:
-            drawMessage(combat.message, renderInfo)
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
         drawMapCursor(combat.mapCursor, renderInfo, transform)
     of CombatState.pickingAbility:
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
-        if not combat.message.isNil:
-            drawMessage(combat.message, renderInfo)
-        else:
-            drawMenu("Do what?", activeChar.iterAbilities(), combat.menuCursor, renderInfo)
     of CombatState.pickingWeapon:
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
-        drawMenu("Pick weapon", activeChar.iterWeapons(), combat.menuCursor, renderInfo)
     of CombatState.pickingTarget:
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
         drawMapCursor(combat.mapCursor, renderInfo, transform)
-        if not combat.message.isNil:
-            drawMessage(combat.message, renderInfo)
-        else:
-            drawMessage("Pick target", renderInfo)
     else: discard
 
     for character in combat.turnOrder:
         renderCharacterVitals(character, renderInfo, transform)
         renderCharacter(character, renderInfo.renderer, transform)
+
+    case combat.state
+    of CombatState.pickingMovement:
+        if combat.message.isNil:
+            drawMessage("Move where?", renderInfo)
+        else:
+            drawMessage(combat.message, renderInfo)
+    of CombatState.pickingAbility:
+        if not combat.message.isNil:
+            drawMessage(combat.message, renderInfo)
+        else:
+            drawMenu("Do what?", activeChar.iterAbilities(), combat.menuCursor, renderInfo)
+    of CombatState.pickingWeapon:
+        drawMenu("Pick weapon", activeChar.iterWeapons(), combat.menuCursor, renderInfo)
+    of CombatState.pickingTarget:
+        if not combat.message.isNil:
+            drawMessage(combat.message, renderInfo)
+        else:
+            drawMessage("Pick target", renderInfo)
+    else: discard
 
 
 proc getCharacterAtTile(combat: CombatScreen, v: Vec2): Character =
@@ -247,10 +254,11 @@ proc updateCombatScreen*(combat: var CombatScreen,
         combat.mapCursor.y = clamp(combat.mapCursor.y + moveY,
                                    window.y, window.y + window.h - 1)
         if enterPressed:
-            combat.movementTarget = combat.mapCursor
             var path = aStarSearch(level.collision,
                                    activeChar.currentTile,
-                                   combat.movementTarget, 1, nil)
+                                   combat.mapCursor, 1, nil)
+            combat.movementStart = activeChar.currentTile
+
             if path.isNil:
                 combat.message = "Can't move there"
             else:
@@ -258,32 +266,44 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 combat.path = path
                 combat.setState(CombatState.waiting)
     of CombatState.waiting:
-        if not activeChar.isMoving:
-            if combat.path.len == 0:
-                combat.path = nil
-                combat.setState(CombatState.pickingAbility)
-            else:
-                let nextTile = combat.path.pop()
-                activeChar.moveToward(nextTile, level.collision)
+        if backPressed:
+            activeChar.teleport(combat.movementStart,
+                combat.movementStart.directionTo(activeChar.currentTile),
+                level.collision)
+            combat.setState(CombatState.pickingMovement)
+        else:
+            if not activeChar.isMoving:
+                if combat.path.len == 0:
+                    combat.path = nil
+                    combat.setState(CombatState.pickingAbility)
+                else:
+                    let nextTile = combat.path.pop()
+                    activeChar.moveToward(nextTile, level.collision)
 
-        if activeChar.isMoving:
-            activeChar.update(level, dt)
+            if activeChar.isMoving:
+                activeChar.update(level, dt)
 
     of CombatState.pickingAbility:
         if not combat.message.isNil:
             if backPressed or enterPressed:
                 combat.message = nil
         else:
-            combat.menuCursor =
-                (combat.menuCursor + moveY) %% activeChar.numAbilites
-            if enterPressed:
-                combat.activeAbility = activeChar.getAbility(combat.menuCursor)
-                if combat.activeAbility.isNone:
-                    result = combat.goToNextTurn()
-                elif activeChar.canCast(combat.activeAbility):
-                    combat.setState(CombatState.pickingWeapon)
-                else:
-                    combat.message = "Too exhausted!"
+            if backPressed:
+                activeChar.teleport(combat.movementStart,
+                    combat.movementStart.directionTo(activeChar.currentTile),
+                    level.collision)
+                combat.setState(CombatState.pickingMovement)
+            else:
+                combat.menuCursor =
+                    (combat.menuCursor + moveY) %% activeChar.numAbilites
+                if enterPressed:
+                    combat.activeAbility = activeChar.getAbility(combat.menuCursor)
+                    if combat.activeAbility.isNone:
+                        result = combat.goToNextTurn()
+                    elif activeChar.canCast(combat.activeAbility):
+                        combat.setState(CombatState.pickingWeapon)
+                    else:
+                        combat.message = "Too exhausted!"
 
     of CombatState.pickingWeapon:
         if backPressed:

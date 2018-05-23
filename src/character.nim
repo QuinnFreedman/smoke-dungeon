@@ -87,6 +87,16 @@ proc isMoving*(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
 
 
+proc teleport*(self: Character, pos: Vec2, facing: Direction,
+               collision: var Matrix[uint8]) =
+    collision.dec(self.nextTile)
+    collision.inc(pos)
+    self.currentTile = pos
+    self.nextTile = pos
+    self.actualPos = pos.vecFloat
+    self.facing = facing
+
+
 proc move*(self: Character, dir: Direction, collision: var Matrix[uint8]) =
     if self.currentTile != self.nextTile:
         return

@@ -40,16 +40,16 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
         result.collision[p] = uint8(result.walls[p])
 
 
-proc debugDrawDungeon(textures: Matrix[Rect]) =
-    for y in 0..<textures.height:
-        var line = ""
-        for x in 0..<textures.width:
-            let c: string =
-                if textures[x, y]  == GRASS_LONG3:
-                    " ."
-                elif textures[x, y]  == STONE1:
-                    " #"
-                else:
-                    "  "
-            line = line & c
-        echo line
+# proc debugDrawDungeon(textures: Matrix[Rect]) =
+#     for y in 0..<textures.height:
+#         var line = ""
+#         for x in 0..<textures.width:
+#             let c: string =
+#                 if textures[x, y]  == GRASS_LONG3:
+#                     " ."
+#                 elif textures[x, y]  == STONE1:
+#                     " #"
+#                 else:
+#                     "  "
+#             line = line & c
+#         echo line

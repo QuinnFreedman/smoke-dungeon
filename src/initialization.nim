@@ -14,37 +14,10 @@ import
     dungeon_generation,
     clothing_definitions,
     weapon_definitions,
-    utils,
     render_utils,
     character_utils,
-    class_definitions
-
-
-proc width*(self: Level): int {.inline.} =
-    self.walls.width
-
-proc height*(self: Level): int {.inline.} =
-    self.walls.height
-
-proc renderer*(self: Game): RendererPtr {.inline.} =
-    self.renderInfo.renderer
-
-
-proc handleInput*(self: var Game, input: Input, keyDown: bool) {.inline.} =
-    self.keyboard.handleInput(input, keyDown)
-
-
-proc keyDown*(self: Game, key: Input): bool {.inline.} =
-    self.keyboard.keyDown(key)
-
-
-proc keyPressed*(self: Game, key: Input): bool {.inline.} =
-    self.keyboard.keyPressed(key)
-
-
-proc resetInputs*(self: Game) =
-    self.keyboard.resetInputs()
-
+    class_definitions,
+    ai
 
 proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     new result
@@ -54,10 +27,9 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
         textCache: newTextCache()
     )
 
-    # let seed = int64(epochTime())
+    let seed = int64(epochTime())
     # let seed = int64(1524099821)
     # let seed = 1527012709
-    let seed = 1527012836
 
     var rng: Rand = initRand(seed)
     echo "Creating map with seed: $1".format(seed)
@@ -84,14 +56,15 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
         v(levelWidth div 2 + 1, levelHeight div 2), 2,
         Race.human, Sex.male, ROGUE)
     companion1.backpack[1, 0] = KNIGHT_HELMET
-    # companion1.ai = AI.follow
+    companion1.following = playerCharacter
+    companion1.ai.worldMovement = AI_FOLLOW
     companion1.following = playerCharacter
     result.gameState.playerParty.add(companion1)
 
     var spider = newCharacter(result.gameState.level,
         v(levelWidth div 2, levelHeight div 2 - 1), 2,
         Race.spider, Sex.male, ROGUE)
-    # spider.ai = AI.random
+    spider.ai.worldMovement = AI_RANDOM
     spider.kind = CharacterType.animal
 
     result.gameState.entities = concat(result.gameState.playerParty)

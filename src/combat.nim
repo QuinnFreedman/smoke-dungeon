@@ -8,7 +8,7 @@ import
     matrix,
     vector,
     character_utils,
-    gamestate,
+    game_utils,
     constants,
     algorithm,
     ability_utils,
@@ -33,17 +33,17 @@ proc getCombatWindow(combat: CombatScreen): Rect =
             2 * radiusX + 1, 2 * radiusY + 1)
 
 
-proc renderVerticalBar(pos: Vec2, height: int, value: float, color: Color,
-                       renderInfo: RenderInfo, transform: Vec2) =
-    let barHeight = (value * (height.float - 2)).round.cint
-
-    let bar = rect(pos.x.cint, pos.y.cint, 3, height.cint)
-    drawRect(bar, color,
-             renderInfo.renderer, transform)
-    fillRect(rect(bar.x + 1, bar.y + (bar.h - 1 - barHeight),
-                  bar.w - 2, barHeight),
-             color,
-             renderInfo.renderer, transform)
+# proc renderVerticalBar(pos: Vec2, height: int, value: float, color: Color,
+#                        renderInfo: RenderInfo, transform: Vec2) =
+#     let barHeight = (value * (height.float - 2)).round.cint
+#
+#     let bar = rect(pos.x.cint, pos.y.cint, 3, height.cint)
+#     drawRect(bar, color,
+#              renderInfo.renderer, transform)
+#     fillRect(rect(bar.x + 1, bar.y + (bar.h - 1 - barHeight),
+#                   bar.w - 2, barHeight),
+#              color,
+#              renderInfo.renderer, transform)
 
 proc renderHorizontalBar(pos: Vec2, width: int, value: float, color: Color,
                          renderInfo: RenderInfo, transform: Vec2)=

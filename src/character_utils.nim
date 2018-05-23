@@ -15,8 +15,7 @@ import
     astar,
     times,
     weapon_definitions,
-    ability_definitions,
-    ai
+    ability_definitions
 
 
 
@@ -150,22 +149,10 @@ proc update*(self: Character, level: var Level, dt: float) =
 
         if abs(dif.x) < moveAmount and abs(dif.y) < moveAmount:
             self.currentTile = self.nextTile
-    # else:
-        # case self.ai
-        # of AI.follow:
-        #     if not self.following.isNil:
-        #         let path = aStarSearch(level.walls, self.currentTile,
-        #                                self.following.nextTile, 3, nil)
-        #         if path.len > 4:
-        #             let nextTile = path[path.len - 2]
-        #             self.moveToward(nextTile, level.collision)
-        #             # self.facing = self.currentTile.directionTo(self.nextTile)
-        # of AI.random:
-        #     if rand(60) < 1:
-        #         # quick hack so that being near walls doesnt make you move less
-        #         for _ in 0..10:
-        #             self.move(randomDirection(), level.collision)
-        # else: discard
+
+proc loopAI*(self: Character, others: seq[Character], level: var Level) {.inline.} =
+    if not self.ai.worldMovement.isNil:
+        self.ai.worldMovement(self, others, level)
 
 
 

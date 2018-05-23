@@ -11,7 +11,7 @@ import
     render_utils,
     textures,
     item_utils,
-    gamestate,
+    game_utils,
     render_character
 
 

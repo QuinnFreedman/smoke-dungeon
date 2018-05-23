@@ -4,7 +4,7 @@ import
     types,
     keyboard,
     vector,
-    gamestate,
+    game_utils,
     inventory,
     combat,
     character_utils,
@@ -41,6 +41,7 @@ proc loopMainGame(gameState: var GameState, combatInfo: var CombatScreen,
         pc.move(Direction.right, gamestate.level.collision)
 
     for entity in gameState.entities:
+        entity.loopAI(gamestate.entities, gamestate.level)
         entity.update(gamestate.level, dt)
 
 

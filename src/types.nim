@@ -156,8 +156,10 @@ type
     AbilityType* {.pure.} = enum
         enemyTarget, allyTarget, aoe
 
-    AI = tuple[
-        worldMovement: proc(self: Character, others: seq[Character], level: Level)
+    AI* = tuple[
+        worldMovement: proc(self: Character,
+                            others: seq[Character],
+                            level: var Level)
         # combatMovement: proc(self: Character, combat: CombatScreen, level: Level)
     ]
 

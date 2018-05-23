@@ -7,9 +7,9 @@ import
     gamestate,
     inventory,
     combat,
-    character,
+    character_utils,
     direction,
-    render,
+    render_world,
     render_utils
 
 

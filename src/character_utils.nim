@@ -1,6 +1,7 @@
 import
     math,
-    sdl2
+    sdl2,
+    random
 
 import
     types,
@@ -9,13 +10,12 @@ import
     constants,
     utils,
     textures,
-    item,
+    item_utils,
     matrix,
     astar,
     times,
-    random,
     weapon_definitions,
-    ability,
+    ability_definitions,
     ai
 
 
@@ -29,14 +29,17 @@ proc getInitiative*(self: Character): int =
 
 
 proc getWeapons*(self: Character): (int, array[2, Item]) =
-    if self.leftHand.isNone and self.rightHand.isNone:
-        (1, [NONE_WEAPON, NONE_ITEM])
-    elif self.leftHand.isNone:
-        (2, [self.rightHand, NONE_WEAPON])
-    elif self.rightHand.isNone:
-        (2, [NONE_WEAPON, self.leftHand])
+    if self.kind == CharacterType.humanoid:
+        if self.leftHand.isNone and self.rightHand.isNone:
+            (1, [NONE_WEAPON, NONE_ITEM])
+        elif self.leftHand.isNone:
+            (2, [self.rightHand, NONE_WEAPON])
+        elif self.rightHand.isNone:
+            (2, [NONE_WEAPON, self.leftHand])
+        else:
+            (2, [self.leftHand, self.rightHand])
     else:
-        (2, [self.leftHand, self.rightHand])
+        (1, [NONE_WEAPON, NONE_ITEM])
 
 
 iterator iterWeapons*(self: Character): Item =

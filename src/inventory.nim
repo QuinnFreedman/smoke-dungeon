@@ -7,10 +7,10 @@ import
     keyboard,
     utils,
     constants,
-    character,
+    character_utils,
     render_utils,
     textures,
-    item,
+    item_utils,
     gamestate,
     render_character
 

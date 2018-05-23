@@ -7,12 +7,13 @@ import
     matrix,
     textures,
     vector,
-    character,
     constants,
     utils,
+    character_utils,
     render_utils,
+    render_character,
+    item_utils,
     shadowcasting,
-    item,
     textures
 
 proc renderMap*(map: Matrix[sdl2.Rect], window: Rect,
@@ -33,22 +34,6 @@ proc debugRenderCollision*(collision: Matrix[uint8], window: Rect,
                 let tilePos = pos.scale(TILE_SIZE)
                 let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
                 fillRect(myRect, color(225, 0, 0, 100), renderer, transform)
-
-
-proc renderCharacter*(character: Character,
-                      renderer: RendererPtr, transfrom: Vec2) =
-    var drect = character.getDestRect
-    if character.health > 0:
-        var srect = character.getSrcRect
-        drawImage(character.spritesheet,
-                  srect, drect, renderer, transfrom)
-        for item in character.iterWornItems:
-            let sprite = item.getTexture(character.sex)
-            drawImage(sprite, srect, drect, renderer, transfrom)
-    else:
-        var srect = rect(0, 0, TILE_SIZE, TILE_SIZE)
-        drawImage(TextureAlias.bloodStain, srect, drect,
-                  renderer, transfrom)
 
 
 proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,

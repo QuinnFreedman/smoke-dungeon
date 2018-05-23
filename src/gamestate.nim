@@ -16,7 +16,7 @@ import
     weapon_definitions,
     utils,
     render_utils,
-    character,
+    character_utils,
     class_definitions
 
 

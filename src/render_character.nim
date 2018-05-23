@@ -2,9 +2,11 @@ import sdl2
 
 import
     types,
-    character,
     vector,
-    item,
+    textures,
+    constants,
+    character_utils,
+    item_utils,
     render_utils
 
 proc renderStaticCharacter*(character: Character, pos: Vec2,
@@ -16,3 +18,19 @@ proc renderStaticCharacter*(character: Character, pos: Vec2,
     for item in character.iterWornItems:
         drawTile(item.getTexture(character.sex), srcRect, pos,
                  renderer, transform)
+
+
+proc renderCharacter*(character: Character,
+                      renderer: RendererPtr, transfrom: Vec2) =
+    var drect = character.getDestRect
+    if character.health > 0:
+        var srect = character.getSrcRect
+        drawImage(character.spritesheet,
+                  srect, drect, renderer, transfrom)
+        for item in character.iterWornItems:
+            let sprite = item.getTexture(character.sex)
+            drawImage(sprite, srect, drect, renderer, transfrom)
+    else:
+        var srect = rect(0, 0, TILE_SIZE, TILE_SIZE)
+        drawImage(TextureAlias.bloodStain, srect, drect,
+                  renderer, transfrom)

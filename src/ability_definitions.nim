@@ -1,7 +1,9 @@
 import
-    types,
-    item
+    types
 
+let NONE_ABILITY* = Ability(
+    name: "Rest"
+)
 
 let BASIC_ATTACK*: Ability =
     Ability(
@@ -21,23 +23,3 @@ let HEAVY_ATTACK*: Ability =
         applyEffect: proc (caster, target: var Character, weapon: Item) =
             target.health -= 2 #TODO placeholder
     )
-
-
-proc getRange*(self: Ability, weapon: WeaponInfo): float =
-    if self.useWeaponRange:
-        weapon.weaponRange
-    else:
-        self.abilityRange
-
-let NONE_ABILITY* = Ability(
-    name: "Rest"
-)
-
-proc isNone*(self: Ability): bool =
-    self.name == "Rest"
-
-
-proc canCast*(caster: Character, ability: Ability): bool =
-    not (caster.health < ability.healthCost or
-         caster.mana < ability.manaCost or
-         caster.energy < ability.energyCost)

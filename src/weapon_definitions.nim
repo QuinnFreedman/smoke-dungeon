@@ -1,5 +1,5 @@
 import
-    item,
+    types,
     textures
 
 let IRON_SHORTSWORD* = Item(

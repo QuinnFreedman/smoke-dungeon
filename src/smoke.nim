@@ -8,6 +8,8 @@ import
 
 import
     matrix,
+    types,
+    keyboard,
     render,
     gamestate,
     render,

@@ -1,6 +1,8 @@
 import sdl2
 
 import
+    types,
+    keyboard,
     vector,
     gamestate,
     inventory,

@@ -5,16 +5,18 @@ import
     random
 
 import
+    types,
     vector,
     matrix,
     textures,
-    direction,
-    level
+    direction
 
 proc generateLevel*(width, height: int, rng: var Rand): Level =
-    result = newLevel(width, height)
+    result.walls = newMatrix[bool](width, height)
     result.walls.setAll(true)
+    result.textures = newMatrix[sdl2.Rect](width, height)
     result.textures.setAll(BLACK)
+    result.collision = newMatrix[uint8](width, height)
 
     var particle = v(width div 2, height div 2)
 

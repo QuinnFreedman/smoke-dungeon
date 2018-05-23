@@ -1,6 +1,6 @@
 import
-    textures,
-    item
+    types,
+    textures
 
 
 let MAGE_HOOD* = Item(

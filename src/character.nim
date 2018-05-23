@@ -3,6 +3,7 @@ import
     sdl2
 
 import
+    types,
     vector,
     direction,
     constants,
@@ -10,49 +11,12 @@ import
     textures,
     item,
     matrix,
-    simple_types,
     astar,
-    level,
     times,
     random,
     weapon_definitions,
-    character_class
-
-
-type
-    AI* {.pure.} = enum none, follow, random
-
-    CharacterType* {.pure.} = enum humanoid, animal
-
-    Character* = ref object
-        currentTile*: Vec2
-        nextTile*: Vec2
-        actualPos*: Vec2f
-        facing*: Direction
-        speed*: float
-        race*: Race
-        sex*: Sex
-        backpack*: Matrix[Item]
-        spritesheet*: TextureAlias
-        class*: Class
-        health*: int
-        mana*: int
-        energy*: int
-        maxHealth*: int
-        maxMana*: int
-        maxEnergy*: int
-
-        case kind*: CharacterType
-        of humanoid:
-            clothes*: array[ClothingSlot, Item]
-            leftHand*: Item
-            rightHand*: Item
-        of animal: discard
-
-        case ai*: AI
-        of AI.follow: following*: Character
-        else: discard
-
+    ability,
+    ai
 
 
 
@@ -79,6 +43,22 @@ iterator iterWeapons*(self: Character): Item =
     let (numWeapons, weapons) = self.getWeapons()
     for i in 0..<numWeapons:
         yield weapons[i]
+
+#TODO placeholder
+iterator iterAbilities*(self: Character): Ability =
+    yield BASIC_ATTACK
+    yield HEAVY_ATTACK
+    yield NONE_ABILITY
+
+proc numAbilites*(self: Character): int =
+    for _ in self.iterAbilities:
+        result += 1
+
+proc getAbility*(self: Character, index: int): Ability =
+    var i = 0
+    for ability in self.iterAbilities:
+        if i == index: return ability
+        i += 1
 
 
 # -------------------------------------
@@ -167,22 +147,22 @@ proc update*(self: Character, level: var Level, dt: float) =
 
         if abs(dif.x) < moveAmount and abs(dif.y) < moveAmount:
             self.currentTile = self.nextTile
-    else:
-        case self.ai
-        of AI.follow:
-            if not self.following.isNil:
-                let path = aStarSearch(level.walls, self.currentTile,
-                                       self.following.nextTile, 3, nil)
-                if path.len > 4:
-                    let nextTile = path[path.len - 2]
-                    self.moveToward(nextTile, level.collision)
-                    # self.facing = self.currentTile.directionTo(self.nextTile)
-        of AI.random:
-            if rand(60) < 1:
-                # quick hack so that being near walls doesnt make you move less
-                for _ in 0..10:
-                    self.move(randomDirection(), level.collision)
-        else: discard
+    # else:
+        # case self.ai
+        # of AI.follow:
+        #     if not self.following.isNil:
+        #         let path = aStarSearch(level.walls, self.currentTile,
+        #                                self.following.nextTile, 3, nil)
+        #         if path.len > 4:
+        #             let nextTile = path[path.len - 2]
+        #             self.moveToward(nextTile, level.collision)
+        #             # self.facing = self.currentTile.directionTo(self.nextTile)
+        # of AI.random:
+        #     if rand(60) < 1:
+        #         # quick hack so that being near walls doesnt make you move less
+        #         for _ in 0..10:
+        #             self.move(randomDirection(), level.collision)
+        # else: discard
 
 
 

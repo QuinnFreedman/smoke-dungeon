@@ -2,17 +2,18 @@ import strutils,
        sdl2,
        math
 
-import gamestate,
-       matrix,
-       textures,
-       vector,
-       character,
-       constants,
-       utils,
-       render_utils,
-       shadowcasting,
-       item,
-       textures
+import
+    types,
+    matrix,
+    textures,
+    vector,
+    character,
+    constants,
+    utils,
+    render_utils,
+    shadowcasting,
+    item,
+    textures
 
 proc renderMap*(map: Matrix[sdl2.Rect], window: Rect,
                 renderer: RendererPtr, transform: Vec2) =

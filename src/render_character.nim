@@ -1,6 +1,7 @@
 import sdl2
 
 import
+    types,
     character,
     vector,
     item,

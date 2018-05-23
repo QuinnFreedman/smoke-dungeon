@@ -1,8 +1,10 @@
 import sdl2
 import macros
 import
+    types,
     matrix,
     vector,
+    keyboard,
     utils,
     constants,
     character,

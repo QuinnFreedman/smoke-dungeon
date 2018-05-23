@@ -1,37 +1,12 @@
 import
-    textures,
-    simple_types
-
-
-type
-    ItemType* {.pure.} = enum clothing, weapon
-
-    Item* = object
-        name*: string
-        icon*: TextureAlias
-        case kind*: ItemType
-        of ItemType.clothing: clothingInfo*: ClothingInfo
-        of ItemType.weapon: weaponInfo*: WeaponInfo
-
-    WeaponInfo* = object
-        baseDamage*: int
-        critChance*: float
-        critBonus*: float
-        weaponRange*: float
-        handedness*: Handed
-
-    Handed* {.pure.} = enum single, double
-
-    ClothingInfo* = object
-        textureMale*: TextureAlias
-        textureFemale*: TextureAlias
-        slot*: ClothingSlot
-
-    ClothingSlot* {.pure.} = enum
-        head, body, feet
+    types,
+    textures
 
 
 let NONE_ITEM*: Item = Item( name: nil )
+
+proc isNone*(self: Item): bool =
+    self.name.isNil
 
 
 proc getTexture*(self: Item, sex: Sex): TextureAlias =
@@ -41,6 +16,3 @@ proc getTexture*(self: Item, sex: Sex): TextureAlias =
             else: self.clothingInfo.textureFemale
         of ItemType.weapon:
             TextureAlias.none
-
-proc isNone*(self: Item): bool =
-    self.name.isNil

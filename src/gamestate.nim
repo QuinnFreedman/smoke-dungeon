@@ -7,84 +7,18 @@ import
     sequtils
 
 import
-    matrix,
-    character,
-    direction,
+    types,
     vector,
-    textures,
+    keyboard,
+    matrix,
     dungeon_generation,
-    item,
     clothing_definitions,
     weapon_definitions,
     utils,
-    simple_types,
-    level,
     render_utils,
-    ability,
-    character_class
+    character,
+    class_definitions
 
-type
-    Input* {.pure.} = enum none, left, right, up, down, tab, enter, back
-
-    Screen* {.pure.} = enum world, inventory, combat
-
-    Game* = ref object
-        shouldQuit*: bool
-        keyboard*: Keyboard
-        renderInfo*: RenderInfo
-        screen*: Screen
-        inventory*: Inventory
-        combat*: CombatScreen
-        gameState*: GameState
-
-    GameState* = object
-        level*: Level
-        playerParty*: seq[Character]
-        entities*: seq[Character]
-
-    Inventory* = object
-        curBackpack*: int
-        curX*, curY*, curI*: int
-        cursorInSidePane*, cursorInTopRow*: bool
-        activeCharacter*: int
-        inMenu*: bool
-        menuCursor*: int
-        menuSubject*: Item
-
-    CombatScreen* = object
-        playerParty*: seq[Character]
-        enemyParty*: seq[Character]
-        turnOrder*: seq[Character]
-        center*: Vec2
-        privateState: CombatState
-        turn*: int
-        activeWeapon*: Item
-        activeAbility*: Ability
-        movementStart*: Vec2
-        mapCursor*: Vec2
-        menuCursor*: int
-        path*: seq[Vec2]
-        message*: string
-
-    CombatState* {.pure.} = enum
-        waiting,
-        pickingMovement,
-        pickingAbility,
-        pickingWeapon,
-        pickingTarget
-
-    Keyboard* = object
-        inputs: array[Input, bool]
-        inputsSinceLastFrame: array[Input, bool]
-
-proc state*(self: CombatScreen): CombatState {.inline.} = self.privateState
-
-proc setState*(self: var CombatScreen, state: CombatState) {.inline.} =
-    template activeChar: untyped = self.turnOrder[self.turn]
-    self.menuCursor = 0
-    self.mapCursor = activeChar.currentTile
-    self.privateState = state
-    self.message = nil
 
 proc width*(self: Level): int {.inline.} =
     self.walls.width
@@ -97,29 +31,19 @@ proc renderer*(self: Game): RendererPtr {.inline.} =
 
 
 proc handleInput*(self: var Game, input: Input, keyDown: bool) {.inline.} =
-    if keyDown and not self.keyboard.inputs[input]:
-        self.keyboard.inputsSinceLastFrame[input] = true
-    self.keyboard.inputs[input] = keyDown
-
-
-proc keyDown*(self: Keyboard, key: Input): bool {.inline.} =
-    self.inputs[key]
-
-
-proc keyPressed*(self: Keyboard, key: Input): bool {.inline.} =
-    self.inputsSinceLastFrame[key]
+    self.keyboard.handleInput(input, keyDown)
 
 
 proc keyDown*(self: Game, key: Input): bool {.inline.} =
-    self.keyboard.inputs[key]
+    self.keyboard.keyDown(key)
 
 
 proc keyPressed*(self: Game, key: Input): bool {.inline.} =
-    self.keyboard.inputsSinceLastFrame[key]
+    self.keyboard.keyPressed(key)
 
 
 proc resetInputs*(self: Game) =
-    self.keyboard.inputsSinceLastFrame.zero()
+    self.keyboard.resetInputs()
 
 
 proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
@@ -160,14 +84,14 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
         v(levelWidth div 2 + 1, levelHeight div 2), 2,
         Race.human, Sex.male, ROGUE)
     companion1.backpack[1, 0] = KNIGHT_HELMET
-    companion1.ai = AI.follow
+    # companion1.ai = AI.follow
     companion1.following = playerCharacter
     result.gameState.playerParty.add(companion1)
 
     var spider = newCharacter(result.gameState.level,
         v(levelWidth div 2, levelHeight div 2 - 1), 2,
         Race.spider, Sex.male, ROGUE)
-    spider.ai = AI.random
+    # spider.ai = AI.random
     spider.kind = CharacterType.animal
 
     result.gameState.entities = concat(result.gameState.playerParty)

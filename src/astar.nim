@@ -16,7 +16,7 @@ proc notZero[T](a: T): bool {.inline.} =
     int(a) != 0
 
 
-proc aStarSearch*[T](collision: Matrix[T], start, goal: Vec2,
+proc aStarSearch*[T](collision: Matrix[T], start, goal: Vec2, includeGoal: bool,
                      randomNoise: int, rng: ptr Rand): seq[Vec2] =
     var myRng =
         if rng.isNil:
@@ -36,7 +36,8 @@ proc aStarSearch*[T](collision: Matrix[T], start, goal: Vec2,
     while frontier.size != 0:
         let (current, _) = frontier.pop()
 
-        if current == goal:
+        if current == goal or
+                (not includeGoal and distance(current, goal) == 1):
             result = newSeq[Vec2]()
             var parent = current
             while parent != v(-1, -1):

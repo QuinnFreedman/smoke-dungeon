@@ -134,6 +134,7 @@ type
         startingHealth*: int
         startingEnergy*: int
         startingMana*: int
+        defaultAi*: AI
 
     Race* = enum human, spider
 
@@ -159,8 +160,10 @@ type
     AI* = tuple[
         worldMovement: proc(self: Character,
                             others: seq[Character],
-                            level: var Level)
-        # combatMovement: proc(self: Character, combat: CombatScreen, level: Level)
+                            level: var Level),
+        combatMovement: proc(self: Character,
+                             allies, enemies: seq[Character],
+                             level: var Level): Vec2
     ]
 
 

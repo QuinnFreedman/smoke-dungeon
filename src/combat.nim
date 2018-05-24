@@ -264,7 +264,10 @@ proc updateCombatScreen*(combat: var CombatScreen,
         if enterPressed:
             var path = aStarSearch(level.collision,
                                    activeChar.currentTile,
-                                   combat.mapCursor, 1, nil)
+                                   combat.mapCursor,
+                                   includeGoal=true,
+                                   randomNoise=1,
+                                   rng=nil)
             combat.movementStart = activeChar.currentTile
 
             if path.isNil:

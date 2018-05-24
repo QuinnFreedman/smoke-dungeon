@@ -1,2 +1,2 @@
 @echo off
-nimble build --debug && move smoke.exe >nul .\bin && bin\smoke.exe
+nimble build && move smoke.exe >nul .\bin && bin\smoke.exe

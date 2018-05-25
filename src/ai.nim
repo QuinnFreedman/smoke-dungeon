@@ -16,6 +16,7 @@ proc getClosest(self: Character, others: seq[Character]): Character =
         if c == self: continue
         let distanceToC = distance(self.currentTile, c.currentTile)
         if distanceToC < bestDistance:
+            bestDistance = distanceToC
             result = c
 
 
@@ -49,10 +50,10 @@ const AI_COMBAT_MOVE_NEAREST_ENEMY* =
         let closestEnemy = getClosest(self, enemies)
         if not closestEnemy.isNil:
             result = aStarSearch(level.collision, self.currentTile,
-                                closestEnemy.currentTile,
-                                includeGoal=false,
-                                randomNoise=1,
-                                rng=nil)
+                                 closestEnemy.currentTile,
+                                 includeGoal=false,
+                                 randomNoise=1,
+                                 rng=nil)
 
 const AI_COMBAT_ATTACK_NEAREST_ENEMY* =
     proc(self: Character, allies, enemies: seq[Character],

@@ -122,7 +122,7 @@ iterator iterWornItems*(self: Character): Item =
 
 proc `$` *(self: Character): string =
     if self.isNil: "nil"
-    else: $self.sex & " " & $self.race
+    else: $self.sex & " " & self.race.name & " " & self.class.name
 
 
 # -------------------------------------
@@ -161,15 +161,11 @@ proc loopAI*(self: Character, others: seq[Character], level: var Level) {.inline
 # -------------------------------------
 
 proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
-    case race
-    of human:
-        case sex
-        of male:
-            TextureAlias.humanMaleBase
-        of female:
-            TextureAlias.humanFemaleBase
-    of spider:
-        TextureAlias.spider
+    case sex
+    of male:
+        race.baseSpritesheetMale
+    of female:
+        race.baseSpritesheetFemale
 
 proc getStaticSrcRect*(self: Character): sdl2.Rect =
     newSdlSquare(0, 0, TILE_SIZE)
@@ -235,4 +231,5 @@ proc newCharacter*(level: var Level,
     result.mana = class.startingMana
     result.maxEnergy = class.startingEnergy
     result.energy = class.startingEnergy
+    result.ai = race.defaultAi
     level.collision.inc(pos)

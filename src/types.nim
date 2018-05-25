@@ -134,12 +134,16 @@ type
         of animal: discard
 
     Class* = object
+        name*: string
         startingHealth*: int
         startingEnergy*: int
         startingMana*: int
-        defaultAi*: AI
 
-    Race* = enum human, spider
+    Race* = object
+        name*: string
+        baseSpritesheetMale*: TextureAlias
+        baseSpritesheetFemale*: TextureAlias
+        defaultAI*: AI
 
     Sex* = enum male, female
 

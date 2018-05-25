@@ -23,3 +23,14 @@ let HEAVY_ATTACK*: Ability =
         applyEffect: proc (caster, target: var Character, weapon: Item) =
             target.health -= 2 #TODO placeholder
     )
+
+let ZAP*: Ability =
+    Ability(
+        name: "Zap",
+        useWeaponRange: false,
+        abilityRange: 4,
+        abilityType: AbilityType.enemyTarget,
+        manaCost: 3,
+        applyEffect: proc (caster, target: var Character, weapon: Item) =
+            target.health -= 2 #TODO placeholder
+    )

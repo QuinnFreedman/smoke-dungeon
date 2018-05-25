@@ -50,6 +50,7 @@ iterator iterWeapons*(self: Character): Item =
 iterator iterAbilities*(self: Character): Ability =
     yield BASIC_ATTACK
     yield HEAVY_ATTACK
+    yield ZAP
     yield NONE_ABILITY
 
 proc numAbilites*(self: Character): int =

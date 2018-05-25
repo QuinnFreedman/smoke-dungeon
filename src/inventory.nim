@@ -186,7 +186,7 @@ proc renderInventory*(inventory: var Inventory,
 
 
 proc getItemAtCursor(inv: Inventory, playerParty: seq[Character]): Item =
-    template activeChar: untyped = playerParty[inv.activeCharacter]
+    alias activeChar: playerParty[inv.activeCharacter]
 
     if inv.cursorInTopRow:
          NONE_ITEM
@@ -207,7 +207,7 @@ proc getItemAtCursor(inv: Inventory, playerParty: seq[Character]): Item =
 
 
 proc setItemAtCursor(inv: Inventory, playerParty: seq[Character], item: Item) =
-    template activeChar: untyped = playerParty[inv.activeCharacter]
+    alias activeChar: playerParty[inv.activeCharacter]
 
     if inv.cursorInTopRow:
          discard
@@ -281,7 +281,7 @@ proc updateInvCursor(inv: var Inventory,
 proc updateMenu(inv: var Inventory, playerParty: seq[Character],
                 moveX, moveY: int, enter: bool) =
     # the character that is SELECTED/previewed
-    template activeChar: untyped = playerParty[inv.activeCharacter]
+    alias activeChar: playerParty[inv.activeCharacter]
 
     let menuItems = getMenuItems(inv.menuSubject,
                                  inv.cursorInSidePane, activeChar)
@@ -300,9 +300,7 @@ proc updateMenu(inv: var Inventory, playerParty: seq[Character],
                 if numOpenSlots == 2: break
 
         # the bag where the CURSOR is
-        template activeBag: untyped = playerParty[inv.curBackpack].backpack
         let item = inv.menuSubject
-        let cursor = v(inv.curX, inv.curY)
         let menuAction = menuItems[inv.menuCursor]
         case menuAction
         of MenuAction.equip:
@@ -317,7 +315,6 @@ proc updateMenu(inv: var Inventory, playerParty: seq[Character],
                 let clothingSlot = item.clothingInfo.slot
                 let currentlyEquipped = activeChar.clothes[clothingSlot]
                 activeChar.clothes[clothingSlot] = item
-                # activeBag[cursor] = currentlyEquipped
                 inv.setItemAtCursor(playerParty, currentlyEquipped)
         of MenuAction.unequip:
             if numOpenSlots >= 1:

@@ -47,8 +47,11 @@ proc pop*[T](self: seq[T]): T =
 proc `%%`*(a, b: int): int =
     (a + b) mod b
 
-template doUntil*(a: expr, b: stmt): stmt =
+template doUntil*(a: untyped, b: typed): typed =
     while true:
         b
         if a:
             break
+
+template alias*(a: untyped, b: typed) =
+    template a: untyped = b

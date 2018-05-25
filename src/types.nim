@@ -8,7 +8,8 @@ import
     vector,
     render_utils,
     textures,
-    keyboard
+    keyboard,
+    utils
 
 # **************************
 #         Items
@@ -177,7 +178,7 @@ type
 proc state*(self: CombatScreen): CombatState {.inline.} = self.privateState
 
 proc setState*(self: var CombatScreen, state: CombatState) {.inline.} =
-    template activeChar: untyped = self.turnOrder[self.turn]
+    alias activeChar: self.turnOrder[self.turn]
     self.menuCursor = 0
     self.mapCursor = activeChar.currentTile
     self.privateState = state

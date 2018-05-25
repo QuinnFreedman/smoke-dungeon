@@ -116,7 +116,7 @@ proc renderCombatScreen*(gameState: GameState,
                          combat: CombatScreen,
                          renderInfo: RenderInfo) =
 
-    template activeChar: untyped = combat.turnOrder[combat.turn]
+    alias activeChar: combat.turnOrder[combat.turn]
 
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
                                .scale(TILE_SIZE / 2)
@@ -217,7 +217,7 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
     if numEnemies == 0:
         return Screen.world
 
-    template activeChar: untyped = combat.turnOrder[combat.turn]
+    alias activeChar: combat.turnOrder[combat.turn]
 
     doUntil activeChar.health > 0:
         combat.turn = (combat.turn + 1) mod combat.turnOrder.len
@@ -274,7 +274,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
     if combat.turnOrder.isNil:
         setupCombat(combat)
 
-    template activeChar: untyped = combat.turnOrder[combat.turn]
+    alias activeChar: combat.turnOrder[combat.turn]
     let isAlly = activeChar in combat.playerParty
 
     let moveY =

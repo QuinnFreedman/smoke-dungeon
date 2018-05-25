@@ -89,6 +89,7 @@ type
         menuCursor*: int
         path*: seq[Vec2]
         message*: string
+        aoeAuras*: Matrix[AoeAura]
 
     CombatState* {.pure.} = enum
         waitingMovementAnimation,
@@ -175,6 +176,10 @@ type
                            allies, enemies: seq[Character],
                            level: Level): (Ability, Item, Character)
     ]
+
+    AoeAura* = object
+        turns*: int
+        effect*: proc(character: var Character)
 
 
 

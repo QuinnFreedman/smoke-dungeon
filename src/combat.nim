@@ -255,16 +255,19 @@ proc pickEnemyAttack(combat: var CombatScreen, level: Level) =
     combat.setState(CombatSTate.waitingAttackAnimation)
 
 
-proc setupCombat(info: var CombatScreen) =
-    info.turnOrder = concat(info.playerParty, info.enemyParty)
-    info.turnOrder.sort do (a, b: Character) -> int:
+proc setupCombat(combat: var CombatScreen) =
+    combat.turnOrder = concat(combat.playerParty, combat.enemyParty)
+    combat.turnOrder.sort do (a, b: Character) -> int:
         result = cmp(a.getInitiative, b.getInitiative)
 
     # TODO this should be the average of all entities in the combat
-    info.center = info.playerParty[0].currentTile
-    info.turn = 0
+    combat.center = combat.playerParty[0].currentTile
+    combat.turn = 0
+    let window = getCombatWindow(combat)
+    combat.aoeAuras = newMatrixWithOffset[AoeAura](window.w, window.h,
+        v(window.x, window.y))
 
-    info.setState(CombatState.pickingMovement)
+    combat.setState(CombatState.pickingMovement)
 
 proc updateCombatScreen*(combat: var CombatScreen,
                          level: var Level,

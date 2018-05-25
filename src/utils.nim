@@ -46,3 +46,9 @@ proc pop*[T](self: seq[T]): T =
 
 proc `%%`*(a, b: int): int =
     (a + b) mod b
+
+template doUntil*(a: expr, b: stmt): stmt =
+    while true:
+        b
+        if a:
+            break

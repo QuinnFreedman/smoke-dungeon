@@ -82,6 +82,7 @@ type
         turn*: int
         activeWeapon*: Item
         activeAbility*: Ability
+        activeTarget*: Character
         movementStart*: Vec2
         mapCursor*: Vec2
         menuCursor*: int
@@ -89,11 +90,12 @@ type
         message*: string
 
     CombatState* {.pure.} = enum
-        waiting,
+        waitingMovementAnimation,
         pickingMovement,
         pickingAbility,
         pickingWeapon,
-        pickingTarget
+        pickingTarget,
+        waitingAttackAnimation
 
 
     # **************************
@@ -163,7 +165,10 @@ type
                             level: var Level),
         combatMovement: proc(self: Character,
                              allies, enemies: seq[Character],
-                             level: var Level): Vec2
+                             level: var Level): seq[Vec2],
+        chooseAttack: proc(self: Character,
+                           allies, enemies: seq[Character],
+                           level: Level): (Ability, Item, Character)
     ]
 
 

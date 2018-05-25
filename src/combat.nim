@@ -176,12 +176,11 @@ proc getCharacterAtTile(combat: CombatScreen, v: Vec2): Character =
             return c
     return nil
 
-
-proc validateTarget(combatInfo: CombatScreen,
-                    caster: Character, target: Character,
-                    ability: Ability, weapon: WeaponInfo): (bool, string) =
-    let casterIsAlly = caster in combatInfo.playerParty
-    let targetIsAlly = target in combatInfo.playerParty
+proc validateTarget*(caster, target: Character,
+                     allies: seq[Character],
+                     ability: Ability, weapon: WeaponInfo): (bool, string) =
+    let casterIsAlly = caster in allies
+    let targetIsAlly = target in allies
     if target.isNil:
         (false, "No one is there!")
     elif not caster.canCast(ability):
@@ -197,8 +196,14 @@ proc validateTarget(combatInfo: CombatScreen,
         (false, "That's an enemy!")
     else: (true, nil)
 
+proc validateTarget(combatInfo: CombatScreen,
+                    caster: Character, target: Character,
+                    ability: Ability, weapon: WeaponInfo): (bool, string) {.inline.} =
+    validateTarget(caster, target, combatInfo.playerParty,
+                   ability, weapon)
 
-proc goToNextTurn(combat: var CombatScreen): Screen =
+
+proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
     result = Screen.combat
 
     var numAllies, numEnemies = 0
@@ -212,13 +217,43 @@ proc goToNextTurn(combat: var CombatScreen): Screen =
     if numEnemies == 0:
         return Screen.world
 
+    template activeChar: untyped = combat.turnOrder[combat.turn]
 
-    combat.turn = (combat.turn + 1) mod combat.turnOrder.len
-    #TODO check if enemy turn; handle enemy AI
-    while combat.turnOrder[combat.turn] in combat.enemyParty:
+    doUntil activeChar.health > 0:
         combat.turn = (combat.turn + 1) mod combat.turnOrder.len
 
-    combat.setState(CombatState.pickingMovement)
+    if activeChar in combat.enemyParty:
+        var path = activeChar.ai.combatMovement(
+                activeChar,
+                allies=combat.enemyParty,
+                enemies=combat.playerParty,
+                level=level
+        )
+        if path.isNil:
+            echo "AI chose invalid path"
+        else:
+            combat.movementStart = activeChar.currentTile
+            discard path.pop
+            combat.path = path
+            combat.setState(CombatState.waitingMovementAnimation)
+    else:
+        combat.setState(CombatState.pickingMovement)
+
+proc pickEnemyAttack(combat: var CombatScreen, level: Level) =
+    let activeChar = combat.turnOrder[combat.turn]
+    let (ability, weapon, target) = activeChar.ai.chooseAttack(
+            activeChar,
+            combat.enemyParty,
+            combat.playerParty,
+            level
+    )
+    assert validateTarget(activeChar, target, combat.enemyParty, ability,
+            weapon.weaponInfo)[0]
+    combat.activeAbility = ability
+    combat.activeWeapon = weapon
+    combat.activeTarget = target
+    combat.setState(CombatSTate.waitingAttackAnimation)
+
 
 proc setupCombat(info: var CombatScreen) =
     info.turnOrder = concat(info.playerParty, info.enemyParty)
@@ -240,6 +275,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
         setupCombat(combat)
 
     template activeChar: untyped = combat.turnOrder[combat.turn]
+    let isAlly = activeChar in combat.playerParty
 
     let moveY =
         if keyboard.keyPressed(Input.up): -1
@@ -275,9 +311,9 @@ proc updateCombatScreen*(combat: var CombatScreen,
             else:
                 discard path.pop
                 combat.path = path
-                combat.setState(CombatState.waiting)
-    of CombatState.waiting:
-        if backPressed:
+                combat.setState(CombatState.waitingMovementAnimation)
+    of CombatState.waitingMovementAnimation:
+        if backPressed and isAlly:
             activeChar.teleport(combat.movementStart,
                 combat.movementStart.directionTo(activeChar.currentTile),
                 level.collision)
@@ -286,7 +322,10 @@ proc updateCombatScreen*(combat: var CombatScreen,
             if not activeChar.isMoving:
                 if combat.path.len == 0:
                     combat.path = nil
-                    combat.setState(CombatState.pickingAbility)
+                    if isAlly:
+                        combat.setState(CombatState.pickingAbility)
+                    else:
+                        pickEnemyAttack(combat, level)
                 else:
                     let nextTile = combat.path.pop()
                     activeChar.moveToward(nextTile, level.collision)
@@ -310,7 +349,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 if enterPressed:
                     combat.activeAbility = activeChar.getAbility(combat.menuCursor)
                     if combat.activeAbility.isNone:
-                        result = combat.goToNextTurn()
+                        result = combat.goToNextTurn(level)
                     elif activeChar.canCast(combat.activeAbility):
                         combat.setState(CombatState.pickingWeapon)
                     else:
@@ -343,10 +382,14 @@ proc updateCombatScreen*(combat: var CombatScreen,
                     combat.activeWeapon.weaponInfo)
             combat.message = reason
             if valid:
-                activeChar.health -= combat.activeAbility.healthCost
-                activeChar.energy -= combat.activeAbility.energyCost
-                activeChar.mana -= combat.activeAbility.manaCost
-                combat.activeAbility.applyEffect(activeChar, target,
-                                                 combat.activeWeapon)
-                activeChar.faceToward(combat.mapCursor)
-                result = combat.goToNextTurn()
+                combat.activeTarget = target
+                combat.setState(CombatSTate.waitingAttackAnimation)
+    of CombatState.waitingAttackAnimation:
+        #TODO wait until animation is completed
+        activeChar.health -= combat.activeAbility.healthCost
+        activeChar.energy -= combat.activeAbility.energyCost
+        activeChar.mana -= combat.activeAbility.manaCost
+        combat.activeAbility.applyEffect(activeChar, combat.activeTarget,
+                                         combat.activeWeapon)
+        activeChar.faceToward(combat.mapCursor)
+        result = combat.goToNextTurn(level)

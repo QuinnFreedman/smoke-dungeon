@@ -65,6 +65,8 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
         v(levelWidth div 2, levelHeight div 2 - 1), 2,
         Race.spider, Sex.male, ROGUE)
     spider.ai.worldMovement = AI_RANDOM
+    spider.ai.combatMovement = AI_COMBAT_MOVE_NEAREST_ENEMY
+    spider.ai.chooseAttack = AI_COMBAT_ATTACK_NEAREST_ENEMY
     spider.kind = CharacterType.animal
 
     result.gameState.entities = concat(result.gameState.playerParty)

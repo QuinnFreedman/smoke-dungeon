@@ -1,7 +1,8 @@
 import
     sdl2,
     sequtils,
-    math
+    math,
+    patty
 
 import
     types,
@@ -129,6 +130,12 @@ proc renderCombatScreen*(gameState: GameState,
     # Render map
     renderMap(gameState.level.textures, window, renderInfo.renderer, transform)
 
+    for p in combat.aoeAuras.indices:
+        if not gameState.level.walls[p]:
+            let aura = combat.aoeAuras[p]
+            drawImage(aura.texture, p.scale(TILE_SIZE),
+                      renderInfo.renderer, transform)
+
     # Render markers and cursors
     case combat.state
     of CombatState.pickingMovement:
@@ -176,36 +183,46 @@ proc getCharacterAtTile(combat: CombatScreen, v: Vec2): Character =
             return c
     return nil
 
-proc validateTarget*(caster, target: Character,
+proc getTarget(combat: CombatScreen, v: Vec2): AbilityTarget =
+    let abilityType: AbilityType = combat.activeAbility.abilityType
+    if abilityType == AbilityType.aoe:
+        abilityTargetTile(v)
+    else:
+        abilityTargetCharacter(combat.getCharacterAtTile(v))
+
+proc validateTarget*(caster: Character,
+                     target: AbilityTarget,
                      allies: seq[Character],
                      ability: Ability, weapon: WeaponInfo): (bool, string) =
-    let casterIsAlly = caster in allies
-    let targetIsAlly = target in allies
-    if target.isNil:
-        (false, "No one is there!")
-    elif not caster.canCast(ability):
-        (false, "Too exhausted")
-    elif distance(caster.currentTile,
-                  target.currentTile) > ability.getRange(weapon):
-        (false, "Out of range")
-    elif ability.abilityType == AbilityType.enemyTarget and
-            casterIsAlly == targetIsAlly:
-        (false, "That's an ally!")
-    elif ability.abilityType == AbilityType.allyTarget and
-            casterIsAlly != targetIsAlly:
-        (false, "That's an enemy!")
-    else: (true, nil)
+    if not caster.canCast(ability):
+        return (false, "Too exhausted")
+    if distance(caster.currentTile,
+                target.getPosition) > ability.getRange(weapon):
+        return (false, "Out of range")
+
+    match target:
+        TargetCharacter(character: target):
+            let casterIsAlly = caster in allies
+            let targetIsAlly = target in allies
+            if target.isNil:
+                return (false, "No one is there!")
+            if ability.abilityType == AbilityType.enemyTarget and
+                    casterIsAlly == targetIsAlly:
+                return (false, "That's an ally!")
+            if ability.abilityType == AbilityType.allyTarget and
+                    casterIsAlly != targetIsAlly:
+                return (false, "That's an enemy!")
+        TargetTile(tile: _): discard
+    return (true, nil)
+
 
 proc validateTarget(combatInfo: CombatScreen,
-                    caster: Character, target: Character,
+                    caster: Character, target: AbilityTarget,
                     ability: Ability, weapon: WeaponInfo): (bool, string) {.inline.} =
     validateTarget(caster, target, combatInfo.playerParty,
                    ability, weapon)
 
-
-proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
-    result = Screen.combat
-
+proc numAlive(combat: CombatScreen): (int, int) =
     var numAllies, numEnemies = 0
     for c in combat.turnOrder:
         if c.health > 0:
@@ -213,15 +230,40 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
                 inc(numAllies)
             elif c in combat.enemyParty:
                 inc(numEnemies)
+    return (numAllies, numEnemies)
 
-    if numEnemies == 0:
+template checkAlive(combat: CombatScreen) =
+    # Check if anyone is still alive
+    let (numAllies, numEnemies) = combat.numAlive
+    if numEnemies == 0 or numAllies == 0:
         return Screen.world
+
+
+proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
+    result = Screen.combat
 
     alias activeChar: combat.turnOrder[combat.turn]
 
+    # check if anyone is alive
+    checkAlive(combat)
+    # Skip unconcious characters
     doUntil activeChar.health > 0:
         combat.turn = (combat.turn + 1) mod combat.turnOrder.len
 
+    # Apply aoe effects
+    #TODO decrement aoe turn counter
+    let aura = combat.aoeAuras[activeChar.currentTile]
+    if not aura.isNone:
+        aura.effect(activeChar)
+
+    # check again (after auras)
+    checkAlive(combat)
+    # skip character if they became unconcious due to auras
+    while not activeChar.health > 0:
+        combat.turn = (combat.turn + 1) mod combat.turnOrder.len
+
+
+    # Do AI for enemy turn or ask user to pcik movement
     if activeChar in combat.enemyParty:
         var path = activeChar.ai.combatMovement(
                 activeChar,
@@ -378,8 +420,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
         combat.mapCursor.y = clamp(combat.mapCursor.y + moveY,
                                    window.y, window.y + window.h - 1)
         if enterPressed:
-            #TODO this won't change it
-            var target = combat.getCharacterAtTile(combat.mapCursor)
+            var target = combat.getTarget(combat.mapCursor)
             let (valid, reason) = combat.validateTarget(
                     activeChar, target, combat.activeAbility,
                     combat.activeWeapon.weaponInfo)
@@ -392,7 +433,15 @@ proc updateCombatScreen*(combat: var CombatScreen,
         activeChar.health -= combat.activeAbility.healthCost
         activeChar.energy -= combat.activeAbility.energyCost
         activeChar.mana -= combat.activeAbility.manaCost
-        combat.activeAbility.applyEffect(activeChar, combat.activeTarget,
-                                         combat.activeWeapon)
-        activeChar.faceToward(combat.mapCursor)
+        case combat.activeTarget.kind:
+        of TargetCharacter:
+            combat.activeAbility.applyEffect(
+                        activeChar, combat.activeTarget.character,
+                        combat.activeWeapon)
+        of TargetTile:
+            combat.activeAbility.applyAoeEffect(
+                    activeChar, combat.activeTarget.tile, combat.activeWeapon,
+                    combat)
+
+        activeChar.faceToward(combat.activeTarget.getPosition)
         result = combat.goToNextTurn(level)

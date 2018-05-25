@@ -49,8 +49,11 @@ iterator iterWeapons*(self: Character): Item =
 #TODO placeholder
 iterator iterAbilities*(self: Character): Ability =
     yield BASIC_ATTACK
-    yield HEAVY_ATTACK
-    yield ZAP
+    if self.maxMana == 0:
+        yield HEAVY_ATTACK
+    else:
+        yield ZAP
+        yield BURN
     yield NONE_ABILITY
 
 proc numAbilites*(self: Character): int =

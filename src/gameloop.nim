@@ -26,7 +26,7 @@ proc loopMainGame(gameState: var GameState, combatInfo: var CombatScreen,
             if distance(pc.currentTile, entity.currentTile) <= 1.0 or
                     distance(pc.currentTile, entity.nextTile) <= 1.0:
                 result = Screen.combat
-                echo "combat with: " & $entity.race
+                echo "combat with: " & $entity
                 combatInfo.playerParty = gameState.playerParty
                 combatInfo.enemyParty = @[entity]
                 return

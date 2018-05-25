@@ -82,8 +82,8 @@ iterator indices*[T](self: Matrix[T]): Vec2 =
     let width = self.width
     let height = self.height
     for i in 0..<(width * height):
-        let x = i mod width - self.offset.x
-        let y = i div width - self.offset.y
+        let x = i mod width + self.offset.x
+        let y = i div width + self.offset.y
         yield (x, y)
 #
 # proc unsafeGetAddr*[T](self: Matrix[T], x, y: int): ptr T =

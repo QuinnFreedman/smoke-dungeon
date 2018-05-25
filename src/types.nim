@@ -83,13 +83,14 @@ type
         turn*: int
         activeWeapon*: Item
         activeAbility*: Ability
-        activeTarget*: Character
+        activeTarget*: AbilityTarget
         movementStart*: Vec2
         mapCursor*: Vec2
         menuCursor*: int
         path*: seq[Vec2]
         message*: string
         aoeAuras*: Matrix[AoeAura]
+
 
     CombatState* {.pure.} = enum
         waitingMovementAnimation,
@@ -152,18 +153,29 @@ type
     #         Abilities
     # **************************
 
+    AbilityType* {.pure.} = enum
+        enemyTarget, allyTarget, aoe
+
     Ability* = object
         name*: string
+        abilityType*: AbilityType
         abilityRange*: float #number of squares
         useWeaponRange*: bool #if true, ignore abilityRange and use the range of the weaoon the spell is channeled throug
-        abilityType*: AbilityType #TODO add required fields for AOE spells
         energyCost*: int
         manaCost*: int
         healthCost*: int
-        applyEffect*: proc(caster, target: var Character, weapon: Item)
+        applyAoeEffect*: proc(caster: Character, target: Vec2, weapon: Item,
+                              combat: var CombatScreen)
+        applyEffect*: proc(caster, target: Character, weapon: Item)
 
-    AbilityType* {.pure.} = enum
-        enemyTarget, allyTarget, aoe
+    AbilityTargetType* = enum TargetCharacter, TargetTile
+    AbilityTarget* = object
+        case kind*: AbilityTargetType
+        of TargetCharacter:
+            character*: Character
+        of TargetTile:
+            tile*: Vec2
+
 
     AI* = tuple[
         worldMovement: proc(self: Character,
@@ -174,12 +186,13 @@ type
                              level: var Level): seq[Vec2],
         chooseAttack: proc(self: Character,
                            allies, enemies: seq[Character],
-                           level: Level): (Ability, Item, Character)
+                           level: Level): (Ability, Item, AbilityTarget)
     ]
 
     AoeAura* = object
         turns*: int
-        effect*: proc(character: var Character)
+        texture*: TextureAlias
+        effect*: proc(character: Character)
 
 
 
@@ -192,3 +205,9 @@ proc setState*(self: var CombatScreen, state: CombatState) {.inline.} =
     self.mapCursor = activeChar.currentTile
     self.privateState = state
     self.message = nil
+
+proc abilityTargetCharacter*(target: Character): AbilityTarget =
+    AbilityTarget(kind: TargetCharacter, character: target)
+
+proc abilityTargetTile*(target: Vec2): AbilityTarget =
+    AbilityTarget(kind: TargetTile, tile: target)

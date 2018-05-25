@@ -191,10 +191,9 @@ type
 
     AoeAura* = object
         turns*: int
+        caster*: Character
         texture*: TextureAlias
         effect*: proc(character: Character)
-
-
 
 
 proc state*(self: CombatScreen): CombatState {.inline.} = self.privateState

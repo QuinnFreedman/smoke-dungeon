@@ -14,6 +14,7 @@ proc getClosest(self: Character, others: seq[Character]): Character =
     var bestDistance: float = Inf
     for c in others:
         if c == self: continue
+        if c.health <= 0: continue
         let distanceToC = distance(self.currentTile, c.currentTile)
         if distanceToC < bestDistance:
             bestDistance = distanceToC

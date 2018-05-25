@@ -35,11 +35,13 @@ let ZAP* = Ability(
         target.health -= 2 #TODO placeholder
 )
 
-let FIRE = AoeAura(
-    turns: 2,
-    texture: TextureAlias.fire,
-    effect: proc(character: Character) = character.health -= 2
-)
+proc fire(caster: Character): AoeAura =
+    AoeAura(
+        turns: 2,
+        caster: caster,
+        texture: TextureAlias.fire,
+        effect: proc(character: Character) = character.health -= 2
+    )
 
 let BURN* = Ability(
     name: "Ignite",
@@ -57,5 +59,6 @@ let BURN* = Ability(
             target + v( 1, 0),
         ]
         for p in effectedTiles:
-            combat.aoeAuras[p] = FIRE
+            if combat.aoeAuras.contains(p):
+                combat.aoeAuras[p] = fire(caster)
 )

@@ -56,6 +56,7 @@ proc renderHorizontalBar(pos: Vec2, width: int, value: float, color: Color,
 
 proc renderCharacterVitals(character: Character,
                            renderInfo: RenderInfo, transform: Vec2) =
+    if character.health <= 0: return
     let upperLeft = character.actualPos.scale(TILE_SIZE).round()
 
     if character.maxHealth != 0:
@@ -232,11 +233,20 @@ proc numAlive(combat: CombatScreen): (int, int) =
                 inc(numEnemies)
     return (numAllies, numEnemies)
 
-template checkAlive(combat: CombatScreen) =
-    # Check if anyone is still alive
-    let (numAllies, numEnemies) = combat.numAlive
-    if numEnemies == 0 or numAllies == 0:
-        return Screen.world
+proc tickAuras(combat: var CombatScreen, caster: Character) =
+    # tick auras
+    for p in combat.aoeAuras.indices:
+        var aura = combat.aoeAuras[p]
+        if not aura.isNone and aura.caster == caster:
+            if aura.turns == 1:
+                combat.aoeAuras[p] = AoeAura()
+            else:
+                combat.aoeAuras[p] = AoeAura(
+                    turns: aura.turns - 1,
+                    caster: aura.caster,
+                    texture: aura.texture,
+                    effect: aura.effect
+                )
 
 
 proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
@@ -244,23 +254,28 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
 
     alias activeChar: combat.turnOrder[combat.turn]
 
-    # check if anyone is alive
-    checkAlive(combat)
+    # Check if anyone is still alive
+    let (numAllies, numEnemies) = combat.numAlive
+    if numEnemies == 0 or numAllies == 0:
+        return Screen.world
+
     # Skip unconcious characters
     doUntil activeChar.health > 0:
         combat.turn = (combat.turn + 1) mod combat.turnOrder.len
+        if activeChar.health <= 0:
+            tickAuras(combat, activeChar)
+
 
     # Apply aoe effects
     #TODO decrement aoe turn counter
     let aura = combat.aoeAuras[activeChar.currentTile]
     if not aura.isNone:
         aura.effect(activeChar)
+    tickAuras(combat, activeChar)
 
-    # check again (after auras)
-    checkAlive(combat)
-    # skip character if they became unconcious due to auras
-    while not activeChar.health > 0:
-        combat.turn = (combat.turn + 1) mod combat.turnOrder.len
+    # go to the next character if the active character died from auras
+    if activeChar.health <= 0:
+        return goToNextTurn(combat, level)
 
 
     # Do AI for enemy turn or ask user to pcik movement

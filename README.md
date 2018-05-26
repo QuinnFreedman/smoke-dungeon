@@ -1,8 +1,14 @@
+# Smoke
+
 ## TODO:
+
 ### Minor Changes
+
 * allow/test multiple enemies in combat
 * swap places when you move toward an ally
+
 ### Major Features
+
 * combat animations
 * pick up items from bodies
 * level up/progression system
@@ -64,7 +70,7 @@ Non-magical warrior. Takes a lot of damage and does a lot of physical melee dama
 * Specialization: Damage
     * Power attack: Costs extra energy and does extra damage
     * Some ability that does damage to themselves/makes them more vulnerable but does a ton of damage
-    * ...
+    * Sweeping attack that al enemies in an arc
 
 #### Paladin
 
@@ -93,3 +99,18 @@ A magical damage dealer
     * Fireball: Send out a fireball that does a tone of damage to the first enemy it hits in a direction
     * Set enemy on fire/magically poison them (damage over time)
     * ??
+
+
+## Weapon Ideas
+
+* Heavy club that does a lot of damage/knocks enemies back on tile, but with lower accuracy/higher chance to miss
+* Sword that gives you back mana every time you hit someone
+* Sword that gives you back health every time you hit someone
+* Bow that shoots an additional arrow at a random enemy every time you shoot it
+* Staff that makes the AOE bigger every time you cast an AOE ability through it
+* Staff that increases healing every time you cast a healing spell through it
+* Staff that makes any targeted spell hit a random enemy instead, but does bonus damage to compensate
+* Knife that adds a bleed or poison effect every time you hit with it
+* Weapon that always crits when it hits
+* Weapon that always hits
+* Weapon with small chance to instantly kill non-boss target

@@ -1,4 +1,8 @@
 import
+    random,
+    math
+
+import
     types,
     vector,
     textures,
@@ -8,12 +12,20 @@ let NONE_ABILITY* = Ability(
     name: "Rest"
 )
 
+proc basicDamage(weapon: WeaponInfo, modifier=1.0): (int, bool) =
+    if weapon.critChance >= rand(1.0):
+        ((weapon.critBonus * weapon.baseDamage.float * modifier).round.toInt,
+         true)
+    else:
+        ((weapon.baseDamage.float * modifier).round.toInt, false)
+
+
 let BASIC_ATTACK* = Ability(
     name: "Basic Attack",
     useWeaponRange: true,
     abilityType: AbilityType.enemyTarget,
     applyEffect: proc (caster, target: Character, weapon: Item) =
-        target.health -= 1
+        target.health -= basicDamage(weapon.weaponInfo)[0]
 )
 
 let HEAVY_ATTACK* = Ability(
@@ -22,7 +34,7 @@ let HEAVY_ATTACK* = Ability(
     abilityType: AbilityType.enemyTarget,
     energyCost: 2,
     applyEffect: proc (caster, target: Character, weapon: Item) =
-        target.health -= 2 #TODO placeholder
+        target.health -= basicDamage(weapon.weaponInfo, 2)[0]
 )
 
 let ZAP* = Ability(

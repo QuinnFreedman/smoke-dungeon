@@ -5,6 +5,7 @@ import
     character_utils,
     vector
 
+
 let IRON_SHORTSWORD* = Item(
     kind: ItemType.weapon,
     name: "Iron Shortsword",

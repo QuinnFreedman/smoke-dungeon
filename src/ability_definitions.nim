@@ -49,16 +49,14 @@ let BURN* = Ability(
     abilityRange: 4,
     abilityType: AbilityType.aoe,
     manaCost: 4,
+    aoePattern: @[
+        v(0,  0),
+        v(0, -1),
+        v(0,  1),
+        v(-1, 0),
+        v( 1, 0),
+    ],
     applyAoeEffect: proc (caster: Character, target: Vec2,
                           weapon: Item, combat: var CombatScreen) =
-        let effectedTiles = [
-            target,
-            target + v(0, -1),
-            target + v(0,  1),
-            target + v(-1, 0),
-            target + v( 1, 0),
-        ]
-        for p in effectedTiles:
-            if combat.aoeAuras.contains(p):
-                combat.aoeAuras[p] = fire(caster)
+        combat.aoeAuras[target] = fire(caster)
 )

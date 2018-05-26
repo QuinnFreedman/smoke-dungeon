@@ -14,7 +14,6 @@ import
     matrix,
     astar,
     times,
-    weapon_definitions,
     ability_definitions
 
 

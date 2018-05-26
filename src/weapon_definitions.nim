@@ -1,6 +1,9 @@
 import
     types,
-    textures
+    textures,
+    utils,
+    character_utils,
+    vector
 
 let IRON_SHORTSWORD* = Item(
     kind: ItemType.weapon,
@@ -15,15 +18,20 @@ let IRON_SHORTSWORD* = Item(
     )
 )
 
-let NONE_WEAPON* = Item(
+let KNOCKBACK_SWORD* = Item(
     kind: ItemType.weapon,
-    name: "Hands",
+    name: "Repulsive Shortsword",
     icon: TextureAlias.basicSwordIcon,
     weaponInfo: WeaponInfo(
-        baseDamage: 1,
+        baseDamage: 2,
         critChance: 0.2,
         critBonus: 0.5,
         weaponRange: 1,
-        handedness: Handed.single
+        handedness: Handed.single,
+        kineticAfterEffect: proc(caster, target: Character, level: var Level) =
+            let dir = caster.currentTile.directionTo(target.currentTile)
+            let newPos = target.currentTile + dir.directionVector
+            target.teleport(newPos, target.currentTile.directionTo(newPos),
+                            level.collision)
     )
 )

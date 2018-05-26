@@ -362,7 +362,6 @@ proc updateCombatScreen*(combat: var CombatScreen,
                                    activeChar.currentTile,
                                    combat.mapCursor,
                                    includeGoal=true,
-                                   randomNoise=1,
                                    rng=nil)
             combat.movementStart = activeChar.currentTile
 
@@ -448,15 +447,33 @@ proc updateCombatScreen*(combat: var CombatScreen,
         activeChar.health -= combat.activeAbility.healthCost
         activeChar.energy -= combat.activeAbility.energyCost
         activeChar.mana -= combat.activeAbility.manaCost
+        let weapon = combat.activeWeapon.weaponInfo
+        let isMagical = combat.activeAbility.isMagical
         case combat.activeTarget.kind:
         of TargetCharacter:
+            let target = combat.activeTarget.character
             combat.activeAbility.applyEffect(
-                        activeChar, combat.activeTarget.character,
+                        activeChar, target,
                         combat.activeWeapon)
+            let afterEffect =
+                if isMagical: weapon.magicAfterEffect
+                else: weapon.kineticAfterEffect
+            if not afterEffect.isNil:
+                afterEffect(activeChar, target, level)
+
         of TargetTile:
-            combat.activeAbility.applyAoeEffect(
-                    activeChar, combat.activeTarget.tile, combat.activeWeapon,
-                    combat)
+            let target = combat.activeTarget.tile
+            for v in combat.activeAbility.aoePattern:
+                let tile = target + v
+                if combat.aoeAuras.contains(tile):
+                    combat.activeAbility.applyAoeEffect(
+                            activeChar, tile, combat.activeWeapon,
+                            combat)
+            let afterEffect =
+                if isMagical: weapon.magicAoeAfterEffect
+                else: weapon.kineticAoeAfterEffect
+            if not afterEffect.isNil:
+                afterEffect(activeChar, target, combat.activeAbility.aoePattern, level)
 
         activeChar.faceToward(combat.activeTarget.getPosition)
         result = combat.goToNextTurn(level)

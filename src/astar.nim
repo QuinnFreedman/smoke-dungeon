@@ -17,7 +17,7 @@ proc notZero[T](a: T): bool {.inline.} =
 
 
 proc aStarSearch*[T](collision: Matrix[T], start, goal: Vec2, includeGoal: bool,
-                     randomNoise: int, rng: ptr Rand): seq[Vec2] =
+                     rng: ptr Rand): seq[Vec2] =
     var myRng =
         if rng.isNil:
             initRand(0)
@@ -25,8 +25,10 @@ proc aStarSearch*[T](collision: Matrix[T], start, goal: Vec2, includeGoal: bool,
             rng[]
 
     #TODO: don't alloc a new heap every time; just clear it
-    var frontier = newHeap[(Vec2, int)]() do (a, b: (Vec2, int)) -> int:
-        return a[1] - b[1]
+    var frontier = newHeap[(Vec2, int)] do (a, b: (Vec2, int)) -> int:
+        if a[1] == b[1]: myRng.rand(2) - 1
+        else: a[1] - b[1]
+
     frontier.push((start, 0))
     var cameFrom = initTable[Vec2, Vec2]()
     var costSoFar = initTable[Vec2, int]()
@@ -55,7 +57,7 @@ proc aStarSearch*[T](collision: Matrix[T], start, goal: Vec2, includeGoal: bool,
 
         for i in 0..<numNeighbors:
             let next = neighbors[i]
-            let newCost = costSoFar[current] + 10 + myRng.rand(randomNoise)
+            let newCost = costSoFar[current] # + 10 + myRng.rand(randomNoise)
             if not (next in costSoFar) or newCost < costSoFar[next]:
                 costSoFar[next] = newCost
                 let priority = newCost + heuristic(goal, next)

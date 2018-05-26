@@ -27,12 +27,11 @@ const AI_FOLLOW* =
             let path = aStarSearch(level.collision, self.currentTile,
                                    self.following.nextTile,
                                    includeGoal=false,
-                                   randomNoise=1,
                                    rng=nil)
             # let followDistance =
             #     if self.following.isMoving: 4
             #     else: 2
-            if path.len > 4:
+            if path.len > 3:
                 let nextTile = path[path.len - 2]
                 self.moveToward(nextTile, level.collision)
 
@@ -53,7 +52,6 @@ const AI_COMBAT_MOVE_NEAREST_ENEMY* =
             result = aStarSearch(level.collision, self.currentTile,
                                  closestEnemy.currentTile,
                                  includeGoal=false,
-                                 randomNoise=1,
                                  rng=nil)
 
 const AI_COMBAT_ATTACK_NEAREST_ENEMY* =

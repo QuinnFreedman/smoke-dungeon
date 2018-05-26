@@ -11,37 +11,6 @@ import
     keyboard,
     utils
 
-# **************************
-#         Items
-# **************************
-
-type
-    ItemType* {.pure.} = enum clothing, weapon
-
-    Item* = object
-        name*: string
-        icon*: TextureAlias
-        case kind*: ItemType
-        of ItemType.clothing: clothingInfo*: ClothingInfo
-        of ItemType.weapon: weaponInfo*: WeaponInfo
-
-    WeaponInfo* = object
-        baseDamage*: int
-        critChance*: float
-        critBonus*: float
-        weaponRange*: float
-        handedness*: Handed
-
-    Handed* {.pure.} = enum single, double
-
-    ClothingInfo* = object
-        textureMale*: TextureAlias
-        textureFemale*: TextureAlias
-        slot*: ClothingSlot
-
-    ClothingSlot* {.pure.} = enum
-        head, body, feet
-
 
 type
     Screen* {.pure.} = enum world, inventory, combat
@@ -102,6 +71,45 @@ type
 
 
     # **************************
+    #          Items
+    # **************************
+
+    ItemType* {.pure.} = enum clothing, weapon
+
+    Item* = object
+        name*: string
+        icon*: TextureAlias
+        case kind*: ItemType
+        of ItemType.clothing: clothingInfo*: ClothingInfo
+        of ItemType.weapon: weaponInfo*: WeaponInfo
+
+    WeaponInfo* = object
+        baseDamage*: int
+        critChance*: float
+        critBonus*: float
+        weaponRange*: float
+        handedness*: Handed
+        magicAfterEffect*: proc(caster, target: Character, level: var Level)
+        kineticAfterEffect*: proc(caster, target: Character, level: var Level)
+        magicAoeAfterEffect*: proc(caster: Character, target: Vec2,
+                                   aoe: seq[Vec2], level: var Level)
+        kineticAoeAfterEffect*: proc(caster: Character, target: Vec2,
+                                     aoe: seq[Vec2], level: var Level)
+
+
+    Handed* {.pure.} = enum single, double
+
+    ClothingInfo* = object
+        textureMale*: TextureAlias
+        textureFemale*: TextureAlias
+        slot*: ClothingSlot
+
+    ClothingSlot* {.pure.} = enum
+        head, body, feet
+
+
+
+    # **************************
     #         Characters
     # **************************
 
@@ -158,14 +166,18 @@ type
 
     Ability* = object
         name*: string
-        abilityType*: AbilityType
         abilityRange*: float #number of squares
         useWeaponRange*: bool #if true, ignore abilityRange and use the range of the weaoon the spell is channeled throug
         energyCost*: int
         manaCost*: int
         healthCost*: int
-        applyAoeEffect*: proc(caster: Character, target: Vec2, weapon: Item,
-                              combat: var CombatScreen)
+        case abilityType*: AbilityType:
+        of aoe:
+            aoePattern*: seq[Vec2]
+            applyAoeEffect*: proc(caster: Character, target: Vec2, weapon: Item,
+                                  combat: var CombatScreen)
+        else:
+            discard
         applyEffect*: proc(caster, target: Character, weapon: Item)
 
     AbilityTargetType* = enum TargetCharacter, TargetTile
@@ -210,3 +222,17 @@ proc abilityTargetCharacter*(target: Character): AbilityTarget =
 
 proc abilityTargetTile*(target: Vec2): AbilityTarget =
     AbilityTarget(kind: TargetTile, tile: target)
+
+# Can't be in weapon_definitions b/c of circular import
+let NONE_WEAPON* = Item(
+    kind: ItemType.weapon,
+    name: "Hands",
+    icon: TextureAlias.basicSwordIcon,
+    weaponInfo: WeaponInfo(
+        baseDamage: 1,
+        critChance: 0.2,
+        critBonus: 0.5,
+        weaponRange: 1,
+        handedness: Handed.single
+    )
+)

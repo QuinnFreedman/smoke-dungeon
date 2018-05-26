@@ -50,7 +50,8 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     playerCharacter.backpack[0, 0] = KNIGHT_HELMET
     playerCharacter.backpack[1, 0] = MAGE_CLOAK
     playerCharacter.backpack[3, 1] = MAGE_SHOES
-    playerCharacter.backpack[2, 1] = IRON_SHORTSWORD
+    # playerCharacter.backpack[2, 1] = KNOCKBACK_SWORD
+    playerCharacter.leftHand = KNOCKBACK_SWORD
     result.gameState.playerParty.add(playerCharacter)
 
     var companion1 = newCharacter(result.gameState.level,

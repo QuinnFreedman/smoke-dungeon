@@ -14,6 +14,9 @@ proc getRange*(self: Ability, weapon: WeaponInfo): float =
 proc isNone*(self: Ability): bool =
     self.name == "Rest"
 
+proc isMagical*(self: Ability): bool =
+    self.manaCost > 0
+
 proc getPosition*(self: AbilityTarget): Vec2 =
     match self:
         TargetCharacter(character: c):

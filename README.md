@@ -103,7 +103,9 @@ A magical damage dealer
 
 ## Weapon Ideas
 
-* Heavy club that does a lot of damage/knocks enemies back on tile, but with lower accuracy/higher chance to miss
+**Idea:** To increase variety, there are base weapon types (sword, knife, bow, spear, etc...) that have different ranges and different base damage/accuracy/crit chance/crit bonus. Those stats are randomly tweaked a little bit and combined with one or more random effects (vampirism, knockback, etc...). The magnitude of the effect can be randomized too
+
+* Heavy club that does a lot of damage and knocks enemies back one tile, but with lower accuracy/higher chance to miss
 * Sword that gives you back mana every time you hit someone
 * Sword that gives you back health every time you hit someone
 * Bow that shoots an additional arrow at a random enemy every time you shoot it

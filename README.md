@@ -1,13 +1,13 @@
 # Smoke
 
-# TODO:
+## TODO:
 
-## Minor Changes
+### Minor Changes
 
 * allow/test multiple enemies in combat
 * swap places when you move toward an ally
 
-## Major Features
+### Major Features
 
 * combat animations
 * pick up items from bodies
@@ -35,6 +35,7 @@ Ranged magical class focused on utility. Good at crowd control and altering the 
     * Vines: Magically damage an enemy (a little bit) and summon vines around them that slow movement through them for all characters based on spell level. At level three they damage you when you move though them or only slow opponents (?).
     * Teleport: Move an enemy or ally some number of spaces away depending on level.
     * Summon wall: put an temporary wall on (1>3>3) tiles. Walls can be attacked/destroyed by enemies. At level three, knock back characters standing where the walls are spawned
+    * Ranged magical heal
 * Specialization: Conjuring
     * Familiar: Summon an allied creature to a tile. Stats/type of the creature depend on level.
     * Decoy: Summon a weak decoy that does no damage but taunts nearby enemies until it is destroyed
@@ -103,8 +104,8 @@ A magical damage dealer
 
 # Weapon Ideas
 
-~~
-* Heavy club that does a lot of damage and knocks enemies back one tile, but with lower accuracy/higher chance to miss
+
+~~* Heavy club that does a lot of damage and knocks enemies back one tile, but with lower accuracy/higher chance to miss
 * Sword that gives you back mana every time you hit someone
 * Sword that gives you back health every time you hit someone
 * Bow that shoots an additional arrow at a random enemy every time you shoot it

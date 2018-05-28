@@ -35,7 +35,7 @@ Ranged magical class focused on utility. Good at crowd control and altering the 
     * Vines: Magically damage an enemy (a little bit) and summon vines around them that slow movement through them for all characters based on spell level. At level three they damage you when you move though them or only slow opponents (?).
     * Teleport: Move an enemy or ally some number of spaces away depending on level.
     * Summon wall: put an temporary wall on (1>3>3) tiles. Walls can be attacked/destroyed by enemies. At level three, knock back characters standing where the walls are spawned
-    * Ranged magical heal
+    * Lesser ranged magical heal??
 * Specialization: Conjuring
     * Familiar: Summon an allied creature to a tile. Stats/type of the creature depend on level.
     * Decoy: Summon a weak decoy that does no damage but taunts nearby enemies until it is destroyed
@@ -68,6 +68,8 @@ Non-magical warrior. Takes a lot of damage and does a lot of physical melee dama
     * Taunt: force enemies to attack the knight next round
     * Defensive stance/shield/riposte: If an enemy attacks them before their next turn, prevent the damage and get a counter attack
     * Determination: for height energy cost, guarantee to not be brought below 1 health until next turn
+    * Self-heal
+    
 * Specialization: Damage
     * Power attack: Costs extra energy and does extra damage
     * Some ability that does damage to themselves/makes them more vulnerable but does a ton of damage

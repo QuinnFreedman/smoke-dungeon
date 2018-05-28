@@ -105,18 +105,17 @@ A magical damage dealer
 # Weapon Ideas
 
 
-~~* Heavy club that does a lot of damage and knocks enemies back one tile, but with lower accuracy/higher chance to miss
-* Sword that gives you back mana every time you hit someone
-* Sword that gives you back health every time you hit someone
-* Bow that shoots an additional arrow at a random enemy every time you shoot it
-* Staff that makes the AOE bigger every time you cast an AOE ability through it
-* Staff that increases healing every time you cast a healing spell through it
-* Staff that makes any targeted spell hit a random enemy instead, but does bonus damage to compensate
-* Knife that adds a bleed or poison effect every time you hit with it
-* Weapon that always crits when it hits
-* Weapon that always hits
-* Weapon with small chance to instantly kill non-boss target
-~~
+* ~~Heavy club that does a lot of damage and knocks enemies back one tile, but with lower accuracy/higher chance to miss~~
+* ~~Sword that gives you back mana every time you hit someone~~
+* ~~Sword that gives you back health every time you hit someone~~
+* ~~Bow that shoots an additional arrow at a random enemy every time you shoot it~~
+* ~~Staff that makes the AOE bigger every time you cast an AOE ability through it~~
+* ~~Staff that increases healing every time you cast a healing spell through it~~
+* ~~Staff that makes any targeted spell hit a random enemy instead, but does bonus damage to compensate~~
+* ~~Knife that adds a bleed or poison effect every time you hit with it~~
+* ~~Weapon that always crits when it hits~~
+* ~~Weapon that always hits~~
+* ~~Weapon with small chance to instantly kill non-boss target~~
 
 **Idea:** To increase variety, there are base weapon types (sword, knife, bow, spear, etc...) that have different ranges and different base damage/accuracy/crit chance/crit bonus. Those stats are randomly tweaked a little bit and combined with one or more random effects (vampirism, knockback, etc...). The magnitude of the effect can be randomized too
 

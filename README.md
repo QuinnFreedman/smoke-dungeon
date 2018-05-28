@@ -1,13 +1,13 @@
 # Smoke
 
-## TODO:
+# TODO:
 
-### Minor Changes
+## Minor Changes
 
 * allow/test multiple enemies in combat
 * swap places when you move toward an ally
 
-### Major Features
+## Major Features
 
 * combat animations
 * pick up items from bodies
@@ -18,15 +18,15 @@
 * **add lots more items/abilities/enemy types/classes/ai behaviors**
 
 
-## Potential Classes:
+# Potential Classes:
 
 **Idea**: 3 roles: DPS, Tank, Support. Each role has a magical and non magical variant class. Each class has two specializations/skill trees. Within each of these there are some abilities that can be levelled 1,2,3. They get a stat buff each time and do a little something extra at level three
 
 **Another Idea:** Leveling up: Maybe kills grant some kind of essence to the party as a whole. You can choose to invest this to unlock abilities for any party member.
 
-### Support:
+## Support:
 
-#### Wizard (conjurer)
+### Wizard (conjurer)
 
 Ranged magical class focused on utility. Good at crowd control and altering the battlefield. Can also (as an alternate skill tree?) conjure ally familiars, but can't do much damage on his own.
 
@@ -41,7 +41,7 @@ Ranged magical class focused on utility. Good at crowd control and altering the 
     * Raise dead?
 
 
-#### Ranger/Rogue/monk?
+### Ranger/Rogue/monk?
 
 Some non-magical mostly-melee support-oriented class. Can set traps, perform non-magical (melee-range) healing, maybe do assassinations/backstabs in an alternate skill tree
 
@@ -56,9 +56,9 @@ Some non-magical mostly-melee support-oriented class. Can set traps, perform non
     * ...
 
 
-### Tank
+## Tank
 
-#### Knight/Barbarian
+### Knight/Barbarian
 
 Non-magical warrior. Takes a lot of damage and does a lot of physical melee damage.
 
@@ -72,21 +72,21 @@ Non-magical warrior. Takes a lot of damage and does a lot of physical melee dama
     * Some ability that does damage to themselves/makes them more vulnerable but does a ton of damage
     * Sweeping attack that al enemies in an arc
 
-#### Paladin
+### Paladin
 
 Magical warrior. Good at healing
 
 
 
 
-### DPS
+## DPS
 
-#### Archer/ranger
+### Archer/ranger
 
 A non-magical ranged damage-dealing unit. Any class can basic attack with a bow but the archer is extra good at it/has abilities that require/make use of a bow
 
 
-#### Mage/Plague Doctor/Sorcerer
+### Mage/Plague Doctor/Sorcerer
 
 A magical damage dealer
 
@@ -101,10 +101,9 @@ A magical damage dealer
     * ??
 
 
-## Weapon Ideas
+# Weapon Ideas
 
-**Idea:** To increase variety, there are base weapon types (sword, knife, bow, spear, etc...) that have different ranges and different base damage/accuracy/crit chance/crit bonus. Those stats are randomly tweaked a little bit and combined with one or more random effects (vampirism, knockback, etc...). The magnitude of the effect can be randomized too
-
+~~
 * Heavy club that does a lot of damage and knocks enemies back one tile, but with lower accuracy/higher chance to miss
 * Sword that gives you back mana every time you hit someone
 * Sword that gives you back health every time you hit someone
@@ -116,3 +115,35 @@ A magical damage dealer
 * Weapon that always crits when it hits
 * Weapon that always hits
 * Weapon with small chance to instantly kill non-boss target
+~~
+
+**Idea:** To increase variety, there are base weapon types (sword, knife, bow, spear, etc...) that have different ranges and different base damage/accuracy/crit chance/crit bonus. Those stats are randomly tweaked a little bit and combined with one or more random effects (vampirism, knockback, etc...). The magnitude of the effect can be randomized too
+
+## Weapon Effects
+
+* Blind: Reduce opponent's accuracy for their next turn
+* Magical: Does magical damgage when used as a physical weapon
+* Bonus to healing
+* Healing has a chance to remove a curse/negative effect
+* Fear: Critical hit causes enemy to run in oposite direction and lose their next turn
+* Knockback: Hit knocks one square backwards
+* Random knockback: knocks in a random direction
+* Bleed/Poison: DOT effect
+   * Bleading also reduces healing effects
+   * Poison also reduces evasion/dodge chance?
+* Double/tripple crit bonus
+* Hit/crit permenently damages enemy armor
+* (For ranged weapon): Damage increases with range
+* (For ranged weapon): Shot pierces target and continues to a second target in a line
+* Regain health/mana/energy on hit
+* Chance to stun on hit (target loses their next turn)
+* Freeze: hit reduces target's spead (movement range) next turn
+* On hit gain some armor until the end of the fight
+* Attack attacks a random aditional target in range (pretty op for ranged weapons but more situational/tactical for melee)
+* Do bonus damage relative to self missing health
+* Do bonus damage relative to target missing health
+* Hit drains target's mana/energy
+* Makes magical AOE effects have a bigger AOE
+* Bonus to certain type of attack (e.g. magical direct damage attacks)
+* Bonus to accuracy
+* Chance to instantly kill target

@@ -132,6 +132,7 @@ type
         maxHealth*: int
         maxMana*: int
         maxEnergy*: int
+        auras*: seq[Aura]
 
         ai*: AI
         following*: Character
@@ -205,6 +206,11 @@ type
         turns*: int
         caster*: Character
         texture*: TextureAlias
+        effect*: proc(character: Character)
+
+    Aura* = object
+        turns*: int
+        icon*: TextureAlias
         effect*: proc(character: Character)
 
 

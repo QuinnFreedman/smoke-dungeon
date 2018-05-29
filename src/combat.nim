@@ -265,12 +265,18 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
         if activeChar.health <= 0:
             tickAuras(combat, activeChar)
 
+    # apply aura effects
+    for i in 0..<activeChar.auras.len:
+        var aura = activeChar.auras[i]
+        aura.effect(activeChar)
+        aura.turns -= 1
 
     # Apply aoe effects
-    #TODO decrement aoe turn counter
-    let aura = combat.aoeAuras[activeChar.currentTile]
-    if not aura.isNone:
-        aura.effect(activeChar)
+    let aoeAura = combat.aoeAuras[activeChar.currentTile]
+    if not aoeAura.isNone:
+        aoeAura.effect(activeChar)
+
+    # Decrement aoe aura turn counters
     tickAuras(combat, activeChar)
 
     # go to the next character if the active character died from auras

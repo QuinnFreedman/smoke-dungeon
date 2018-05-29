@@ -215,8 +215,7 @@ proc getDestRect*(self: Character): sdl2.Rect =
 
 proc newCharacter*(level: var Level,
                    pos: Vec2, speed: float, race: Race, sex: Sex,
-                   class: Class):
-        Character =
+                   class: Class): Character =
     new result
     result.currentTile = pos
     result.nextTile = pos
@@ -234,5 +233,6 @@ proc newCharacter*(level: var Level,
     result.mana = class.startingMana
     result.maxEnergy = class.startingEnergy
     result.energy = class.startingEnergy
+    result.auras = newSeq[Aura]()
     result.ai = race.defaultAi
     level.collision.inc(pos)

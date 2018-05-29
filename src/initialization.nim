@@ -58,7 +58,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
         v(levelWidth div 2 + 1, levelHeight div 2), 2,
         RACE_HUMAN, Sex.male, CLASS_ROGUE)
     companion1.backpack[1, 0] = KNIGHT_HELMET
-    companion1.following = playerCharacter
+    companion1.rightHand = BLEED_KNIFE
     companion1.ai.worldMovement = AI_FOLLOW
     companion1.following = playerCharacter
     result.gameState.playerParty.add(companion1)

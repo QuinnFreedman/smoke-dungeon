@@ -5,7 +5,7 @@
 ### Minor Changes
 
 * allow/test multiple enemies in combat
-* swap places when you move toward an ally
+* ~~swap places when you move toward an ally~~
 
 ### Major Features
 
@@ -69,7 +69,7 @@ Non-magical warrior. Takes a lot of damage and does a lot of physical melee dama
     * Defensive stance/shield/riposte: If an enemy attacks them before their next turn, prevent the damage and get a counter attack
     * Determination: for height energy cost, guarantee to not be brought below 1 health until next turn
     * Self-heal
-    
+
 * Specialization: Damage
     * Power attack: Costs extra energy and does extra damage
     * Some ability that does damage to themselves/makes them more vulnerable but does a ton of damage

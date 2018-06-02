@@ -71,6 +71,8 @@ proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
     let window = getRenderWindow(pc.currentTile)
 
     renderMap(level.textures, window, renderer, transform)
+    # debugRenderCollision(level.collision, window, renderer, transform)
+
     for character in gamestate.entities:
         renderCharacter(character, renderer, transform)
 

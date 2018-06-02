@@ -335,11 +335,9 @@ proc updateMenu(inv: var Inventory, playerParty: seq[Character],
 
 
 proc loopInventory*(inv: var Inventory, playerParty: seq[Character],
-                    keyboard: Keyboard): Screen =
+                    keyboard: Keyboard): ScreenChange =
     if keyboard.keyPressed(Input.tab):
-        result = Screen.world
-    else:
-        result = Screen.inventory
+        result = ScreenChange(changeTo: Screen.world)
 
     let moveX =
         if keyboard.keyPressed(Input.right): 1

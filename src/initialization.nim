@@ -28,6 +28,8 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
         textCache: newTextCache()
     )
 
+    result.screen = Screen.world
+
     let seed = int64(epochTime())
     # let seed = int64(1524099821)
     # let seed = 1527012709

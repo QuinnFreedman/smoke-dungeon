@@ -249,15 +249,14 @@ proc tickAuras(combat: var CombatScreen, caster: Character) =
                 )
 
 
-proc goToNextTurn(combat: var CombatScreen, level: var Level): Screen =
-    result = Screen.combat
+proc goToNextTurn(combat: var CombatScreen, level: var Level): ScreenChange =
 
     alias activeChar: combat.turnOrder[combat.turn]
 
     # Check if anyone is still alive
     let (numAllies, numEnemies) = combat.numAlive
     if numEnemies == 0 or numAllies == 0:
-        return Screen.world
+        return ScreenCHange(changeTo: Screen.world)
 
     # Skip unconcious characters
     doUntil activeChar.health > 0:
@@ -335,8 +334,7 @@ proc setupCombat(combat: var CombatScreen) =
 proc updateCombatScreen*(combat: var CombatScreen,
                          level: var Level,
                          keyboard: Keyboard,
-                         dt: float): Screen =
-    result = Screen.combat
+                         dt: float): ScreenChange =
     if combat.turnOrder.isNil:
         setupCombat(combat)
 

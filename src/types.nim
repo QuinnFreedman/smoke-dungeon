@@ -13,7 +13,7 @@ import
 
 
 type
-    Screen* {.pure.} = enum world, inventory, combat
+    Screen* = enum none, world, inventory, combat
 
     Game* = ref object
         shouldQuit*: bool
@@ -42,6 +42,7 @@ type
         inMenu*: bool
         menuCursor*: int
         menuSubject*: Item
+        ground*: Matrix[Item]
 
     CombatScreen* = object
         playerParty*: seq[Character]
@@ -212,6 +213,20 @@ type
         turns*: int
         icon*: TextureAlias
         effect*: proc(character: Character)
+
+    ScreenChange* = object
+        case changeTo*: Screen
+        of Screen.combat:
+            playerParty*, enemyParty*: seq[Character]
+        of Screen.inventory:
+            items*: seq[Item]
+        of Screen.world:
+            discard
+        of Screen.none:
+            discard
+
+
+
 
 
 proc state*(self: CombatScreen): CombatState {.inline.} = self.privateState

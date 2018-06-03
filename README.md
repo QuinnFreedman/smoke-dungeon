@@ -26,6 +26,8 @@ Each class has a skill tree of 17 abilities shaped like this:
 
 Each quadrant represents following one of four gods and specializing in one type of skill. You start unlocking abilities from the outside in. You need to have already unlocked the two abilities below bellow an inner ability to unlock it.
 
+In addition, each race has one **race ability** that is unlocked from the beginning for any member of that race and all characters have a **"Basic attack"** ability that performs a simple physical attack with no energy cost.
+
 ### Leveling up
 
 Every time you kill a monster boss/mini-boss (or complete some other mini-quest) they drop a consumable item (like a tusk/horn/eye etc.). You can consume these items to allow a single character to unlock one ability. Each item also has a permanent stat buff effect like more health/magica/strength. Whichever character uses it to unlock their spell gains the effect.

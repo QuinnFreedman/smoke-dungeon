@@ -1,15 +1,43 @@
 import
     sdl2,
     random,
-    math,
-    random
+    math
 
 import
     types,
     vector,
     matrix,
     textures,
-    direction
+    direction,
+    utils
+
+proc debugDrawDungeon(textures: Matrix[Rect]) =
+    for y in 0..<textures.height:
+        var line = ""
+        for x in 0..<textures.width:
+            let c: string =
+                if textures[x, y]  == GRASS_LONG3:
+                    " ."
+                elif textures[x, y]  == STONE1:
+                    " #"
+                else:
+                    "  "
+            line = line & c
+        echo line
+
+proc weightedChoice[T, V](rng: var Rand,
+        options: array[T, V], weights: array[T, float]): V =
+    var totals: array[T, float]
+    var running_total: float = 0
+
+    for i, w in weights:
+        running_total += w
+        totals[i] = running_total
+
+    let rnd = rng.rand(running_total)
+    for i, total in totals:
+        if rnd < total:
+            return options[i]
 
 proc generateLevel*(width, height: int, rng: var Rand): Level =
     result.walls = newMatrix[bool](width, height)
@@ -18,9 +46,9 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
     result.textures.setAll(BLACK)
     result.collision = newMatrix[uint8](width, height)
 
-    var particle = v(width div 2, height div 2)
+    var particle = v(0, height div 2)
 
-    for i in 0..1000:
+    doUntil particle.x == result.walls.width - 1:
         result.walls[particle] = false
         result.textures[particle] = GRASS_LONG3
         for x in -1..1:
@@ -30,26 +58,16 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
                     if result.textures[neighbor] == BLACK:
                         result.textures[neighbor] = STONE1
 
-        var next = particle + directionVector(randomDirection(rng))
-        while not result.walls.contains(next):
-            next = particle + directionVector(randomDirection(rng))
+        var next: Vec2
+        doUntil result.walls.contains(next):
+            let randDirection = rng.weightedChoice(
+                    [Direction.down, Direction.up, Direction.left, Direction.right],
+                    [0.25, 0.25, 0.23, 0.27])
+            next = particle + directionVector(randDirection)
         particle = next
 
 
     for p in result.walls.indices:
         result.collision[p] = uint8(result.walls[p])
 
-
-# proc debugDrawDungeon(textures: Matrix[Rect]) =
-#     for y in 0..<textures.height:
-#         var line = ""
-#         for x in 0..<textures.width:
-#             let c: string =
-#                 if textures[x, y]  == GRASS_LONG3:
-#                     " ."
-#                 elif textures[x, y]  == STONE1:
-#                     " #"
-#                 else:
-#                     "  "
-#             line = line & c
-#         echo line
+    debugDrawDungeon(result.textures)

@@ -43,7 +43,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     result.gameState.playerParty = newSeq[Character]()
 
     var playerCharacter = newCharacter(result.gameState.level,
-        v(levelWidth div 2, levelHeight div 2), 2,
+        v(0, levelHeight div 2), 2,
         RACE_HUMAN, Sex.male, CLASS_WIZARD)
 
     playerCharacter.clothes[ClothingSlot. head] = MAGE_HOOD
@@ -57,7 +57,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     result.gameState.playerParty.add(playerCharacter)
 
     var companion1 = newCharacter(result.gameState.level,
-        v(levelWidth div 2 + 1, levelHeight div 2), 2,
+        v(1, levelHeight div 2), 2,
         RACE_HUMAN, Sex.male, CLASS_ROGUE)
     companion1.backpack[1, 0] = KNIGHT_HELMET
     companion1.rightHand = BLEED_KNIFE
@@ -66,7 +66,7 @@ proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
     result.gameState.playerParty.add(companion1)
 
     var spider = newCharacter(result.gameState.level,
-        v(levelWidth div 2, levelHeight div 2 - 1), 2,
+        v(0, levelHeight div 2 - 1), 2,
         RACE_SPIDER, Sex.male, CLASS_ROGUE)
     spider.kind = CharacterType.animal
 

@@ -18,11 +18,20 @@
 * **add lots more items/abilities/enemy types/classes/ai behaviors**
 
 
-# Potential Classes:
+# Classes:
 
 **Idea**: 3 roles: DPS, Tank, Support. Each role has a magical and non magical variant class. Each class has two specializations/skill trees. Within each of these there are some abilities that can be levelled 1,2,3. They get a stat buff each time and do a little something extra at level three
 
-**Another Idea:** Leveling up: Maybe kills grant some kind of essence to the party as a whole. You can choose to invest this to unlock abilities for any party member.
+~~**Another Idea:** Leveling up: Maybe kills grant some kind of essence to the party as a whole. You can choose to invest this to unlock abilities for any party member.~~
+
+## Skill Trees
+
+Each class has a skill tree of 21 abilities shaped like this:
+
+![](SkillTreeLayout.png)
+
+Each quadrant represents following one of four gods and specializing in one type of skill. You start unlocking abilities from the outside in. You need to have already unlocked the two abilities below bellow an inner ability to unlock it
+
 
 ## Support:
 

@@ -20,7 +20,7 @@
 
 ## Skill Trees
 
-Each class has a skill tree of 21 abilities shaped like this:
+Each class has a skill tree of 17 abilities shaped like this:
 
 ![](SkillTreeLayout.png)
 

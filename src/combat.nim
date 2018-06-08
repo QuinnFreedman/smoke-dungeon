@@ -34,18 +34,6 @@ proc getCombatWindow(combat: CombatScreen): Rect =
             2 * radiusX + 1, 2 * radiusY + 1)
 
 
-# proc renderVerticalBar(pos: Vec2, height: int, value: float, color: Color,
-#                        renderInfo: RenderInfo, transform: Vec2) =
-#     let barHeight = (value * (height.float - 2)).round.cint
-#
-#     let bar = rect(pos.x.cint, pos.y.cint, 3, height.cint)
-#     drawRect(bar, color,
-#              renderInfo.renderer, transform)
-#     fillRect(rect(bar.x + 1, bar.y + (bar.h - 1 - barHeight),
-#                   bar.w - 2, barHeight),
-#              color,
-#              renderInfo.renderer, transform)
-
 proc renderHorizontalBar(pos: Vec2, width: int, value: float, color: Color,
                          renderInfo: RenderInfo, transform: Vec2)=
 
@@ -59,27 +47,22 @@ proc renderCharacterVitals(character: Character,
     if character.health <= 0: return
     let upperLeft = character.actualPos.scale(TILE_SIZE).round()
 
-    if character.maxHealth != 0:
-         # renderVerticalBar(upperLeft + v(3, 3), TILE_SIZE - 6,
-         #        character.health / character.maxHealth, RED,
-         #        renderInfo, transform)
+    let maxHealth = character.get(Stat.maxHp)
+    if maxHealth != 0:
          renderHorizontalBar(upperLeft + v(2, 2), 2,
-                character.health / character.maxHealth, RED,
+                character.health / maxHealth, RED,
                 renderInfo, transform)
 
-    if character.maxMana != 0:
-         renderHorizontalBar(upperLeft + v(2, 4), 2,
-                character.mana / character.maxMana, BLUE,
-                renderInfo, transform)
-         # renderVerticalBar(upperLeft + v(29, 0), TILE_SIZE,
-         #        character.mana / character.maxMana, BLUE,
-         #        renderInfo, transform)
-
-    if character.maxEnergy != 0:
-         renderHorizontalBar(upperLeft + v(2, 4), 2,
-                character.energy / character.maxEnergy,
-                color(200, 200, 0, 255),
-                renderInfo, transform)
+    # if character.maxMana != 0:
+    #      renderHorizontalBar(upperLeft + v(2, 4), 2,
+    #             character.mana / character.maxMana, BLUE,
+    #             renderInfo, transform)
+    #
+    # if character.maxEnergy != 0:
+    #      renderHorizontalBar(upperLeft + v(2, 4), 2,
+    #             character.energy / character.maxEnergy,
+    #             color(200, 200, 0, 255),
+    #             renderInfo, transform)
 
 
 
@@ -132,7 +115,7 @@ proc renderCombatScreen*(gameState: GameState,
     renderMap(gameState.level.textures, window, renderInfo.renderer, transform)
 
     for p in combat.aoeAuras.indices:
-        if not gameState.level.walls[p]:
+        if gameState.level.walls.contains(p) and not gameState.level.walls[p]:
             let aura = combat.aoeAuras[p]
             drawImage(aura.texture, p.scale(TILE_SIZE),
                       renderInfo.renderer, transform)
@@ -320,7 +303,7 @@ proc pickEnemyAttack(combat: var CombatScreen, level: Level) =
 proc setupCombat(combat: var CombatScreen) =
     combat.turnOrder = concat(combat.playerParty, combat.enemyParty)
     combat.turnOrder.sort do (a, b: Character) -> int:
-        result = cmp(a.getInitiative, b.getInitiative)
+        result = cmp(a.get(Stat.initiative), b.get(Stat.initiative))
 
     # TODO this should be the average of all entities in the combat
     combat.center = combat.playerParty[0].currentTile
@@ -448,9 +431,9 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 combat.setState(CombatSTate.waitingAttackAnimation)
     of CombatState.waitingAttackAnimation:
         #TODO wait until animation is completed
-        activeChar.health -= combat.activeAbility.healthCost
-        activeChar.energy -= combat.activeAbility.energyCost
-        activeChar.mana -= combat.activeAbility.manaCost
+        # activeChar.health -= combat.activeAbility.healthCost
+        # activeChar.energy -= combat.activeAbility.energyCost
+        # activeChar.mana -= combat.activeAbility.manaCost
         let weapon = combat.activeWeapon.weaponInfo
         let isMagical = combat.activeAbility.isMagical
         case combat.activeTarget.kind:

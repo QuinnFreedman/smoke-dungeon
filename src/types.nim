@@ -33,6 +33,8 @@ type
         walls*: Matrix[bool]
         collision*: Matrix[uint8]
         textures*: Matrix[sdl2.Rect]
+        entrance*: Vec2
+        exit*: Vec2
 
     Inventory* = object
         curBackpack*: int
@@ -109,6 +111,18 @@ type
         head, body, feet
 
 
+    Stat* {.pure.} = enum
+        maxHp,
+        armor,
+        magicResist,
+        initiative,
+        accuracy,
+        dodge,
+        strength,
+        intelect,
+        combatSpeed,
+        backpackCapacity
+
 
     # **************************
     #         Characters
@@ -128,12 +142,9 @@ type
         spritesheet*: TextureAlias
         class*: Class
         health*: int
-        mana*: int
-        energy*: int
-        maxHealth*: int
-        maxMana*: int
-        maxEnergy*: int
+        statMods*: array[Stat, int]
         auras*: seq[Aura]
+        unlockedAbilities*: seq[Ability]
 
         ai*: AI
         following*: Character
@@ -147,9 +158,9 @@ type
 
     Class* = object
         name*: string
-        startingHealth*: int
-        startingEnergy*: int
-        startingMana*: int
+        isMagicUser*: bool
+        startingAbilities*: seq[Ability]
+        stats*: array[Stat, int]
 
     Race* = object
         name*: string
@@ -170,9 +181,7 @@ type
         name*: string
         abilityRange*: float #number of squares
         useWeaponRange*: bool #if true, ignore abilityRange and use the range of the weaoon the spell is channeled throug
-        energyCost*: int
-        manaCost*: int
-        healthCost*: int
+        isMagical*: bool
         case abilityType*: AbilityType:
         of aoe:
             aoePattern*: seq[Vec2]
@@ -180,6 +189,8 @@ type
                                   combat: var CombatScreen)
         else:
             discard
+        isValidCaster*: proc(caster: Character): bool
+        isValidTarget*: proc(caster, target: Character, weapon: Item): bool
         applyEffect*: proc(caster, target: Character, weapon: Item)
 
     AbilityTargetType* = enum TargetCharacter, TargetTile
@@ -212,6 +223,7 @@ type
     Aura* = object
         turns*: int
         icon*: TextureAlias
+        getStat*: proc(stat: Stat, currentValue: int): int
         effect*: proc(character: Character)
 
     ScreenChange* = object
@@ -224,8 +236,6 @@ type
             discard
         of Screen.none:
             discard
-
-
 
 
 

@@ -11,12 +11,17 @@ import
     direction,
     utils
 
-proc debugDrawDungeon(textures: Matrix[Rect]) =
+proc debugDrawDungeon(level: Level) =
+    let textures = level.textures
     for y in 0..<textures.height:
         var line = ""
         for x in 0..<textures.width:
             let c: string =
-                if textures[x, y]  == GRASS_LONG3:
+                if v(x, y) == level.entrance:
+                    " ^"
+                elif v(x, y) == level.exit:
+                    " v"
+                elif textures[x, y]  == GRASS_LONG3:
                     " ."
                 elif textures[x, y]  == STONE1:
                     " #"
@@ -47,6 +52,7 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
     result.collision = newMatrix[uint8](width, height)
 
     var particle = v(0, height div 2)
+    result.entrance = particle
 
     doUntil particle.x == result.walls.width - 1:
         result.walls[particle] = false
@@ -66,8 +72,9 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
             next = particle + directionVector(randDirection)
         particle = next
 
+    result.exit = particle
 
     for p in result.walls.indices:
         result.collision[p] = uint8(result.walls[p])
 
-    debugDrawDungeon(result.textures)
+    debugDrawDungeon(result)

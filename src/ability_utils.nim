@@ -14,9 +14,6 @@ proc getRange*(self: Ability, weapon: WeaponInfo): float =
 proc isNone*(self: Ability): bool =
     self.name == "Rest"
 
-proc isMagical*(self: Ability): bool =
-    self.manaCost > 0
-
 proc getPosition*(self: AbilityTarget): Vec2 =
     match self:
         TargetCharacter(character: c):
@@ -25,9 +22,10 @@ proc getPosition*(self: AbilityTarget): Vec2 =
             t
 
 proc canCast*(caster: Character, ability: Ability): bool =
-    not (caster.health < ability.healthCost or
-         caster.mana < ability.manaCost or
-         caster.energy < ability.energyCost)
+    if ability.isValidCaster.isNil:
+        true
+    else:
+        ability.isValidCaster(caster)
 
 proc isNone*(self: AoeAura): bool =
     self.effect.isNil

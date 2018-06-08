@@ -19,7 +19,7 @@ import
 proc moveOrSwap(pc: Character, party: seq[Character],
                 level: var Level, direction: Direction) =
     let tile = pc.currentTile + directionVector(direction)
-    if level.collision[tile] > uint8(0):
+    if level.collision.contains(tile) and level.collision[tile] > uint8(0):
         for ally in party:
             if not ally.isMoving and ally.currentTile == tile:
                 ally.nextTile = pc.currentTile
@@ -35,16 +35,16 @@ proc loopMainGame(gameState: var GameState,
         result = ScreenChange(changeTo: Screen.inventory)
 
     let pc = gamestate.playerParty[0]
-    # for entity in gameState.entities:
-    #     if entity.health > 0 and not (entity in gameState.playerParty):
-    #         if distance(pc.currentTile, entity.currentTile) <= 1.0 or
-    #                 distance(pc.currentTile, entity.nextTile) <= 1.0:
-    #             echo "combat with: " & $entity
-    #             return ScreenChange(
-    #                 changeTo: Screen.combat,
-    #                 playerParty: gameState.playerParty,
-    #                 enemyParty: @[entity]
-    #             )
+    for entity in gameState.entities:
+        if entity.health > 0 and not (entity in gameState.playerParty):
+            if distance(pc.currentTile, entity.currentTile) <= 1.0 or
+                    distance(pc.currentTile, entity.nextTile) <= 1.0:
+                echo "combat with: " & $entity
+                return ScreenChange(
+                    changeTo: Screen.combat,
+                    playerParty: gameState.playerParty,
+                    enemyParty: @[entity]
+                )
 
 
 

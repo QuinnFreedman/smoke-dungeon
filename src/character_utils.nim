@@ -13,18 +13,18 @@ import
     item_utils,
     matrix,
     astar,
-    times,
-    ability_definitions
-
-
+    times
 
 # -------------------------------------
 # Combat stats
 # -------------------------------------
 
-proc getInitiative*(self: Character): int =
-    0 #TODO: use dexterity, class/race modifyer, initiative modifier, speed, etc
-
+proc get*(self: Character, stat: Stat): int =
+    result = self.class.stats[stat] + self.statMods[stat]
+    #TODO loop through items
+    for aura in self.auras:
+        if not aura.getStat.isNil:
+            result += aura.getStat(stat, result)
 
 proc getWeapons*(self: Character): (int, array[2, Item]) =
     if self.kind == CharacterType.humanoid:
@@ -45,15 +45,17 @@ iterator iterWeapons*(self: Character): Item =
     for i in 0..<numWeapons:
         yield weapons[i]
 
-#TODO placeholder
 iterator iterAbilities*(self: Character): Ability =
-    yield BASIC_ATTACK
-    if self.maxMana == 0:
-        yield HEAVY_ATTACK
-    else:
-        yield ZAP
-        yield BURN
-    yield NONE_ABILITY
+    for ability in self.unlockedAbilities:
+        yield ability
+    yield Ability( name: "Rest" )
+    # yield BASIC_ATTACK
+    # if self.class.isMagicUser:
+    #     yield HEAVY_ATTACK
+    # else:
+    #     yield ZAP
+    #     yield BURN
+    # yield NONE_ABILITY
 
 proc numAbilites*(self: Character): int =
     for _ in self.iterAbilities:
@@ -227,12 +229,10 @@ proc newCharacter*(level: var Level,
     result.backpack = newMatrix[Item](4, 2)
     result.spritesheet = getBaseSpriteSheet(race, sex)
     result.class = class
-    result.maxHealth = class.startingHealth
-    result.health = class.startingHealth
-    result.maxMana = class.startingMana
-    result.mana = class.startingMana
-    result.maxEnergy = class.startingEnergy
-    result.energy = class.startingEnergy
     result.auras = newSeq[Aura]()
     result.ai = race.defaultAi
+    result.unlockedAbilities = newSeq[Ability]()
+    result.health = class.stats[Stat.maxHp]
+    for ab in class.startingAbilities:
+        result.unlockedAbilities.add(ab)
     level.collision.inc(pos)

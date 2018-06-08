@@ -6,7 +6,8 @@ import
     types,
     vector,
     textures,
-    matrix
+    matrix,
+    character_utils
 
 let NONE_ABILITY* = Ability(
     name: "Rest"
@@ -18,6 +19,11 @@ proc basicDamage(weapon: WeaponInfo, modifier=1.0): (int, bool) =
          true)
     else:
         ((weapon.baseDamage.float * modifier).round.toInt, false)
+
+
+proc doesHit(caster, target: Character): bool =
+    let percentChance = caster.get(Stat.accuracy) - target.get(Stat.dodge)
+    return rand(100) >= percentChance
 
 
 let BASIC_ATTACK* = Ability(
@@ -32,7 +38,6 @@ let HEAVY_ATTACK* = Ability(
     name: "Heavy Attack",
     useWeaponRange: true,
     abilityType: AbilityType.enemyTarget,
-    energyCost: 2,
     applyEffect: proc (caster, target: Character, weapon: Item) =
         target.health -= basicDamage(weapon.weaponInfo, 2)[0]
 )
@@ -42,7 +47,7 @@ let ZAP* = Ability(
     useWeaponRange: false,
     abilityRange: 4,
     abilityType: AbilityType.enemyTarget,
-    manaCost: 3,
+    isMagical: true,
     applyEffect: proc (caster, target: Character, weapon: Item) =
         target.health -= 2 #TODO placeholder
 )
@@ -60,7 +65,6 @@ let BURN* = Ability(
     useWeaponRange: false,
     abilityRange: 4,
     abilityType: AbilityType.aoe,
-    manaCost: 4,
     aoePattern: @[
         v(0,  0),
         v(0, -1),

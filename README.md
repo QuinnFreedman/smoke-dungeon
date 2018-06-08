@@ -20,11 +20,13 @@
 
 ## Skill Trees
 
-Each class has a skill tree of 21 abilities shaped like this:
+Each class has a skill tree of 17 abilities shaped like this:
 
 ![](SkillTreeLayout.png)
 
 Each quadrant represents following one of four gods and specializing in one type of skill. You start unlocking abilities from the outside in. You need to have already unlocked the two abilities below bellow an inner ability to unlock it.
+
+In addition, each race has one **race ability** that is unlocked from the beginning for any member of that race and all characters have a **"Basic attack"** ability that performs a simple physical attack with no energy cost.
 
 ### Leveling up
 

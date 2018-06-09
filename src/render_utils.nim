@@ -83,9 +83,7 @@ type
         font*: FontPtr
         textCache*: TextCache
 
-    TextCache = ref object
-        text: string
-        cache: CacheLine
+    TextCache = ref LRUCache[string, CacheLine]
 
     CacheLine = object
         texture: TexturePtr
@@ -93,7 +91,9 @@ type
 
 
 proc newTextCache*: TextCache =
-  new result
+    new result
+    result[] = newLRUCache[string, CacheLine](10, CacheLine(),
+            proc(k: string, v: CacheLine) = v.texture.destroy())
 
 
 proc renderText*(renderInfo: RenderInfo, text: string,
@@ -114,14 +114,19 @@ proc renderText*(renderInfo: RenderInfo, text: string,
         surface.freeSurface()
 
 
-    let tc = renderInfo.textCache
+    var tc = renderInfo.textCache
 
-    if text != tc.text:
-        tc.cache.texture.destroy()
-        tc.cache = simpleRenderText(renderInfo.renderer,
-                renderInfo.font, text, color)
-        tc.text = text
+    let cachedTexture = tc[].get(text)
+    let texture =
+        if cachedTexture.texture.isNil:
+            let newTexture =
+                simpleRenderText(renderInfo.renderer,
+                                 renderInfo.font, text, color)
+            tc[].put(text, newTexture)
+            newTexture
+        else:
+            cachedTexture
 
-    var source = rect(0, 0, tc.cache.w, tc.cache.h)
-    var dest = rect(pos.x.cint, pos.y.cint, tc.cache.w, tc.cache.h)
-    renderInfo.renderer.copy(tc.cache.texture, addr source, addr dest)
+    var source = rect(0, 0, texture.w, texture.h)
+    var dest = rect(pos.x.cint, pos.y.cint, texture.w, texture.h)
+    renderInfo.renderer.copy(texture.texture, addr source, addr dest)

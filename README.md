@@ -5,6 +5,7 @@
 ### Minor Changes
 
 * allow/test multiple enemies in combat
+* text caching system
 * ~~swap places when you move toward an ally~~
 
 ### Major Features

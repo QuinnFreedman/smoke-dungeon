@@ -6,7 +6,8 @@ import
     vector,
     constants,
     textures,
-    utils
+    utils,
+    lru_cache
 
 type SDLException = object of Exception
 

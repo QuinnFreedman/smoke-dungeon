@@ -7,39 +7,30 @@ import
     vector,
     textures,
     matrix,
-    character_utils
+    character_utils,
+    ability_utils
 
 let NONE_ABILITY* = Ability(
     name: "Rest"
 )
-
-proc basicDamage(weapon: WeaponInfo, modifier=1.0): (int, bool) =
-    if weapon.critChance >= rand(1.0):
-        ((weapon.critBonus * weapon.baseDamage.float * modifier).round.toInt,
-         true)
-    else:
-        ((weapon.baseDamage.float * modifier).round.toInt, false)
-
-
-proc doesHit(caster, target: Character): bool =
-    let percentChance = caster.get(Stat.accuracy) - target.get(Stat.dodge)
-    return rand(100) >= percentChance
 
 
 let BASIC_ATTACK* = Ability(
     name: "Basic Attack",
     useWeaponRange: true,
     abilityType: AbilityType.enemyTarget,
-    applyEffect: proc (caster, target: Character, weapon: Item) =
-        target.health -= basicDamage(weapon.weaponInfo)[0]
+    applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
+        let damage = getBasicDamage(weaponInfo)[0]
+        target.damage(damage, DamageType.physical)
 )
 
 let HEAVY_ATTACK* = Ability(
     name: "Heavy Attack",
     useWeaponRange: true,
     abilityType: AbilityType.enemyTarget,
-    applyEffect: proc (caster, target: Character, weapon: Item) =
-        target.health -= basicDamage(weapon.weaponInfo, 2)[0]
+    applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
+        let damage = getBasicDamage(weaponInfo, 2)[0]
+        target.damage(damage, DamageType.physical)
 )
 
 let ZAP* = Ability(
@@ -48,8 +39,8 @@ let ZAP* = Ability(
     abilityRange: 4,
     abilityType: AbilityType.enemyTarget,
     isMagical: true,
-    applyEffect: proc (caster, target: Character, weapon: Item) =
-        target.health -= 2 #TODO placeholder
+    applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
+        target.damage(2, DamageType.magical)
 )
 
 proc fire(caster: Character): AoeAura =
@@ -57,7 +48,8 @@ proc fire(caster: Character): AoeAura =
         turns: 2,
         caster: caster,
         texture: TextureAlias.fire,
-        effect: proc(character: Character) = character.health -= 2
+        effect: proc(character: Character) =
+            character.damage(2, DamageType.trueDamage)
     )
 
 let BURN* = Ability(
@@ -73,6 +65,7 @@ let BURN* = Ability(
         v( 1, 0),
     ],
     applyAoeEffect: proc (caster: Character, target: Vec2,
-                          weapon: Item, combat: var CombatScreen) =
+                          weaponInfo: WeaponInfo,
+                          combat: var CombatScreen) =
         combat.aoeAuras[target] = fire(caster)
 )

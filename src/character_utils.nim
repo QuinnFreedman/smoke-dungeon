@@ -15,62 +15,14 @@ import
     astar,
     times
 
-# -------------------------------------
-# Combat stats
-# -------------------------------------
-
-proc get*(self: Character, stat: Stat): int =
-    result = self.class.stats[stat] + self.statMods[stat]
-    #TODO loop through items
-    for aura in self.auras:
-        if not aura.getStat.isNil:
-            result += aura.getStat(stat, result)
-
-proc getWeapons*(self: Character): (int, array[2, Item]) =
-    if self.kind == CharacterType.humanoid:
-        if self.leftHand.isNone and self.rightHand.isNone:
-            (1, [NONE_WEAPON, NONE_ITEM])
-        elif self.leftHand.isNone:
-            (2, [self.rightHand, NONE_WEAPON])
-        elif self.rightHand.isNone:
-            (2, [NONE_WEAPON, self.leftHand])
-        else:
-            (2, [self.leftHand, self.rightHand])
-    else:
-        (1, [NONE_WEAPON, NONE_ITEM])
-
-
-iterator iterWeapons*(self: Character): Item =
-    let (numWeapons, weapons) = self.getWeapons()
-    for i in 0..<numWeapons:
-        yield weapons[i]
-
-iterator iterAbilities*(self: Character): Ability =
-    for ability in self.unlockedAbilities:
-        yield ability
-    yield Ability( name: "Rest" )
-    # yield BASIC_ATTACK
-    # if self.class.isMagicUser:
-    #     yield HEAVY_ATTACK
-    # else:
-    #     yield ZAP
-    #     yield BURN
-    # yield NONE_ABILITY
-
-proc numAbilites*(self: Character): int =
-    for _ in self.iterAbilities:
-        result += 1
-
-proc getAbility*(self: Character, index: int): Ability =
-    var i = 0
-    for ability in self.iterAbilities:
-        if i == index: return ability
-        i += 1
-
 
 # -------------------------------------
 # Utils
 # -------------------------------------
+
+proc `$` *(self: Character): string =
+    if self.isNil: "nil"
+    else: $self.sex & " " & self.race.name & " " & self.class.name
 
 proc isMoving*(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
@@ -125,9 +77,74 @@ iterator iterWornItems*(self: Character): Item =
         if exists:
             yield item
 
-proc `$` *(self: Character): string =
-    if self.isNil: "nil"
-    else: $self.sex & " " & self.race.name & " " & self.class.name
+proc getWeapons*(self: Character): (int, array[2, Item]) =
+    if self.kind == CharacterType.humanoid:
+        if self.leftHand.isNone and self.rightHand.isNone:
+            (1, [NONE_WEAPON, NONE_ITEM])
+        elif self.leftHand.isNone:
+            (2, [self.rightHand, NONE_WEAPON])
+        elif self.rightHand.isNone:
+            (2, [NONE_WEAPON, self.leftHand])
+        else:
+            (2, [self.leftHand, self.rightHand])
+    else:
+        (1, [NONE_WEAPON, NONE_ITEM])
+
+
+iterator iterWeapons*(self: Character): Item =
+    let (numWeapons, weapons) = self.getWeapons()
+    for i in 0..<numWeapons:
+        yield weapons[i]
+
+# -------------------------------------
+# Combat stats
+# -------------------------------------
+
+proc get*(self: Character, stat: Stat): int =
+    result = self.class.stats[stat] + self.statMods[stat]
+    for item in self.iterWornItems:
+        if item.kind == ItemType.clothing:
+            if not item.clothingInfo.getStat.isNil:
+                result = item.clothingInfo.getStat(stat, result)
+    for item in self.iterWeapons:
+        if item.kind == ItemType.weapon:
+            if not item.weaponInfo.getStat.isNil:
+                result = item.weaponInfo.getStat(stat, result)
+    for aura in self.auras:
+        if not aura.getStat.isNil:
+            result = aura.getStat(stat, result)
+
+iterator iterAbilities*(self: Character): Ability =
+    for ability in self.unlockedAbilities:
+        yield ability
+    yield Ability( name: "Rest" )
+    # yield BASIC_ATTACK
+    # if self.class.isMagicUser:
+    #     yield HEAVY_ATTACK
+    # else:
+    #     yield ZAP
+    #     yield BURN
+    # yield NONE_ABILITY
+
+proc numAbilites*(self: Character): int =
+    for _ in self.iterAbilities:
+        result += 1
+
+proc getAbility*(self: Character, index: int): Ability =
+    var i = 0
+    for ability in self.iterAbilities:
+        if i == index: return ability
+        i += 1
+
+proc damage*(self: Character, damage: int, damageType: DamageType) =
+    let damagePrevented =
+        if damageType == DamageType.physical:
+            self.get(Stat.armor)
+        elif damageType == DamageType.magical:
+            self.get(Stat.magicResist)
+        else:
+            0
+    self.health -= damage - damagePrevented
 
 
 # -------------------------------------
@@ -158,7 +175,6 @@ proc update*(self: Character, level: var Level, dt: float) =
 proc loopAI*(self: Character, others: seq[Character], level: var Level) {.inline.} =
     if not self.ai.worldMovement.isNil:
         self.ai.worldMovement(self, others, level)
-
 
 
 # -------------------------------------

@@ -92,6 +92,7 @@ type
         critBonus*: float
         weaponRange*: float
         handedness*: Handed
+        getStat*: proc(stat: Stat, baseValue: int): int
         magicAfterEffect*: proc(caster, target: Character, level: var Level)
         kineticAfterEffect*: proc(caster, target: Character, level: var Level)
         magicAoeAfterEffect*: proc(caster: Character, target: Vec2,
@@ -106,6 +107,7 @@ type
         textureMale*: TextureAlias
         textureFemale*: TextureAlias
         slot*: ClothingSlot
+        getStat*: proc(stat: Stat, baseValue: int): int
 
     ClothingSlot* {.pure.} = enum
         head, body, feet
@@ -185,13 +187,16 @@ type
         case abilityType*: AbilityType:
         of aoe:
             aoePattern*: seq[Vec2]
-            applyAoeEffect*: proc(caster: Character, target: Vec2, weapon: Item,
+            applyAoeEffect*: proc(caster: Character, target: Vec2,
+                                  weaponInfo: WeaponInfo,
                                   combat: var CombatScreen)
         else:
             discard
         isValidCaster*: proc(caster: Character): bool
-        isValidTarget*: proc(caster, target: Character, weapon: Item): bool
-        applyEffect*: proc(caster, target: Character, weapon: Item)
+        isValidTarget*: proc(caster: Character,
+                             target: AbilityTarget,
+                             weaponInfo: WeaponInfo): bool
+        applyEffect*: proc(caster, target: Character, weaponInfo: WeaponInfo)
 
     AbilityTargetType* = enum TargetCharacter, TargetTile
     AbilityTarget* = object
@@ -200,6 +205,8 @@ type
             character*: Character
         of TargetTile:
             tile*: Vec2
+
+    DamageType* {.pure.} = enum physical, magical, trueDamage
 
 
     AI* = tuple[

@@ -179,7 +179,7 @@ proc validateTarget*(caster: Character,
                      allies: seq[Character],
                      ability: Ability, weapon: WeaponInfo): (bool, string) =
     if not caster.canCast(ability):
-        return (false, "Too exhausted")
+        return (false, "Can't cast that")
     if distance(caster.currentTile,
                 target.getPosition) > ability.getRange(weapon):
         return (false, "Out of range")
@@ -197,6 +197,11 @@ proc validateTarget*(caster: Character,
                     casterIsAlly != targetIsAlly:
                 return (false, "That's an enemy!")
         TargetTile(tile: _): discard
+
+    if not ability.isValidTarget.isNil and
+            not ability.isValidTarget(caster, target, weapon):
+        return (false, "Invalid target")
+
     return (true, nil)
 
 
@@ -399,7 +404,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
                     elif activeChar.canCast(combat.activeAbility):
                         combat.setState(CombatState.pickingWeapon)
                     else:
-                        combat.message = "Too exhausted!"
+                        combat.message = "Can't cast that"
 
     of CombatState.pickingWeapon:
         if backPressed:
@@ -441,7 +446,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
             let target = combat.activeTarget.character
             combat.activeAbility.applyEffect(
                         activeChar, target,
-                        combat.activeWeapon)
+                        combat.activeWeapon.weaponInfo)
             let afterEffect =
                 if isMagical: weapon.magicAfterEffect
                 else: weapon.kineticAfterEffect
@@ -454,7 +459,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 let tile = target + v
                 if combat.aoeAuras.contains(tile):
                     combat.activeAbility.applyAoeEffect(
-                            activeChar, tile, combat.activeWeapon,
+                            activeChar, tile, combat.activeWeapon.weaponInfo,
                             combat)
             let afterEffect =
                 if isMagical: weapon.magicAoeAfterEffect

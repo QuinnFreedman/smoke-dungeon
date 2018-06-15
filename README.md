@@ -228,3 +228,183 @@ Each base weapon type has different ranges and different base stats. To generate
 * Fragile: physical attacks have a chance to destroy the weapon
 * Volatile: When used for magic a magic ability, that ability has a chance to target a random other target instead (ally or enemy)
 * Unwieldy: Chance to damage yourself
+
+could not source "$VIM\sysinit.vim"
+sourcing "C:\Users\Quinn Freedman\AppData\Local\nvim\init.vim"
+Searching for "autoload/plug.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\autoload/plug.vim"
+line 2: sourcing "C:\Users\Quinn Freedman\AppData\Local\nvim\autoload\plug.vim"
+finished sourcing C:\Users\Quinn Freedman\AppData\Local\nvim\autoload\plug.vim
+continuing in C:\Users\Quinn Freedman\AppData\Local\nvim\init.vim
+Searching for "filetype.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\filetype.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\filetype.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\filetype.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\filetype.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\filetype.vim"
+line 83: sourcing "C:\Program Files\Neovim\share\nvim\runtime\filetype.vim"
+Searching for "ftdetect/*.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ftdetect/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\ftdetect/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\ftdetect/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\ftdetect/*.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\ftdetect/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\ftdetect/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\ftdetect/*.vim"
+Searching for "C:/Program Files/Neovim/share/nvim-qt/runtime\ftdetect/*.vim"
+not found in 'runtimepath': "ftdetect/*.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\filetype.vim
+continuing in function plug#end
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\filetype.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\filetype.vim"
+Searching for "C:/Program Files/Neovim/share/nvim-qt/runtime\filetype.vim"
+Searching for "ftplugin.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ftplugin.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\ftplugin.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\ftplugin.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\ftplugin.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\ftplugin.vim"
+line 83: sourcing "C:\Program Files\Neovim\share\nvim\runtime\ftplugin.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\ftplugin.vim
+continuing in function plug#end
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\ftplugin.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\ftplugin.vim"
+Searching for "C:/Program Files/Neovim/share/nvim-qt/runtime\ftplugin.vim"
+Searching for "indent.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\indent.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\indent.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\indent.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\indent.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\indent.vim"
+line 83: sourcing "C:\Program Files\Neovim\share\nvim\runtime\indent.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\indent.vim
+continuing in function plug#end
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\indent.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\indent.vim"
+Searching for "C:/Program Files/Neovim/share/nvim-qt/runtime\indent.vim"
+line 86: sourcing "C:\Program Files\Neovim\share\nvim\runtime\syntax\syntax.vim"
+Searching for "syntax/synload.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\syntax/synload.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\syntax/synload.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\syntax/synload.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\syntax/synload.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\syntax/synload.vim"
+line 19: sourcing "C:\Program Files\Neovim\share\nvim\runtime\syntax\synload.vim"
+Searching for "syntax/syncolor.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\syntax/syncolor.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\syntax/syncolor.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\syntax/syncolor.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\syntax/syncolor.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\syntax/syncolor.vim"
+line 21: sourcing "C:\Program Files\Neovim\share\nvim\runtime\syntax\syncolor.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\syntax\syncolor.vim
+continuing in C:\Program Files\Neovim\share\nvim\runtime\syntax\synload.vim
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\syntax/syncolor.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\syntax/syncolor.vim"
+Searching for "C:/Program Files/Neovim/share/nvim-qt/runtime\syntax/syncolor.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\syntax\synload.vim
+continuing in C:\Program Files\Neovim\share\nvim\runtime\syntax\syntax.vim
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\syntax\syntax.vim
+continuing in function plug#end
+finished sourcing C:\Users\Quinn Freedman\AppData\Local\nvim\init.vim
+Searching for "pack/*/start/*" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\pack/*/start/*"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\pack/*/start/*"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\pack/*/start/*"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\pack/*/start/*"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\pack/*/start/*"
+not found in 'packpath': "pack/*/start/*"
+Searching for "plugin/**/*.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\plugin/**/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\plugin/**/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\plugin/**/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\plugin/**/*.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\plugin/**/*.vim"
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\gzip.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\gzip.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\health.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\health.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\man.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\man.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\matchit.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\matchit.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\matchparen.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\matchparen.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\netrwPlugin.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\netrwPlugin.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\rplugin.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\rplugin.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\rrhelper.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\rrhelper.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\shada.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\shada.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\spellfile.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\spellfile.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\tarPlugin.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\tarPlugin.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\tohtml.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\tohtml.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\tutor.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\tutor.vim
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\plugin\zipPlugin.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\plugin\zipPlugin.vim
+Searching for "C:/Program Files/Neovim/share/nvim-qt/runtime\plugin/**/*.vim"
+sourcing "C:\Program Files\Neovim\share\nvim-qt\runtime\plugin\nvim_gui_shim.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim-qt\runtime\plugin\nvim_gui_shim.vim
+Searching for "pack/*/start/*" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\pack/*/start/*"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\pack/*/start/*"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\pack/*/start/*"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\pack/*/start/*"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\pack/*/start/*"
+not found in 'packpath': "pack/*/start/*"
+Searching for "plugin/**/*.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\plugin/**/*.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\plugin/**/*.vim"
+not found in 'runtimepath': "plugin/**/*.vim"
+Reading ShaDa file "C:\Users\Quinn Freedman\AppData\Local\nvim-data\shada\main.shada" info marks oldfiles
+Executing BufEnter Auto commands for "*"
+autocommand sil call s:LocalBrowse(expand("<amatch>"))
+
+Executing VimEnter Auto commands for "*"
+autocommand sil call s:VimEnter(expand("<amatch>"))
+
+Searching for "autoload/provider/clipboard.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\autoload/provider/clipboard.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\autoload/provider/clipboard.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\autoload/provider/clipboard.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\autoload/provider/clipboard.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\autoload/provider/clipboard.vim"
+sourcing "C:\Program Files\Neovim\share\nvim\runtime\autoload\provider\clipboard.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim\runtime\autoload\provider\clipboard.vim
+Executing CursorMoved Auto commands for "*"
+autocommand call s:Highlight_Matching_Pair()
+
+Executing TextChanged Auto commands for "*"
+autocommand call s:Highlight_Matching_Pair()
+
+Searching for "plugin/nvim_gui_shim.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\plugin/nvim_gui_shim.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\plugin/nvim_gui_shim.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\plugin/nvim_gui_shim.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\plugin/nvim_gui_shim.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\plugin/nvim_gui_shim.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\plugin/nvim_gui_shim.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\plugin/nvim_gui_shim.vim"
+Searching for "C:/Program Files/Neovim/share/nvim-qt/runtime\plugin/nvim_gui_shim.vim"
+sourcing "C:\Program Files\Neovim\share\nvim-qt\runtime\plugin\nvim_gui_shim.vim"
+finished sourcing C:\Program Files\Neovim\share\nvim-qt\runtime\plugin\nvim_gui_shim.vim
+Searching for "ginit.vim" in "C:\Users\Quinn Freedman\AppData\Local\nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim,C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim,C:\Users\Quinn Freedman\AppData\Local\nvim\site,C:\Program Files\Neovim\share\nvim\runtime,C:\Users\Quinn Freedman\AppData\Local\nvim\site\after,C:\Users\Quinn Freedman\AppData\Local\nvim\after,C:/Program Files/Neovim/share/nvim-qt/runtime"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ginit.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\ctrlp.vim\ginit.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\deoplete.nvim\ginit.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\ginit.vim"
+Searching for "C:\Program Files\Neovim\share\nvim\runtime\ginit.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\site\after\ginit.vim"
+Searching for "C:\Users\Quinn Freedman\AppData\Local\nvim\after\ginit.vim"
+Searching for "C:/Program Files/Neovim/share/nvim-qt/runtime\ginit.vim"
+not found in 'runtimepath': "ginit.vim"
+
+Writing ShaDa file "C:\Users\Quinn Freedman\AppData\Local\nvim-data\shada\main.shada"
+Executing VimLeave Auto commands for "*"
+autocommand call GuiClose()

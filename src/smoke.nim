@@ -59,6 +59,8 @@ template staticReadRW(filename: string): ptr RWops =
 const
     HINT_RENDER_SCALE_QUALITY = cstring("SDL_RENDER_SCALE_QUALITY")
     NEAREST = cstring("0")
+    LINEAR = cstring("1")
+    BEST = cstring("2")
 
 
 const TARGET_FPS = 60
@@ -102,9 +104,14 @@ proc main =
     # Set the default color to use for drawing
     # renderer.setDrawColor(r = 110, g = 132, b = 174)
 
-    if renderer.setLogicalSize(cint(SCREEN_WIDTH_TILES * TILE_SIZE),
-                               cint(SCREEN_HEIGHT_TILES * TILE_SIZE)) < 0:
-        echo "Warning: unable to set renderer logical size"
+    # if renderer.setLogicalSize(cint(SCREEN_WIDTH_TILES * TILE_SIZE),
+    #                            cint(SCREEN_HEIGHT_TILES * TILE_SIZE)) < 0:
+    #     echo "Warning: unable to set renderer logical size"
+
+    let renderTarget = createTexture(renderer, SDL_PIXELFORMAT_RGB888,
+            TextureAccess.SDL_TEXTUREACCESS_TARGET,
+            SCREEN_WIDTH_PIXELS, SCREEN_HEIGHT_PIXELS)
+    defer: renderTarget.destroyTexture()
 
     if not sdl2.setHint(HINT_RENDER_SCALE_QUALITY, NEAREST):
         echo "Warning: unable to set texture filtering mode"
@@ -127,7 +134,7 @@ proc main =
         let fps = 1 / dt
         game.pollInput()
         game.loop(dt)
-        game.render(fps)
+        game.render(renderTarget, window, fps)
 
         limitFrameRate()
 

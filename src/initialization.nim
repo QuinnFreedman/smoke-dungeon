@@ -18,15 +18,19 @@ import
     character_utils,
     class_definitions,
     race_definitions,
-    ai
+    ai,
+    main_menu
 
-proc initGameData*(renderer: RendererPtr, font: FontPtr): Game =
+proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Game =
     new result
+    result.window = window
     result.renderInfo = RenderInfo(
         renderer: renderer,
         font: font,
         textCache: newTextCache()
     )
+
+    result.mainMenu = initMenu(result.prefs)
 
     result.screen = Screen.world
 

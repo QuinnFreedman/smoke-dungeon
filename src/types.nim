@@ -13,16 +13,23 @@ import
 
 
 type
-    Screen* = enum none, world, inventory, combat
+    Screen* = enum none, menu, world, inventory, combat
 
     Game* = ref object
         shouldQuit*: bool
+        prefs*: Preferences
         keyboard*: Keyboard
         renderInfo*: RenderInfo
+        window*: WindowPtr
         screen*: Screen
+        mainMenu*: MainMenuScreen
         inventory*: Inventory
         combat*: CombatScreen
         gameState*: GameState
+
+    Preferences* = object
+        scaleModePixelPerfect*: bool
+        fullscreen*: bool
 
     GameState* = object
         level*: Level
@@ -239,11 +246,28 @@ type
             playerParty*, enemyParty*: seq[Character]
         of Screen.inventory:
             items*: seq[Item]
+        of Screen.menu:
+            previousScreen*: Screen
         of Screen.world:
             discard
         of Screen.none:
             discard
 
+    # **************************
+    #          Menu
+    # **************************
+
+    MainMenuScreen* = object
+        previousScreen*: Screen
+        cursor*: int
+        active*: Menu
+        root*: Menu
+
+    Menu* = ref object
+        name*: string
+        effect*: proc(self: var Menu, game: Game)
+        children*: seq[Menu]
+        parent*: Menu
 
 
 proc state*(self: CombatScreen): CombatState {.inline.} = self.privateState

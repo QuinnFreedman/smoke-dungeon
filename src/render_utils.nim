@@ -9,6 +9,11 @@ import
     utils,
     lru_cache
 
+const WHITE* = color(r=255, g=255, b=255, a=255)
+const RED* = color(r=255, g=0, b=0, a=255)
+const BLUE* = color(r=0, g=0, b=255, a=255)
+
+
 type SDLException = object of Exception
 
 template sdlFailIf*(cond: typed, reason: string) =
@@ -127,6 +132,17 @@ proc renderText*(renderInfo: RenderInfo, text: string,
         else:
             cachedTexture
 
-    var source = rect(0, 0, texture.w, texture.h)
     var dest = rect(pos.x.cint, pos.y.cint, texture.w, texture.h)
-    renderInfo.renderer.copy(texture.texture, addr source, addr dest)
+    renderInfo.renderer.copy(texture.texture, nil, addr dest)
+
+
+proc getTextSize*(renderInfo: RenderInfo, text: string): Point =
+    let cachedTexture = renderInfo.textCache[].get(text)
+
+    if not cachedTexture.texture.isNil:
+        return point(cachedTexture.w, cachedTexture.h)
+
+    var w, h: cint
+    sdlFailIf sizeText(renderInfo.font, text, addr w, addr h) < 0:
+        "Unable to get font size"
+    return point(w, h)

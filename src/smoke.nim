@@ -31,6 +31,7 @@ proc toInput(key: Scancode): Input =
     of SDL_SCANCODE_UP: Input.up
     of SDL_SCANCODE_DOWN: Input.down
     of SDL_SCANCODE_TAB: Input.tab
+    of SDL_SCANCODE_ESCAPE: Input.menu
     of SDL_SCANCODE_RETURN,
        SDL_SCANCODE_RETURN2: Input.enter
     of SDL_SCANCODE_BACKSPACE: Input.back
@@ -45,8 +46,8 @@ proc pollInput(game: var Game) =
             game.shouldQuit = true
         of KeyDown:
             game.handleInput(event.key.keysym.scancode.toInput, true)
-            if event.key.keysym.scancode == SDL_SCANCODE_ESCAPE:
-                game.shouldQuit = true
+            # if event.key.keysym.scancode == SDL_SCANCODE_ESCAPE:
+            #     game.shouldQuit = true
         of KeyUp:
             game.handleInput(event.key.keysym.scancode.toInput, false)
         else:
@@ -123,7 +124,7 @@ proc main =
 
     sdlFailIf font.isNil: "Failed to load font"
 
-    var game = initGameData(renderer, font)
+    var game = initGameData(window, renderer, font)
 
     var lastTime = epochTime()
 

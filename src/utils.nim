@@ -55,3 +55,7 @@ template doUntil*(a: untyped, b: typed): typed =
 
 template alias*(a: untyped, b: typed) =
     template a: untyped = b
+
+
+proc last*[T](a: openArray[T]): T =
+    a[a.len - 1]

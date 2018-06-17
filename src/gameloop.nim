@@ -16,7 +16,8 @@ import
     render_utils,
     matrix,
     utils,
-    constants
+    constants,
+    main_menu
 
 proc moveOrSwap(pc: Character, party: seq[Character],
                 level: var Level, direction: Direction) =
@@ -74,46 +75,55 @@ proc loopMainGame(gameState: var GameState,
 
 
 proc loop*(self: var Game, dt: float) =
+    let wasInMenu = self.screen == Screen.menu
     let screenChange =
-        case self.screen
-        of Screen.world:
-            loopMainGame(self.gameState, self.keyboard, dt)
-        of Screen.inventory:
-            loopInventory(self.inventory, self.gamestate.playerParty, self.keyboard)
-        of Screen.combat:
-            updateCombatScreen(self.combat, self.gameState.level, self.keyboard, dt)
-        of Screen.none:
-            ScreenChange(changeTo: Screen.none)
+        if self.keyboard.keyPressed(Input.menu) and not wasInMenu:
+            ScreenChange(changeTo: Screen.menu, previousScreen: self.screen)
+        else:
+            case self.screen
+            of Screen.world:
+                loopMainGame(self.gameState, self.keyboard, dt)
+            of Screen.inventory:
+                loopInventory(self.inventory, self.gamestate.playerParty, self.keyboard)
+            of Screen.combat:
+                updateCombatScreen(self.combat, self.gameState.level, self.keyboard, dt)
+            of Screen.menu:
+                loopMenu(self)
+            of Screen.none:
+                ScreenChange(changeTo: Screen.none)
 
     if screenChange.changeTo != Screen.none:
         self.screen = screenChange.changeTo
-    match screenChange:
-        inventory(items: items):
-            if not items.isNil:
-                for i in 0..<items.len:
-                    alias ground: self.inventory.ground
-                    ground[i div ground.width, i mod ground.width] = items[i]
-        combat(playerParty: playerParty, enemyParty: enemyParty):
-            self.combat.playerParty = playerParty
-            self.combat.enemyParty = enemyParty
-        _: discard
+
+    # Don't re-init screen if coming from menu
+    if not wasInMenu:
+        match screenChange:
+            inventory(items: items):
+                if not items.isNil:
+                    for i in 0..<items.len:
+                        alias ground: self.inventory.ground
+                        ground[i div ground.width, i mod ground.width] = items[i]
+            combat(playerParty: playerParty, enemyParty: enemyParty):
+                self.combat.playerParty = playerParty
+                self.combat.enemyParty = enemyParty
+            menu(previousScreen: previousScreen):
+                self.mainMenu.previousScreen = previousScreen
+                self.mainMenu.cursor = 0
+                self.mainMenu.active = self.mainMenu.root
+            _: discard
 
 
     self.resetInputs()
 
 
-proc scaleToFit(rect, bounds: Point): Rect =
-    let rectRatio = rect.x / rect.y
-    let boundsRatio = bounds.x / bounds.y
+proc scaleToFit(rect, bounds: Point, intScale: bool = false): Rect =
+    var scale = min(bounds.x / rect.x, bounds.y / rect.y)
 
-    # Rect is more landscape than bounds - fit to width
-    if rectRatio > boundsRatio:
-        result.w = bounds.x
-        result.h = (rect.y.float * (bounds.x / rect.x)).round.cint
-    # Rect is more portrait than bounds - fit to height
-    else:
-        result.w = (rect.x.float * (bounds.y / rect.y)).round.cint
-        result.h = bounds.y
+    if intScale:
+        scale = scale.floor
+
+    result.w = (rect.x.float * scale).round.cint
+    result.h = (rect.y.float * scale).round.cint
 
     result.y = ((bounds.y - result.h) / 2).round.cint
     result.x = ((bounds.x - result.w) / 2).round.cint
@@ -122,7 +132,6 @@ proc scaleToFit(rect, bounds: Point): Rect =
 
 proc render*(self: Game, renderTarget: TexturePtr,
              window: WindowPtr, debugFps: float) =
-    ## main render loop for the game
 
     self.renderer.setRenderTarget(renderTarget)
     self.renderer.clear()
@@ -136,20 +145,23 @@ proc render*(self: Game, renderTarget: TexturePtr,
                         self.renderInfo)
     of Screen.combat:
         renderCombatScreen(self.gameState, self.combat, self.renderInfo)
+    of Screen.menu:
+        renderMainMenu(self)
     of Screen.none:
         discard
 
-    # renderText(self.renderer, self.font, "fps: " & $debugFps,
-    #            100.cint, 100.cint, color(255,255,255,255), self.textCache)
+    renderText(self.renderInfo, "fps: " & $debugFps,
+               v(100, 100), color(255,255,255,255))
 
 
 
     let windowRect = window.getSize()
     let gameScreenRect = point(SCREEN_WIDTH_PIXELS, SCREEN_HEIGHT_PIXELS)
 
-    var drect = gameScreenRect.scaleToFit(windowRect)
+    var drect = gameScreenRect.scaleToFit(windowRect, self.prefs.scaleModePixelPerfect)
 
     self.renderer.setRenderTarget(nil)
+    self.renderer.clear()
     self.renderer.copy(renderTarget, nil, addr drect)
 
 

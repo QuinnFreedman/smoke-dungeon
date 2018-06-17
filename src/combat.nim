@@ -21,10 +21,6 @@ import
     astar,
     keyboard
 
-const WHITE = color(r=255, g=255, b=255, a=255)
-const RED = color(r=255, g=0, b=0, a=255)
-const BLUE = color(r=0, g=0, b=255, a=255)
-
 proc getCombatWindow(combat: CombatScreen): Rect =
     const radiusX = 3
     const radiusY = 2

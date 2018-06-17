@@ -29,7 +29,12 @@ type
 
     Preferences* = object
         scaleModePixelPerfect*: bool
-        fullscreen*: bool
+        fullscreen*: WindowMode
+
+    WindowMode* {.pure.} = enum
+        windowed = "Windowed"
+        fullscreenWindowed = "Fullscreen Windowed"
+        fullscreen = "Fullscreen"
 
     GameState* = object
         level*: Level

@@ -129,9 +129,13 @@ proc scaleToFit(rect, bounds: Point, intScale: bool = false): Rect =
     result.x = ((bounds.x - result.w) / 2).round.cint
 
 
+var avgFps: float = 0
 
 proc render*(self: Game, renderTarget: TexturePtr,
              window: WindowPtr, debugFps: float) =
+
+    if debugFps < 1000:
+        avgFps = 0.9 * avgFps + 0.1 * debugFps
 
     self.renderer.setRenderTarget(renderTarget)
     self.renderer.clear()
@@ -150,7 +154,7 @@ proc render*(self: Game, renderTarget: TexturePtr,
     of Screen.none:
         discard
 
-    renderText(self.renderInfo, "fps: " & $debugFps,
+    renderText(self.renderInfo, "fps: " & $avgFps,
                v(100, 100), color(255,255,255,255))
 
 

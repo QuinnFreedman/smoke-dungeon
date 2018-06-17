@@ -57,8 +57,8 @@ proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
 proc getRenderWindow(playerPos: Vec2): Rect =
     let radiusX = SCREEN_WIDTH_TILES div 2 + 1
     let radiusY = SCREEN_HEIGHT_TILES div 2 + 1
-    newSdlRect(playerPos.x - radiusX, playerPos.y - radiusY - 1,
-               2 * radiusX + 1, 2 * radiusY + 2)
+    newSdlRect(playerPos.x - radiusX, playerPos.y - radiusY,
+               2 * radiusX + 1, 2 * radiusY + 1)
 
 
 proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
@@ -66,7 +66,7 @@ proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
     let pc: Character = gamestate.playerParty[0]
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
                                .scale(TILE_SIZE / 2)
-    let transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter)
+    let transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter - vecFloat(0, TILE_SIZE / 2))
 
     let window = getRenderWindow(pc.currentTile)
 

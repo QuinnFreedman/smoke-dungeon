@@ -25,6 +25,17 @@ proc menuLeaf(name: string, effect:
               proc(self: var Menu, game: Game)): Menu =
     Menu(name: name, effect: effect)
 
+proc getSDLFullscreenMode(ft: WindowMode): uint32 =
+    case ft
+    of WindowMode.windowed: 0.uint32
+    of WindowMode.fullscreenWindowed: SDL_WINDOW_FULLSCREEN_DESKTOP.uint32
+    of WindowMode.fullscreen: SDL_WINDOW_FULLSCREEN.uint32
+
+proc cycleFullscreenMode(ft: WindowMode): WindowMode =
+    case ft
+    of WindowMode.windowed: WindowMode.fullscreenWindowed
+    of WindowMode.fullscreenWindowed: WindowMode.fullscreen
+    of WindowMode.fullscreen: WindowMode.windowed
 
 proc initMenu*(prefs: Preferences): MainMenuScreen =
     proc scaleModeText(prefs: Preferences): string =
@@ -34,10 +45,7 @@ proc initMenu*(prefs: Preferences): MainMenuScreen =
             "Scale Mode:  Stretch"
 
     proc fullscreenText(prefs: Preferences): string =
-        if prefs.fullscreen:
-            "Fullscreen:  true"
-        else:
-            "Fullscreen:  false"
+        "Fullscreen: " & $prefs.fullscreen
 
     result.root = menuNode("Menu",
         menuNode("Graphics",
@@ -46,10 +54,10 @@ proc initMenu*(prefs: Preferences): MainMenuScreen =
                 self.name = game.prefs.scaleModeText
             ),
             menuLeaf(prefs.fullscreenText, proc(self: var Menu, game: Game) =
-                game.prefs.fullscreen = not game.prefs.fullscreen
+                game.prefs.fullscreen = cycleFullscreenMode(game.prefs.fullscreen)
                 self.name = game.prefs.fullscreenText
 
-                discard game.window.setFullscreen(if game.prefs.fullscreen: SDL_WINDOW_FULLSCREEN_DESKTOP else: 0)
+                discard game.window.setFullscreen(getSDLFullscreenMode(game.prefs.fullscreen))
             )
         ),
         menuLeaf("Exit", proc(game: Game) = game.shouldQuit = true)

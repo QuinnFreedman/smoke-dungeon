@@ -155,7 +155,7 @@ proc render*(self: Game, renderTarget: TexturePtr,
         discard
 
     renderText(self.renderInfo, "fps: " & $avgFps,
-               v(100, 100), color(255,255,255,255))
+               v(SCREEN_WIDTH_PIXELS - 80, 0), color(255,255,255,255))
 
 
 

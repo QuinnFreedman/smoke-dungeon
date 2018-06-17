@@ -66,7 +66,7 @@ proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
     let pc: Character = gamestate.playerParty[0]
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
                                .scale(TILE_SIZE / 2)
-    let transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter - vecFloat(0, TILE_SIZE / 2))
+    let transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter - vecFloat(TILE_SIZE / 2, TILE_SIZE / 2))
 
     let window = getRenderWindow(pc.currentTile)
 

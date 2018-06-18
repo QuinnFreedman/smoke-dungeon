@@ -22,6 +22,17 @@ proc newMatrixWithOffset*[T](width, height: int, offset: Vec2): Matrix[T] =
     result = newMatrix[T](width, height)
     result.offset = offset
 
+
+proc recycle*[T](self: var Matrix[T], width, height: int, offset: Vec2) =
+    if self.data.isNil:
+        self.data = newSeq[T](width * height)
+    else:
+        self.data.zero
+    self.width = width
+    self.height = height
+    self.offset = offset
+
+
 proc setAll*[T](self: var Matrix[T], value: T) =
     #TODO use memset
     for i in 0..<(self.width * self.height):

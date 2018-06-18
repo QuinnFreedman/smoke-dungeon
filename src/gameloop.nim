@@ -17,7 +17,9 @@ import
     matrix,
     utils,
     constants,
-    main_menu
+    main_menu,
+    world_utils,
+    shadowcasting
 
 proc moveOrSwap(pc: Character, party: seq[Character],
                 level: var Level, direction: Direction) =
@@ -72,6 +74,21 @@ proc loopMainGame(gameState: var GameState,
     for entity in gameState.entities:
         entity.loopAI(gamestate.entities, gamestate.level)
         entity.update(gamestate.level, dt)
+
+    alias level: gameState.level
+    let window = getRenderWindow(pc.currentTile)
+    level.shadowMask1.recycle(window.w, window.h,
+                              v(window.x, window.y))
+    level.shadowMask2.recycle(window.w, window.h,
+                              v(window.x, window.y))
+
+    shadowCast(pc.currentTile, level.shadowMask1, level.walls, FOV_RADIUS)
+    shadowCast(pc.nextTile, level.shadowMask2, level.walls, FOV_RADIUS)
+
+    if FOG_OF_WAR:
+        for v in level.shadowMask1.indices:
+            if level.seen.contains(v):
+                level.seen[v] = level.seen[v] or not level.shadowMask1[v] or not level.shadowMask2[v]
 
 
 proc loop*(self: var Game, dt: float) =

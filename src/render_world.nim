@@ -13,27 +13,28 @@ import
     render_utils,
     render_character,
     item_utils,
-    shadowcasting,
-    textures
+    textures,
+    world_utils
 
-proc renderMap*(map: Matrix[sdl2.Rect], window: Rect,
+proc renderMap*(map: Level, window: Rect,
                 renderer: RendererPtr, transform: Vec2) =
+    alias textures: map.textures
     for pos in window.iterRect:
-        if map.contains(pos):
-            let srect = map[pos]
+        if textures.contains(pos) and map.seen[pos]:
+            let srect = textures[pos]
             let tilePos = pos.scale(TILE_SIZE)
             drawTile(TextureAlias.mapTiles,
-                    srect, tilePos, renderer, transform)
+                     srect, tilePos, renderer, transform)
 
-proc debugRenderCollision*(collision: Matrix[uint8], window: Rect,
-        renderer: RendererPtr, transform: Vec2) =
-    renderer.setDrawBlendMode(BlendMode_Blend)
-    for pos in window.iterRect:
-        if collision.contains(pos):
-            if collision[pos] > 0.uint8:
-                let tilePos = pos.scale(TILE_SIZE)
-                let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
-                fillRect(myRect, color(225, 0, 0, 100), renderer, transform)
+# proc debugRenderCollision*(collision: Matrix[uint8], window: Rect,
+#         renderer: RendererPtr, transform: Vec2) =
+#     renderer.setDrawBlendMode(BlendMode_Blend)
+#     for pos in window.iterRect:
+#         if collision.contains(pos):
+#             if collision[pos] > 0.uint8:
+#                 let tilePos = pos.scale(TILE_SIZE)
+#                 let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
+#                 fillRect(myRect, color(225, 0, 0, 100), renderer, transform)
 
 
 proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
@@ -54,13 +55,6 @@ proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
                  renderer, transform)
 
 
-proc getRenderWindow(playerPos: Vec2): Rect =
-    let radiusX = SCREEN_WIDTH_TILES div 2 + 1
-    let radiusY = SCREEN_HEIGHT_TILES div 2 + 1
-    newSdlRect(playerPos.x - radiusX, playerPos.y - radiusY,
-               2 * radiusX + 1, 2 * radiusY + 1)
-
-
 proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
     let level = gamestate.level
     let pc: Character = gamestate.playerParty[0]
@@ -70,18 +64,11 @@ proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
 
     let window = getRenderWindow(pc.currentTile)
 
-    renderMap(level.textures, window, renderer, transform)
+    renderMap(level, window, renderer, transform)
     # debugRenderCollision(level.collision, window, renderer, transform)
 
     for character in gamestate.entities:
         renderCharacter(character, renderer, transform)
 
-    #TODO don't alloc these every frame
-    var shadowMask1 = newMatrixWithOffset[bool](window.w, window.h,
-                                                v(window.x, window.y))
-    var shadowMask2 = newMatrixWithOffset[bool](window.w, window.h,
-                                                v(window.x, window.y))
-    shadowCast(pc.currentTile, shadowMask1, level.walls)
-    shadowCast(pc.nextTile, shadowMask2, level.walls)
-    renderMask(shadowMask1, shadowMask2, pc.animationTimer, window,
+    renderMask(level.shadowMask1, level.shadowMask2, pc.animationTimer, window,
                renderer, transform)

@@ -108,7 +108,7 @@ proc renderCombatScreen*(gameState: GameState,
     let window = getCombatWindow(combat)
 
     # Render map
-    renderMap(gameState.level.textures, window, renderInfo.renderer, transform)
+    renderMap(gameState.level, window, renderInfo.renderer, transform)
 
     for p in combat.aoeAuras.indices:
         if gameState.level.walls.contains(p) and not gameState.level.walls[p]:

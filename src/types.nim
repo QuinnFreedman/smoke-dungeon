@@ -45,6 +45,9 @@ type
         walls*: Matrix[bool]
         collision*: Matrix[uint8]
         textures*: Matrix[sdl2.Rect]
+        shadowMask1*: Matrix[bool]
+        shadowMask2*: Matrix[bool]
+        seen*: Matrix[bool]
         entrance*: Vec2
         exit*: Vec2
 

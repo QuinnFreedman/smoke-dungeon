@@ -50,6 +50,7 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
     result.textures = newMatrix[sdl2.Rect](width, height)
     result.textures.setAll(BLACK)
     result.collision = newMatrix[uint8](width, height)
+    result.seen = newMatrix[bool](width, height)
 
     var particle = v(0, height div 2)
     result.entrance = particle

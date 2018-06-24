@@ -15,7 +15,6 @@ import
     render_world,
     textures,
     constants,
-    inventory,
     gameloop,
     render_utils
 
@@ -60,8 +59,6 @@ template staticReadRW(filename: string): ptr RWops =
 const
     HINT_RENDER_SCALE_QUALITY = cstring("SDL_RENDER_SCALE_QUALITY")
     NEAREST = cstring("0")
-    LINEAR = cstring("1")
-    BEST = cstring("2")
 
 
 const TARGET_FPS = 60

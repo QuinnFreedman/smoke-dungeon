@@ -6,7 +6,7 @@ import
     astar,
     character_utils,
     direction,
-    combat,
+    combat/combat_logic,
     ability_definitions,
     weapon_definitions
 

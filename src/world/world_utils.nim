@@ -1,9 +1,9 @@
 import sdl2
 
 import
-  constants,
-  vector,
-  utils
+  ../constants,
+  ../vector,
+  ../utils
 
 proc getRenderWindow*(playerPos: Vec2): Rect =
     let radiusX = SCREEN_WIDTH_TILES div 2 + 1

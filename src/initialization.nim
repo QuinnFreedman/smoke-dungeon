@@ -19,7 +19,7 @@ import
     class_definitions,
     race_definitions,
     ai,
-    main_menu
+    main_menu/main_menu_init
 
 proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Game =
     new result

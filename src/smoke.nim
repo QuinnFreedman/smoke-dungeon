@@ -12,7 +12,6 @@ import
     keyboard,
     initialization,
     game_utils,
-    render_world,
     textures,
     constants,
     gameloop,

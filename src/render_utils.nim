@@ -3,11 +3,11 @@ import
     sdl2.ttf
 
 import
-    vector,
     constants,
+    lru_cache,
     textures,
     utils,
-    lru_cache
+    vector
 
 const WHITE* = color(r=255, g=255, b=255, a=255)
 const RED* = color(r=255, g=0, b=0, a=255)

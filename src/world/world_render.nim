@@ -3,28 +3,19 @@ import strutils,
        math
 
 import
-    types,
-    matrix,
-    textures,
-    vector,
-    constants,
-    utils,
-    character_utils,
-    render_utils,
-    render_character,
-    item_utils,
-    textures,
+    ../types,
+    ../matrix,
+    ../textures,
+    ../vector,
+    ../constants,
+    ../utils,
+    ../character_utils,
+    ../render_map,
+    ../render_utils,
+    ../render_character,
+    ../item_utils,
+    ../textures,
     world_utils
-
-proc renderMap*(map: Level, window: Rect,
-                renderer: RendererPtr, transform: Vec2) =
-    alias textures: map.textures
-    for pos in window.iterRect:
-        if textures.contains(pos) and map.seen[pos]:
-            let srect = textures[pos]
-            let tilePos = pos.scale(TILE_SIZE)
-            drawTile(TextureAlias.mapTiles,
-                     srect, tilePos, renderer, transform)
 
 # proc debugRenderCollision*(collision: Matrix[uint8], window: Rect,
 #         renderer: RendererPtr, transform: Vec2) =

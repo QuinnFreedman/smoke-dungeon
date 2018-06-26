@@ -4,9 +4,14 @@ import
     math
 
 import
+    character_utils,
+    constants,
     types,
-    vector,
-    character_utils
+    vector
+
+
+proc turnCost*(cost: float): int =
+    int(round(cost * ABILITY_POINTS_PER_TURN))
 
 
 proc getRange*(self: Ability, weapon: WeaponInfo): float =

@@ -19,6 +19,7 @@ let BASIC_ATTACK* = Ability(
     name: "Basic Attack",
     useWeaponRange: true,
     abilityType: AbilityType.enemyTarget,
+    turnCost: turnCost(0.5),
     applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
         let damage = getBasicDamage(weaponInfo)[0]
         target.damage(damage, DamageType.physical)
@@ -28,6 +29,7 @@ let HEAVY_ATTACK* = Ability(
     name: "Heavy Attack",
     useWeaponRange: true,
     abilityType: AbilityType.enemyTarget,
+    turnCost: turnCost(1),
     applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
         let damage = getBasicDamage(weaponInfo, 2)[0]
         target.damage(damage, DamageType.physical)
@@ -39,6 +41,7 @@ let ZAP* = Ability(
     abilityRange: 4,
     abilityType: AbilityType.enemyTarget,
     isMagical: true,
+    turnCost: turnCost(1),
     applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
         target.damage(2, DamageType.magical)
 )

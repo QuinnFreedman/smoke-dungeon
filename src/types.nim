@@ -3,13 +3,14 @@ import
     sdl2.ttf
 
 import
-    matrix,
+    constants,
     direction,
-    vector,
+    keyboard,
+    matrix,
     render_utils,
     textures,
-    keyboard,
-    utils
+    utils,
+    vector
 
 
 type
@@ -71,6 +72,7 @@ type
         activeWeapon*: Item
         activeAbility*: Ability
         activeTarget*: AbilityTarget
+        turnPointsRemaining*: int
         movementStart*: Vec2
         mapCursor*: Vec2
         menuCursor*: int
@@ -196,9 +198,10 @@ type
 
     Ability* = object
         name*: string
-        abilityRange*: float #number of squares
-        useWeaponRange*: bool #if true, ignore abilityRange and use the range of the weaoon the spell is channeled throug
+        abilityRange*: float  # number of squares
+        useWeaponRange*: bool # if true, ignore abilityRange and use the range of the weaoon the spell is channeled throug
         isMagical*: bool
+        turnCost*: int
         case abilityType*: AbilityType:
         of aoe:
             aoePattern*: seq[Vec2]

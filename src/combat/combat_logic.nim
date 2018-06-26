@@ -97,7 +97,11 @@ proc tickAuras(combat: var CombatScreen, caster: Character) =
 
 proc goToNextTurn(combat: var CombatScreen, level: var Level): ScreenChange =
 
+
     alias activeChar: combat.turnOrder[combat.turn]
+
+    echo "turn end: " & $activeChar
+    echo " -- next turn ---------------------"
 
     # Check if anyone is still alive
     let (numAllies, numEnemies) = combat.numAlive
@@ -109,6 +113,8 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): ScreenChange =
         combat.turn = (combat.turn + 1) mod combat.turnOrder.len
         if activeChar.health <= 0:
             tickAuras(combat, activeChar)
+
+    echo "turn start: " & $activeChar
 
     # apply aura effects
     for i in 0..<activeChar.auras.len:
@@ -145,6 +151,7 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): ScreenChange =
             combat.path = path
             combat.setState(CombatState.waitingMovementAnimation)
     else:
+        combat.turnPointsRemaining = ABILITY_POINTS_PER_TURN
         combat.setState(CombatState.pickingMovement)
 
 proc pickEnemyAttack(combat: var CombatScreen, level: Level) =
@@ -175,6 +182,7 @@ proc setupCombat(combat: var CombatScreen) =
     combat.aoeAuras = newMatrixWithOffset[AoeAura](window.w, window.h,
         v(window.x, window.y))
 
+    combat.turnPointsRemaining = ABILITY_POINTS_PER_TURN
     combat.setState(CombatState.pickingMovement)
 
 proc updateCombatScreen*(combat: var CombatScreen,
@@ -259,6 +267,8 @@ proc updateCombatScreen*(combat: var CombatScreen,
                     combat.activeAbility = activeChar.getAbility(combat.menuCursor)
                     if combat.activeAbility.isNone:
                         result = combat.goToNextTurn(level)
+                    elif combat.activeAbility.turnCost > combat.turnPointsRemaining:
+                        combat.message = "No time!"
                     elif activeChar.canCast(combat.activeAbility):
                         combat.setState(CombatState.pickingWeapon)
                     else:
@@ -326,4 +336,11 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 afterEffect(activeChar, target, combat.activeAbility.aoePattern, level)
 
         activeChar.faceToward(combat.activeTarget.getPosition)
-        result = combat.goToNextTurn(level)
+        combat.turnPointsRemaining -= combat.activeAbility.turnCost
+        echo "turn points remaining: " & $combat.turnPointsRemaining
+        if combat.turnPointsRemaining > 0 and isAlly:
+            echo "Turn points remaining; going to pick ability again"
+            combat.setState(CombatState.pickingAbility)
+        else:
+            echo "No turn points left; going to next turn"
+            result = combat.goToNextTurn(level)

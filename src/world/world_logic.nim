@@ -1,6 +1,7 @@
 import
     ../character_utils,
     ../constants,
+    ../combat/combat_utils,
     ../direction,
     ../keyboard,
     ../matrix,
@@ -35,10 +36,18 @@ proc loopMainGame*(gameState: var GameState,
             if distance(pc.currentTile, entity.currentTile) <= 1.0 or
                     distance(pc.currentTile, entity.nextTile) <= 1.0:
                 echo "combat with: " & $entity
+                let enemyParty = @[entity]
+                let playerParty = gameState.playerParty
+                let window = getRenderWindow(pc.currentTile)
                 return ScreenChange(
-                    changeTo: Screen.combat,
-                    playerParty: gameState.playerParty,
-                    enemyParty: @[entity]
+                    changeTo: Screen.transition,
+                    startWindow: window,
+                    endWindow: getCombatWindow(playerParty, enemyParty),
+                    whenDone: makeRef(ScreenChange(
+                        changeTo: Screen.combat,
+                        playerParty: playerParty,
+                        enemyParty: enemyParty
+                    ))
                 )
 
 
@@ -66,6 +75,7 @@ proc loopMainGame*(gameState: var GameState,
 
     alias level: gameState.level
     let window = getRenderWindow(pc.currentTile)
+
     level.shadowMask1.recycle(window.w, window.h,
                               v(window.x, window.y))
     level.shadowMask2.recycle(window.w, window.h,

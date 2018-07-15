@@ -70,7 +70,7 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
     result.gameState.playerParty.add(companion1)
 
     var spider = newCharacter(result.gameState.level,
-        v(0, levelHeight div 2 - 1), 2,
+        v(2, levelHeight div 2 - 1), 2,
         RACE_SPIDER, Sex.male, CLASS_ROGUE)
     spider.kind = CharacterType.animal
 

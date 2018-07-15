@@ -21,7 +21,9 @@ import
     main_menu/main_menu_logic,
     main_menu/main_menu_render,
     world/world_logic,
-    world/world_render
+    world/world_render,
+    combat_transition/transition_render,
+    combat_transition/transition_logic
 
 
 proc loop*(self: var Game, dt: float) =
@@ -39,6 +41,8 @@ proc loop*(self: var Game, dt: float) =
                 updateCombatScreen(self.combat, self.gameState.level, self.keyboard, dt)
             of Screen.menu:
                 loopMenu(self)
+            of Screen.transition:
+                loopTransition(self.combatTransition, dt)
             of Screen.none:
                 ScreenChange(changeTo: Screen.none)
 
@@ -48,6 +52,7 @@ proc loop*(self: var Game, dt: float) =
     # Don't re-init screen if coming from menu
     if not wasInMenu:
         match screenChange:
+            # TODO: put init functions in modules
             inventory(items: items):
                 if not items.isNil:
                     for i in 0..<items.len:
@@ -60,6 +65,8 @@ proc loop*(self: var Game, dt: float) =
                 self.mainMenu.previousScreen = previousScreen
                 self.mainMenu.cursor = 0
                 self.mainMenu.active = self.mainMenu.root
+            transition(startWindow: start, endWindow: dest, whenDone: whenDone):
+                initTransition(self.combatTransition, start, dest, whenDone)
             _: discard
 
 
@@ -99,6 +106,10 @@ proc render*(self: Game, renderTarget: TexturePtr,
                         self.renderInfo)
     of Screen.combat:
         renderCombatScreen(self.gameState, self.combat, self.renderInfo)
+    of Screen.transition:
+        renderTransitionScreen(self.combatTransition,
+                               self.gameState,
+                               self.renderInfo)
     of Screen.menu:
         renderMainMenu(self)
     of Screen.none:

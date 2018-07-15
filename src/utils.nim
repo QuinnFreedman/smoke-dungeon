@@ -59,3 +59,23 @@ template alias*(a: untyped, b: typed) =
 
 proc last*[T](a: openArray[T]): T =
     a[a.len - 1]
+
+iterator flatten*[T](lists: varargs[seq[T]]): T =
+    for l in lists:
+        for x in l:
+            yield x
+
+proc makeRef*[T](thing: T): ref T =
+    new result
+    result[] = thing
+
+proc boundedLerp*(x, a, b: float): float =
+    let x1 = if x < 0: 0.0 elif x > 1: 1.0 else: x
+    result = a + x1 * (b - a)
+
+proc boundedLerp*(x: float, a, b: int): float =
+    boundedLerp(x, a.float, b.float)
+
+proc lerp*(progress: float, a, b: Vec2f): Vec2f =
+    vecFloat(boundedLerp(progress, a.x, b.x),
+             boundedLerp(progress, a.y, b.y))

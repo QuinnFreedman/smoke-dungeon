@@ -14,7 +14,7 @@ import
 
 
 type
-    Screen* = enum none, menu, world, inventory, combat
+    Screen* = enum none, menu, world, inventory, combat, transition
 
     Game* = ref object
         shouldQuit*: bool
@@ -26,6 +26,7 @@ type
         mainMenu*: MainMenuScreen
         inventory*: Inventory
         combat*: CombatScreen
+        combatTransition*: CombatTransitionScreen
         gameState*: GameState
 
     Preferences* = object
@@ -80,6 +81,11 @@ type
         message*: string
         aoeAuras*: Matrix[AoeAura]
 
+    CombatTransitionScreen* = object
+        startWindow*: Rect
+        endWindow*: Rect
+        timeElapsed*: float
+        whenDone*: ScreenChange
 
     CombatState* {.pure.} = enum
         waitingMovementAnimation,
@@ -255,6 +261,9 @@ type
         case changeTo*: Screen
         of Screen.combat:
             playerParty*, enemyParty*: seq[Character]
+        of Screen.transition:
+            startWindow*, endWindow*: Rect
+            whenDone*: ref ScreenChange
         of Screen.inventory:
             items*: seq[Item]
         of Screen.menu:

@@ -31,13 +31,12 @@ proc renderTransitionScreen*(transition: CombatTransitionScreen,
     let height = boundedLerp(progress, transition.startWindow.h,
                              transition.endWindow.h)
 
-
     let x = center.x - (width / 2)
     let y = center.y - (height / 2)
 
 
     let window = rect(x.floor.cint, y.floor.cint,
-                      width.ceil.cint, height.ceil.cint)
+                      width.ceil.cint + 1, height.ceil.cint + 1)
 
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
                                .scale(TILE_SIZE / 2)
@@ -46,6 +45,15 @@ proc renderTransitionScreen*(transition: CombatTransitionScreen,
                           screenCenter -
                           vecFloat(TILE_SIZE / 2, TILE_SIZE / 2))
 
-    #TODO: clip render
+    var clip = rect(
+        cint(round(screenCenter.x - (width * TILE_SIZE / 2))),
+        cint(round(screenCenter.y - (height * TILE_SIZE / 2))),
+        cint(round(width * TILE_SIZE)),
+        cint(round(height * TILE_SIZE)),
+    )
+    discard rendererSetClipRect(renderInfo.renderer, addr clip)
+
     renderMap(gameState.level, window,
-              renderInfo.renderer, transform, fow=false)
+              renderInfo.renderer, transform, fow=true)
+
+    discard rendererSetClipRect(renderInfo.renderer, nil)

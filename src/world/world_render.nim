@@ -53,7 +53,7 @@ proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
                                .scale(TILE_SIZE / 2)
     let transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter - vecFloat(TILE_SIZE / 2, TILE_SIZE / 2))
 
-    let window = getRenderWindow(pc.currentTile)
+    let window = getRenderWindow(pc.currentTile, pc.nextTile)
 
     renderMap(level, window, renderer, transform)
     # debugRenderCollision(level.collision, window, renderer, transform)

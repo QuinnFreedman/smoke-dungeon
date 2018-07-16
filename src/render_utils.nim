@@ -9,6 +9,16 @@ import
     utils,
     vector
 
+# patch for missing methods in SDL2
+{.push callConv: cdecl, dynlib: sdl2.LibName.}
+proc rendererSetClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
+  importc: "SDL_RenderSetClipRect".}
+proc rendererGetClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
+  importc: "SDL_RenderGetClipRect".}
+proc renderIsClipEnabled*(renderer: RendererPtr): cint {.
+  importc: "SDL_RenderIsClipEnabled".}
+{.pop.}
+
 const WHITE* = color(r=255, g=255, b=255, a=255)
 const RED* = color(r=255, g=0, b=0, a=255)
 const BLUE* = color(r=0, g=0, b=255, a=255)

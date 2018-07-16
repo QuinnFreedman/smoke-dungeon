@@ -28,6 +28,8 @@ proc recycle*[T](self: var Matrix[T], width, height: int, offset: Vec2) =
         self.data = newSeq[T](width * height)
     else:
         self.data.zero
+        for i in self.data.len .. width * height:
+            self.data.add(cast[T](0))
     self.width = width
     self.height = height
     self.offset = offset

@@ -25,9 +25,9 @@ iterator iterRect*(self: Rect): Vec2 =
         yield v(x, y)
 
 
-proc zero*(a: var openArray[bool]) =
+proc zero*[T](a: var openArray[T]) =
     for i in 0..<a.len:
-        a[i] = false
+        a[i] = cast[T](0)
 
 
 proc directionTo*(f, t: Vec2): Direction =

@@ -38,7 +38,7 @@ proc loopMainGame*(gameState: var GameState,
                 echo "combat with: " & $entity
                 let enemyParty = @[entity]
                 let playerParty = gameState.playerParty
-                let window = getRenderWindow(pc.currentTile)
+                let window = getRenderWindow(pc.currentTile, pc.nextTile)
                 return ScreenChange(
                     changeTo: Screen.transition,
                     startWindow: window,
@@ -74,7 +74,7 @@ proc loopMainGame*(gameState: var GameState,
         entity.update(gamestate.level, dt)
 
     alias level: gameState.level
-    let window = getRenderWindow(pc.currentTile)
+    let window = getRenderWindow(pc.currentTile, pc.nextTile)
 
     level.shadowMask1.recycle(window.w, window.h,
                               v(window.x, window.y))

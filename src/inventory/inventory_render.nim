@@ -92,51 +92,53 @@ proc renderMenu(inv: Inventory, activeChar: Character,
 proc renderInventory*(inventory: var Inventory,
                       playerParty: seq[Character],
                       renderInfo: RenderInfo) =
-    let renderer = renderInfo.renderer
-    let transform = ZERO
-
-    let bgTexture = TextureAlias.inventoryBackground
-    let bgDimens = bgTexture.getDimens
-    var srect = newSdlRect(0, 0, bgDimens.x, bgDimens.y)
-    var drect = srect
-    drawImage(bgTexture, srect, drect, renderer, transform)
-
-    let activeCharacter = playerParty[inventory.activeCharacter]
-
-    if inventory.inMenu:
-        renderMenu(inventory, activeCharacter,
-                   renderInfo, transform)
-    else:
-        renderCursor(inventory, renderer, transform)
-
-    if not activeCharacter.isNil:
-        renderStaticCharacter(activeCharacter, mainPreviewRect,
-                              renderer, transform)
-
-        for item in activeCharacter.iterWornItems:
-            assert item.kind == ItemType.clothing
-            if item.kind == ItemType.clothing:
-                renderItemPreview(item,
-                        equippedItemPreviewRects[ord(item.clothingInfo.slot)],
-                        renderer, transform)
-
-        if activeCharacter.kind == CharacterType.humanoid:
-            renderItemPreview(activeCharacter.rightHand,
-                    equippedItemPreviewRects[3],
-                    renderer, transform)
-            renderItemPreview(activeCharacter.leftHand,
-                    equippedItemPreviewRects[4],
-                    renderer, transform)
-
-    for i, character in playerParty:
-        if character.isNil: continue
-
-        character.renderCharacterCroppedPreview(
-            previewRects[i], renderer, transform)
-
-        for slot in character.backpack.indices:
-            let item = character.backpack[slot]
-            if not item.isNone:
-                var srect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
-                var drect = getItemSlotPosition(i, slot.x, slot.y)
-                drawImage(item.icon, srect, drect, renderer, transform)
+    renderInfo.renderText("Inventory screen doesn't work anymore",
+            v(50, 50), WHITE)
+    # let renderer = renderInfo.renderer
+    # let transform = ZERO
+    #
+    # let bgTexture = TextureAlias.inventoryBackground
+    # let bgDimens = bgTexture.getDimens
+    # var srect = newSdlRect(0, 0, bgDimens.x, bgDimens.y)
+    # var drect = srect
+    # drawImage(bgTexture, srect, drect, renderer, transform)
+    #
+    # let activeCharacter = playerParty[inventory.activeCharacter]
+    #
+    # if inventory.inMenu:
+    #     renderMenu(inventory, activeCharacter,
+    #                renderInfo, transform)
+    # else:
+    #     renderCursor(inventory, renderer, transform)
+    #
+    # if not activeCharacter.isNil:
+    #     renderStaticCharacter(activeCharacter, mainPreviewRect,
+    #                           renderer, transform)
+    #
+    #     for item in activeCharacter.iterWornItems:
+    #         assert item.kind == ItemType.clothing
+    #         if item.kind == ItemType.clothing:
+    #             renderItemPreview(item,
+    #                     equippedItemPreviewRects[ord(item.clothingInfo.slot)],
+    #                     renderer, transform)
+    #
+    #     if activeCharacter.kind == CharacterType.humanoid:
+    #         renderItemPreview(activeCharacter.rightHand,
+    #                 equippedItemPreviewRects[3],
+    #                 renderer, transform)
+    #         renderItemPreview(activeCharacter.leftHand,
+    #                 equippedItemPreviewRects[4],
+    #                 renderer, transform)
+    #
+    # for i, character in playerParty:
+    #     if character.isNil: continue
+    #
+    #     character.renderCharacterCroppedPreview(
+    #         previewRects[i], renderer, transform)
+    #
+    #     for slot in character.backpack.indices:
+    #         let item = character.backpack[slot]
+    #         if not item.isNone:
+    #             var srect = newSdlSquare(0, 0, ITEM_ICON_SIZE)
+    #             var drect = getItemSlotPosition(i, slot.x, slot.y)
+    #             drawImage(item.icon, srect, drect, renderer, transform)

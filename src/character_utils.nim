@@ -77,39 +77,19 @@ iterator iterWornItems*(self: Character): Item =
         if exists:
             yield item
 
-proc getWeapons*(self: Character): (int, array[2, Item]) =
-    if self.kind == CharacterType.humanoid:
-        if self.leftHand.isNone and self.rightHand.isNone:
-            (1, [NONE_WEAPON, NONE_ITEM])
-        elif self.leftHand.isNone:
-            (2, [self.rightHand, NONE_WEAPON])
-        elif self.rightHand.isNone:
-            (2, [NONE_WEAPON, self.leftHand])
-        else:
-            (2, [self.leftHand, self.rightHand])
-    else:
-        (1, [NONE_WEAPON, NONE_ITEM])
-
-
-iterator iterWeapons*(self: Character): Item =
-    let (numWeapons, weapons) = self.getWeapons()
-    for i in 0..<numWeapons:
-        yield weapons[i]
 
 # -------------------------------------
 # Combat stats
 # -------------------------------------
 
+proc getWeaponInfo*(self: Character): WeaponInfo =
+    if self.weapon.kind == ItemType.weapon:
+        return self.weapon.weaponInfo
+
 proc get*(self: Character, stat: Stat): int =
     result = self.class.stats[stat] + self.statMods[stat]
-    for item in self.iterWornItems:
-        if item.kind == ItemType.clothing:
-            if not item.clothingInfo.getStat.isNil:
-                result = item.clothingInfo.getStat(stat, result)
-    for item in self.iterWeapons:
-        if item.kind == ItemType.weapon:
-            if not item.weaponInfo.getStat.isNil:
-                result = item.weaponInfo.getStat(stat, result)
+    if not self.getWeaponInfo.getStat.isNil:
+        result = self.getWeaponInfo.getStat(stat, result)
     for aura in self.auras:
         if not aura.getStat.isNil:
             result = aura.getStat(stat, result)
@@ -242,7 +222,6 @@ proc newCharacter*(level: var Level,
     result.speed = speed
     result.race = race
     result.sex = sex
-    result.backpack = newMatrix[Item](4, 2)
     result.spritesheet = getBaseSpriteSheet(race, sex)
     result.class = class
     result.auras = newSeq[Aura]()

@@ -53,18 +53,18 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
     playerCharacter.clothes[ClothingSlot. head] = MAGE_HOOD
     playerCharacter.clothes[ClothingSlot.body] = KNIGHT_CHESTPLATE
     playerCharacter.clothes[ClothingSlot.feet] = KNIGHT_GRIEVES
-    playerCharacter.backpack[0, 0] = KNIGHT_HELMET
-    playerCharacter.backpack[1, 0] = MAGE_CLOAK
-    playerCharacter.backpack[3, 1] = MAGE_SHOES
+    # playerCharacter.backpack[0, 0] = KNIGHT_HELMET
+    # playerCharacter.backpack[1, 0] = MAGE_CLOAK
+    # playerCharacter.backpack[3, 1] = MAGE_SHOES
     # playerCharacter.backpack[2, 1] = KNOCKBACK_SWORD
-    playerCharacter.leftHand = KNOCKBACK_SWORD
+    playerCharacter.weapon = KNOCKBACK_SWORD
     result.gameState.playerParty.add(playerCharacter)
 
     var companion1 = newCharacter(result.gameState.level,
         v(1, levelHeight div 2), 2,
         RACE_HUMAN, Sex.male, CLASS_ROGUE)
-    companion1.backpack[1, 0] = KNIGHT_HELMET
-    companion1.rightHand = BLEED_KNIFE
+    # companion1.backpack[1, 0] = KNIGHT_HELMET
+    companion1.weapon = BLEED_KNIFE
     companion1.ai.worldMovement = AI_FOLLOW
     companion1.following = playerCharacter
     result.gameState.playerParty.add(companion1)
@@ -73,6 +73,7 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
         v(2, levelHeight div 2 - 1), 2,
         RACE_SPIDER, Sex.male, CLASS_ROGUE)
     spider.kind = CharacterType.animal
+    spider.weapon = NONE_WEAPON
 
     result.gameState.entities = concat(result.gameState.playerParty)
     result.gameState.entities.add(spider)

@@ -107,8 +107,6 @@ proc renderCombatScreen*(gameState: GameState,
         drawMapCursor(combat.mapCursor, renderInfo, transform)
     of CombatState.pickingAbility:
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
-    of CombatState.pickingWeapon:
-        drawMapMarker(activeChar.currentTile, renderInfo, transform)
     of CombatState.pickingTarget:
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
         drawMapCursor(combat.mapCursor, renderInfo, transform)
@@ -131,8 +129,6 @@ proc renderCombatScreen*(gameState: GameState,
             drawMessage(combat.message, renderInfo)
         else:
             drawMenu("Do what?", activeChar.iterAbilities(), combat.menuCursor, renderInfo)
-    of CombatState.pickingWeapon:
-        drawMenu("Pick weapon", activeChar.iterWeapons(), combat.menuCursor, renderInfo)
     of CombatState.pickingTarget:
         if not combat.message.isNil:
             drawMessage(combat.message, renderInfo)

@@ -70,7 +70,6 @@ type
         center*: Vec2
         privateState: CombatState
         turn*: int
-        activeWeapon*: Item
         activeAbility*: Ability
         activeTarget*: AbilityTarget
         turnPointsRemaining*: int
@@ -91,7 +90,6 @@ type
         waitingMovementAnimation,
         pickingMovement,
         pickingAbility,
-        pickingWeapon,
         pickingTarget,
         waitingAttackAnimation
 
@@ -163,13 +161,13 @@ type
         speed*: float
         race*: Race
         sex*: Sex
-        backpack*: Matrix[Item]
         spritesheet*: TextureAlias
         class*: Class
         health*: int
         statMods*: array[Stat, int]
         auras*: seq[Aura]
         unlockedAbilities*: seq[Ability]
+        weapon*: Item
 
         ai*: AI
         following*: Character
@@ -177,8 +175,6 @@ type
         case kind*: CharacterType
         of humanoid:
             clothes*: array[ClothingSlot, Item]
-            leftHand*: Item
-            rightHand*: Item
         of animal: discard
 
     Class* = object
@@ -242,7 +238,7 @@ type
                              level: var Level): seq[Vec2],
         chooseAttack: proc(self: Character,
                            allies, enemies: seq[Character],
-                           level: Level): (Ability, Item, AbilityTarget)
+                           level: Level): (Ability, AbilityTarget)
     ]
 
     AoeAura* = object

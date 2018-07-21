@@ -56,17 +56,15 @@ const AI_COMBAT_MOVE_NEAREST_ENEMY* =
 
 const AI_COMBAT_ATTACK_NEAREST_ENEMY* =
     proc(self: Character, allies, enemies: seq[Character],
-         level: Level): (Ability, Item, AbilityTarget) =
+         level: Level): (Ability, AbilityTarget) =
         let closestEnemy = getClosest(self, enemies)
-        let weapon = self.getWeapons[1][0]
-        if not closestEnemy.isNil and weapon.kind == ItemType.weapon:
+        if not closestEnemy.isNil:
             let target = abilityTargetCharacter(closestEnemy)
             let ability = BASIC_ATTACK
             if validateTarget(caster=self,
                               target=target,
                               allies=allies,
-                              ability=ability,
-                              weapon=weapon.weaponInfo)[0]:
-                return (BASIC_ATTACK, weapon, target)
+                              ability=ability)[0]:
+                return (BASIC_ATTACK, target)
 
-        return (NONE_ABILITY, NONE_WEAPON, abilityTargetCharacter(nil))
+        return (NONE_ABILITY, abilityTargetCharacter(nil))

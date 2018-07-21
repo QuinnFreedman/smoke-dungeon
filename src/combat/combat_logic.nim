@@ -35,7 +35,14 @@ proc getTarget(combat: CombatScreen, v: Vec2): AbilityTarget =
 proc validateTarget*(caster: Character,
                      target: AbilityTarget,
                      allies: seq[Character],
-                     ability: Ability, weapon: WeaponInfo): (bool, string) =
+                     ability: Ability): (bool, string) =
+    echo "Validate Target:"
+    echo "  caster:" & $caster
+    echo "  target:" & $target
+    echo "  allies:" & $allies
+    echo "  ability:" & $ability
+    if ability.isNone: return (true, nil)
+    let weapon = caster.getWeaponInfo
     if not caster.canCast(ability):
         return (false, "Can't cast that")
     if distance(caster.currentTile,
@@ -65,9 +72,9 @@ proc validateTarget*(caster: Character,
 
 proc validateTarget(combatInfo: CombatScreen,
                     caster: Character, target: AbilityTarget,
-                    ability: Ability, weapon: WeaponInfo): (bool, string) {.inline.} =
+                    ability: Ability): (bool, string) {.inline.} =
     validateTarget(caster, target, combatInfo.playerParty,
-                   ability, weapon)
+                   ability)
 
 proc numAlive(combat: CombatScreen): (int, int) =
     var numAllies, numEnemies = 0
@@ -156,16 +163,14 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): ScreenChange =
 
 proc pickEnemyAttack(combat: var CombatScreen, level: Level) =
     let activeChar = combat.turnOrder[combat.turn]
-    let (ability, weapon, target) = activeChar.ai.chooseAttack(
+    let (ability, target) = activeChar.ai.chooseAttack(
             activeChar,
             combat.enemyParty,
             combat.playerParty,
             level
     )
-    assert validateTarget(activeChar, target, combat.enemyParty, ability,
-            weapon.weaponInfo)[0]
+    assert validateTarget(activeChar, target, combat.enemyParty, ability)[0]
     combat.activeAbility = ability
-    combat.activeWeapon = weapon
     combat.activeTarget = target
     combat.setState(CombatSTate.waitingAttackAnimation)
 
@@ -175,7 +180,7 @@ proc setupCombat(combat: var CombatScreen) =
     combat.turnOrder.sort do (a, b: Character) -> int:
         result = cmp(a.get(Stat.initiative), b.get(Stat.initiative))
 
-    # TODO this should be the average of all entities in the combat
+    # TODO set combat window on start (from animation)
     combat.center = combat.playerParty[0].currentTile
     combat.turn = 0
     let window = getCombatWindow(combat)
@@ -192,7 +197,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
     if combat.turnOrder.isNil:
         setupCombat(combat)
 
-    alias activeChar: combat.turnOrder[combat.turn]
+    let activeChar = combat.turnOrder[combat.turn]
     let isAlly = activeChar in combat.playerParty
 
     let moveY =
@@ -270,24 +275,14 @@ proc updateCombatScreen*(combat: var CombatScreen,
                     elif combat.activeAbility.turnCost > combat.turnPointsRemaining:
                         combat.message = "No time!"
                     elif activeChar.canCast(combat.activeAbility):
-                        combat.setState(CombatState.pickingWeapon)
+                        combat.setState(CombatState.pickingTarget)
                     else:
                         combat.message = "Can't cast that"
 
-    of CombatState.pickingWeapon:
-        if backPressed:
-            combat.setState(CombatState.pickingAbility)
-
-        let (numWeapons, weapons) = activeChar.getWeapons
-        combat.menuCursor =
-            (combat.menuCursor + moveY) %% numWeapons
-        if enterPressed:
-            combat.activeWeapon = weapons[combat.menuCursor]
-            combat.setState(CombatState.pickingTarget)
 
     of CombatState.pickingTarget:
         if backPressed:
-            combat.setState(CombatState.pickingWeapon)
+            combat.setState(CombatState.pickingAbility)
         let window = getCombatWindow(combat)
         combat.mapCursor.x = clamp(combat.mapCursor.x + moveX,
                                    window.x, window.x + window.w - 1)
@@ -296,25 +291,26 @@ proc updateCombatScreen*(combat: var CombatScreen,
         if enterPressed:
             var target = combat.getTarget(combat.mapCursor)
             let (valid, reason) = combat.validateTarget(
-                    activeChar, target, combat.activeAbility,
-                    combat.activeWeapon.weaponInfo)
+                    activeChar, target, combat.activeAbility)
             combat.message = reason
             if valid:
                 combat.activeTarget = target
                 combat.setState(CombatSTate.waitingAttackAnimation)
     of CombatState.waitingAttackAnimation:
         #TODO wait until animation is completed
-        # activeChar.health -= combat.activeAbility.healthCost
-        # activeChar.energy -= combat.activeAbility.energyCost
-        # activeChar.mana -= combat.activeAbility.manaCost
-        let weapon = combat.activeWeapon.weaponInfo
+        let weapon = activeChar.getWeaponInfo
         let isMagical = combat.activeAbility.isMagical
+        #TODO make this a match not case
         case combat.activeTarget.kind:
         of TargetCharacter:
+            echo "combat.activeTarget.kind == TargetCharacter"
             let target = combat.activeTarget.character
+            echo "  activeTarget.target == " & $target
+            echo "  activeChar == " & $activeChar
+            echo "  weapon == " & $activeChar.getWeaponInfo
             combat.activeAbility.applyEffect(
                         activeChar, target,
-                        combat.activeWeapon.weaponInfo)
+                        activeChar.getWeaponInfo)
             let afterEffect =
                 if isMagical: weapon.magicAfterEffect
                 else: weapon.kineticAfterEffect
@@ -327,8 +323,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 let tile = target + v
                 if combat.aoeAuras.contains(tile):
                     combat.activeAbility.applyAoeEffect(
-                            activeChar, tile, combat.activeWeapon.weaponInfo,
-                            combat)
+                            activeChar, tile, weapon, combat)
             let afterEffect =
                 if isMagical: weapon.magicAoeAfterEffect
                 else: weapon.kineticAoeAfterEffect

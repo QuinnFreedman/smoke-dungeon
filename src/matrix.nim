@@ -2,11 +2,14 @@ import strutils
 
 import vector
 
+proc index[T](p: ptr T, i: int): ptr T =
+    cast[ptr T](cast[int](p) + (i * sizeof(T)))
+
 type Matrix*[T] = object
     width: int
     height: int
     offset: Vec2
-    data: seq[T]
+    data: ptr T
 
 proc width*(self: Matrix): int {.inline.} =
     self.width
@@ -16,7 +19,7 @@ proc height*(self: Matrix): int {.inline.} =
 proc newMatrix*[T](width, height: int): Matrix[T] =
     result.width = width
     result.height = height
-    result.data = newSeq[T](width * height)
+    result.data = create(T, width * height)
 
 proc newMatrixWithOffset*[T](width, height: int, offset: Vec2): Matrix[T] =
     result = newMatrix[T](width, height)
@@ -25,20 +28,18 @@ proc newMatrixWithOffset*[T](width, height: int, offset: Vec2): Matrix[T] =
 
 proc recycle*[T](self: var Matrix[T], width, height: int, offset: Vec2) =
     if self.data.isNil:
-        self.data = newSeq[T](width * height)
+        self.data = create(T, width * height)
+    elif self.width == width and self.height == height:
+        zeroMem(self.data, width * height * sizeof(T))
     else:
-        self.data.zero
-        for i in self.data.len .. width * height:
-            self.data.add(cast[T](0))
+        self.data = cast[ptr T](realloc(self.data, width * height * sizeof(T)))
     self.width = width
     self.height = height
     self.offset = offset
 
-
 proc setAll*[T](self: var Matrix[T], value: T) =
-    #TODO use memset
     for i in 0..<(self.width * self.height):
-        self.data[i] = value
+        self.data.index(i)[] = value
 
 proc get*[T](self: Matrix[T], x, y: int): T =
     let x2 = x - self.offset.x
@@ -49,7 +50,7 @@ proc get*[T](self: Matrix[T], x, y: int): T =
     if y2 < 0 or y2 >= self.height:
         raise IndexError.newException(
             "y index: $1 out of bounds for matrix: $2".format(y, self))
-    return self.data[y2 * self.width + x2]
+    return self.data.index(y2 * self.width + x2)[]
 
 proc set*[T](self: var Matrix[T], x, y: int, value: T) =
     let x2 = x - self.offset.x
@@ -60,7 +61,7 @@ proc set*[T](self: var Matrix[T], x, y: int, value: T) =
     if y2 < 0 or y2 >= self.height:
         raise IndexError.newException(
             "y index: $1 out of bounds for matrix: $2".format(y, self))
-    self.data[y2 * self.width + x2] = value
+    self.data.index(y2 * self.width + x2)[] = value
 
 proc `[]` *[T](self: Matrix[T], x, y: int): T {.inline.} =
     self.get(x, y)

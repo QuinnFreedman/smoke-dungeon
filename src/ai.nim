@@ -33,7 +33,7 @@ const AI_FOLLOW* =
             #     else: 2
             if path.len > 3:
                 let nextTile = path[path.len - 2]
-                self.moveToward(nextTile, level.collision)
+                self.moveToward(nextTile, level)
 
 
 const AI_RANDOM* =
@@ -41,7 +41,7 @@ const AI_RANDOM* =
         if rand(60) < 1:
             # quick hack so that being near walls doesnt make you move less
             for _ in 0..10:
-                self.move(randomDirection(), level.collision)
+                self.move(randomDirection(), level)
 
 
 const AI_COMBAT_MOVE_NEAREST_ENEMY* =

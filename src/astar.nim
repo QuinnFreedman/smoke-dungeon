@@ -12,11 +12,7 @@ proc heuristic(a, b: Vec2): int =
     int(abs(a.x - b.x) + abs(a.y - b.y)) * 10
 
 
-proc notZero[T](a: T): bool {.inline.} =
-    int(a) != 0
-
-
-proc aStarSearch*[T](collision: Matrix[T], start, goal: Vec2, includeGoal: bool,
+proc aStarSearch*(collision: proc (v: Vec2): bool, start, goal: Vec2, includeGoal: bool,
                      rng: ptr Rand): seq[Vec2] =
     var myRng =
         if rng.isNil:
@@ -51,7 +47,7 @@ proc aStarSearch*[T](collision: Matrix[T], start, goal: Vec2, includeGoal: bool,
         var numNeighbors = 0
         for dir in Direction.items:
             let neighbor = current + directionVector(dir)
-            if collision.contains(neighbor) and not notZero(collision[neighbor]):
+            if not collision(neighbor):
                 neighbors[numNeighbors] = neighbor
                 numNeighbors += 1
 

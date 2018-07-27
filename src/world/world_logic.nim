@@ -14,15 +14,12 @@ import
 proc moveOrSwap(pc: Character, party: seq[Character],
                 level: var Level, direction: Direction) =
     let tile = pc.currentTile + directionVector(direction)
-    if level.collision.contains(tile) and level.collision[tile] > uint8(0):
+    if level.collision(tile):
         for ally in party:
             if not ally.isMoving and ally.currentTile == tile:
-                ally.nextTile = pc.currentTile
-                ally.facing = tile.directionTo(pc.currentTile)
-                pc.nextTile = ally.currentTile
-                pc.facing = direction
+                swap(ally, pc, level)
     else:
-        pc.move(direction, level.collision)
+        pc.move(direction, level)
 
 
 proc loopMainGame*(gameState: var GameState,
@@ -51,22 +48,38 @@ proc loopMainGame*(gameState: var GameState,
                 )
 
 
-    if not pc.isMoving:
-        if keyboard.keyDown(Input.up):
-            pc.moveOrSwap(gamestate.playerParty, gamestate.level, Direction.up)
-        if keyboard.keyDown(Input.down):
-            pc.moveOrSwap(gamestate.playerParty, gamestate.level, Direction.down)
-        if keyboard.keyDown(Input.left):
-            pc.moveOrSwap(gamestate.playerParty, gamestate.level, Direction.left)
-        if keyboard.keyDown(Input.right):
-            pc.moveOrSwap(gamestate.playerParty, gamestate.level, Direction.right)
+    if gamestate.inspectMode:
+        if keyboard.keyPressed(Input.inspect):
+            gamestate.inspectMode = false
 
-    # if keyboar.keyDown(Input.enter):
-    #     if not pc.isMoving:
-    #         for character in gameState.entities:
-    #             if character.health == 0 and
-    #                     character.currentTile == pc.currentTile:
-    #                 result = Screen.inventory
+        #TODO constrain to within view window
+        if keyboard.keyPressed(Input.up) and
+                gamestate.inspectCursor.y > 0:
+            gamestate.inspectCursor += UP
+        if keyboard.keyPressed(Input.down) and
+                gamestate.inspectCursor.y < gamestate.level.walls.height - 1:
+            gamestate.inspectCursor += DOWN
+        if keyboard.keyPressed(Input.left) and
+                gamestate.inspectCursor.x > 0:
+            gamestate.inspectCursor += LEFT
+        if keyboard.keyPressed(Input.right) and
+                gamestate.inspectCursor.x < gamestate.level.walls.width - 1:
+            gamestate.inspectCursor += RIGHT
+
+    else:
+        if not pc.isMoving:
+            if keyboard.keyDown(Input.up):
+                pc.moveOrSwap(gamestate.playerParty, gamestate.level, Direction.up)
+            if keyboard.keyDown(Input.down):
+                pc.moveOrSwap(gamestate.playerParty, gamestate.level, Direction.down)
+            if keyboard.keyDown(Input.left):
+                pc.moveOrSwap(gamestate.playerParty, gamestate.level, Direction.left)
+            if keyboard.keyDown(Input.right):
+                pc.moveOrSwap(gamestate.playerParty, gamestate.level, Direction.right)
+
+        if keyboard.keyPressed(Input.inspect):
+            gamestate.inspectMode = true
+            gamestate.inspectCursor = pc.nextTile
 
 
     for entity in gameState.entities:

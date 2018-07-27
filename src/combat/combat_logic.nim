@@ -238,7 +238,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
         if backPressed and isAlly:
             activeChar.teleport(combat.movementStart,
                 combat.movementStart.directionTo(activeChar.currentTile),
-                level.collision)
+                level)
             combat.setState(CombatState.pickingMovement)
         else:
             if not activeChar.isMoving:
@@ -250,7 +250,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
                         pickEnemyAttack(combat, level)
                 else:
                     let nextTile = combat.path.pop()
-                    activeChar.moveToward(nextTile, level.collision)
+                    activeChar.moveToward(nextTile, level)
 
             if activeChar.isMoving:
                 activeChar.update(level, dt)
@@ -263,7 +263,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
             if backPressed:
                 activeChar.teleport(combat.movementStart,
                     combat.movementStart.directionTo(activeChar.currentTile),
-                    level.collision)
+                    level)
                 combat.setState(CombatState.pickingMovement)
             else:
                 combat.menuCursor =

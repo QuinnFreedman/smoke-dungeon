@@ -39,7 +39,7 @@ let KNOCKBACK_SWORD* = Item(
             let dir = caster.currentTile.directionTo(target.currentTile)
             let newPos = target.currentTile + dir.directionVector
             target.teleport(newPos, target.currentTile.directionTo(newPos),
-                            level.collision)
+                            level)
     )
 )
 

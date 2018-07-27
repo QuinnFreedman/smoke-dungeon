@@ -29,16 +29,16 @@ proc isMoving*(self: Character): bool {.inline.} =
 
 
 proc teleport*(self: Character, pos: Vec2, facing: Direction,
-               collision: var Matrix[uint8]) =
-    collision.dec(self.nextTile)
-    collision.inc(pos)
+               level: var Level) =
+    level.dynamicEntities[self.nextTile] = nil
+    level.dynamicEntities[pos] = self
     self.currentTile = pos
     self.nextTile = pos
     self.actualPos = pos.vecFloat
     self.facing = facing
 
 
-proc move*(self: Character, dir: Direction, collision: var Matrix[uint8]) =
+proc move*(self: Character, dir: Direction, level: var Level) =
     if self.currentTile != self.nextTile:
         return
 
@@ -46,15 +46,23 @@ proc move*(self: Character, dir: Direction, collision: var Matrix[uint8]) =
 
     let dest: Vec2 = self.currentTile + directionVector(dir)
 
-    if collision.contains(dest):
-        if collision[dest] == 0:
-            self.nextTile = dest
-            collision.dec(self.currentTile)
-            collision.inc(self.nextTile)
+    if not level.collision(dest):
+        self.nextTile = dest
+        level.dynamicEntities[self.currentTile] = nil
+        level.dynamicEntities[self.nextTile] = self
 
+proc swap*(a, b: Character, level: var Level) =
+    a.nextTile = b.currentTile
+    a.facing = a.currentTile.directionTo(b.currentTile)
 
-proc moveToward*(self: Character, dest: Vec2, collision: var Matrix[uint8]) =
-    self.move(self.currentTile.directionTo(dest), collision)
+    b.nextTile = a.currentTile
+    b.facing = b.currentTile.directionTo(a.currentTile)
+
+    level.dynamicEntities[a.nextTile] = a
+    level.dynamicEntities[b.nextTile] = b
+
+proc moveToward*(self: Character, dest: Vec2, level: var Level) =
+    self.move(self.currentTile.directionTo(dest), level)
 
 
 proc faceToward*(self: Character, target: Vec2) =
@@ -214,7 +222,7 @@ proc getDestRect*(self: Character): sdl2.Rect =
 proc newCharacter*(level: var Level,
                    pos: Vec2, speed: float, race: Race, sex: Sex,
                    class: Class): Character =
-    new result
+    result = create(CharacterData)
     result.currentTile = pos
     result.nextTile = pos
     result.actualPos = vecFloat(pos)
@@ -230,4 +238,4 @@ proc newCharacter*(level: var Level,
     result.health = class.stats[Stat.maxHp]
     for ab in class.startingAbilities:
         result.unlockedAbilities.add(ab)
-    level.collision.inc(pos)
+    level.dynamicEntities[pos] = result

@@ -4,12 +4,12 @@ import
     math
 
 import
-    types,
-    vector,
+    direction,
     matrix,
     textures,
-    direction,
-    utils
+    types,
+    utils,
+    vector
 
 proc debugDrawDungeon(level: Level) =
     let textures = level.textures
@@ -44,13 +44,20 @@ proc weightedChoice[T, V](rng: var Rand,
         if rnd < total:
             return options[i]
 
+proc getCollisionFunc(level: Level): (proc (v: Vec2): bool) =
+    return proc (v: Vec2): bool =
+        not level.walls.contains(v) or
+            level.walls[v] or
+            not level.dynamicEntities[v].isNil
+
 proc generateLevel*(width, height: int, rng: var Rand): Level =
     result.walls = newMatrix[bool](width, height)
-    result.walls.setAll(true)
     result.textures = newMatrix[sdl2.Rect](width, height)
     result.textures.setAll(BLACK)
-    result.collision = newMatrix[uint8](width, height)
     result.seen = newMatrix[bool](width, height)
+    result.dynamicEntities = newMatrix[Character](width, height)
+    result.collision = getCollisionFunc(result)
+    result.walls.setAll(true)
 
     var particle = v(0, height div 2)
     result.entrance = particle
@@ -74,8 +81,5 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
         particle = next
 
     result.exit = particle
-
-    for p in result.walls.indices:
-        result.collision[p] = uint8(result.walls[p])
 
     debugDrawDungeon(result)

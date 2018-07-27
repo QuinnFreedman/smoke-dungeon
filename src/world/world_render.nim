@@ -17,15 +17,14 @@ import
     ../textures,
     world_utils
 
-# proc debugRenderCollision*(collision: Matrix[uint8], window: Rect,
-#         renderer: RendererPtr, transform: Vec2) =
-#     renderer.setDrawBlendMode(BlendMode_Blend)
-#     for pos in window.iterRect:
-#         if collision.contains(pos):
-#             if collision[pos] > 0.uint8:
-#                 let tilePos = pos.scale(TILE_SIZE)
-#                 let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
-#                 fillRect(myRect, color(225, 0, 0, 100), renderer, transform)
+proc debugRenderCollision*(level: Level, window: Rect,
+        renderer: RendererPtr, transform: Vec2) =
+    renderer.setDrawBlendMode(BlendMode_Blend)
+    for pos in window.iterRect:
+        if level.collision(pos):
+            let tilePos = pos.scale(TILE_SIZE)
+            let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
+            fillRect(myRect, color(225, 0, 0, 100), renderer, transform)
 
 
 proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,
@@ -56,7 +55,12 @@ proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
     let window = getRenderWindow(pc.currentTile, pc.nextTile)
 
     renderMap(level, window, renderer, transform)
-    # debugRenderCollision(level.collision, window, renderer, transform)
+    # debugRenderCollision(level, window, renderer, transform)
+
+    if gamestate.inspectMode:
+        drawImage(TextureAlias.mapCursor,
+                  gamestate.inspectCursor.scale(TILE_SIZE),
+                  renderer, transform)
 
     for character in gamestate.entities:
         renderCharacter(character, renderer, transform)

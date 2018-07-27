@@ -1,7 +1,7 @@
 import utils
 
 type
-    Input* {.pure.} = enum none, left, right, up, down, tab, enter, back, menu
+    Input* {.pure.} = enum none, left, right, up, down, tab, enter, back, menu, inspect
 
     Keyboard* = object
         inputs: array[Input, bool]

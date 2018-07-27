@@ -40,18 +40,21 @@ type
 
     GameState* = object
         level*: Level
+        inspectMode*: bool
+        inspectCursor*: Vec2
         playerParty*: seq[Character]
         entities*: seq[Character]
 
     Level* = object
         walls*: Matrix[bool]
-        collision*: Matrix[uint8]
         textures*: Matrix[sdl2.Rect]
         shadowMask1*: Matrix[bool]
         shadowMask2*: Matrix[bool]
         seen*: Matrix[bool]
         entrance*: Vec2
         exit*: Vec2
+        collision*: proc (pos: Vec2): bool
+        dynamicEntities*: Matrix[Character]
 
     Inventory* = object
         curBackpack*: int
@@ -153,7 +156,9 @@ type
 
     CharacterType* {.pure.} = enum humanoid, animal
 
-    Character* = ref object
+    Character* = ptr CharacterData
+
+    CharacterData* = object
         currentTile*: Vec2
         nextTile*: Vec2
         actualPos*: Vec2f

@@ -131,7 +131,9 @@ proc main =
         let dt = now - lastTime
         lastTime = now
         let fps = 1 / dt
+
         game.pollInput()
+        # if (game.keyboard.keyPressed(Input.enter)):
         game.loop(dt)
         game.render(renderTarget, window, fps)
 

@@ -32,7 +32,8 @@ proc recycle*[T](self: var Matrix[T], width, height: int, offset: Vec2) =
     elif self.width == width and self.height == height:
         zeroMem(self.data, width * height * sizeof(T))
     else:
-        self.data = cast[ptr T](realloc(self.data, width * height * sizeof(T)))
+        dealloc self.data
+        self.data = create(T, width * height)
     self.width = width
     self.height = height
     self.offset = offset

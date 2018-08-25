@@ -14,6 +14,7 @@ proc getOctant(octant: int): (Vec2, Vec2) =
     of 7: (vector.NW, vector.N )
     else: raise newException(ValueError, "octant > 7")
 
+var debugNumMasked = 0
 
 proc castOctant(octant: int,
                 mask: var Matrix[bool],
@@ -26,10 +27,12 @@ proc castOctant(octant: int,
         if mask.contains(newPos) and walls.contains(newPos):
             if inShadow or newRadius == 0:
                 mask[newPos] = true
+                inc debugNumMasked
 
             castOctant(octant, mask, walls, newPos, inShadow or walls[newPos], newRadius)
 
 proc shadowCast*(heroPos: Vec2, mask: var Matrix[bool], walls: Matrix[bool], radius = -1) =
+    debugNumMasked = 0
     mask[heroPos] = false
     for i in 0..<8:
         castOctant(i, mask, walls, heroPos, false, radius)

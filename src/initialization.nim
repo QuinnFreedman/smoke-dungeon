@@ -34,7 +34,7 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
 
     result.screen = Screen.world
 
-    let seed = int64(epochTime())
+    let seed = 1535223949 #int64(epochTime())
     # let seed = int64(1524099821)
     # let seed = 1527012709
 

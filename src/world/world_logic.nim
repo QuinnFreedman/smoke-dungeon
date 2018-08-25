@@ -93,6 +93,10 @@ proc loopMainGame*(gameState: var GameState,
                               v(window.x, window.y))
     level.shadowMask2.recycle(window.w, window.h,
                               v(window.x, window.y))
+    # level.shadowMask1 = newMatrixWithOffset[bool](window.w, window.h,
+    #                               v(window.x, window.y))
+    # level.shadowMask2 = newMatrixWithOffset[bool](window.w, window.h,
+    #                               v(window.x, window.y))
 
     shadowCast(pc.currentTile, level.shadowMask1, level.walls, FOV_RADIUS)
     shadowCast(pc.nextTile, level.shadowMask2, level.walls, FOV_RADIUS)

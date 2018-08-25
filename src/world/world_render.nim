@@ -17,14 +17,18 @@ import
     ../textures,
     world_utils
 
+proc debugRedTile(tile: Vec2, renderer: RendererPtr, transform: Vec2) =
+    renderer.setDrawBlendMode(BlendMode_Blend)
+    let tilePos = tile.scale(TILE_SIZE)
+    let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
+    fillRect(myRect, color(225, 0, 0, 100), renderer, transform)
+
+
 proc debugRenderCollision*(level: Level, window: Rect,
         renderer: RendererPtr, transform: Vec2) =
-    renderer.setDrawBlendMode(BlendMode_Blend)
     for pos in window.iterRect:
         if level.collision(pos):
-            let tilePos = pos.scale(TILE_SIZE)
-            let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
-            fillRect(myRect, color(225, 0, 0, 100), renderer, transform)
+            debugRedTile(pos, renderer, transform)
 
 
 proc renderMask(mask1, mask2: Matrix[bool], blend: float, window: Rect,

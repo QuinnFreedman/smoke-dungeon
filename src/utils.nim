@@ -47,7 +47,7 @@ func pop*[T](self: seq[T]): T =
 func `%%`*(a, b: int): int =
     (a + b) mod b
 
-template doUntil*(a: untyped, b: typed): typed =
+template doUntil*(a: untyped, b: typed): void =
     while true:
         b
         if a:

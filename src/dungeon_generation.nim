@@ -82,4 +82,4 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
 
     result.exit = particle
 
-    debugDrawDungeon(result)
+    if false: debugDrawDungeon(result)

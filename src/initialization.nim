@@ -48,7 +48,10 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
 
     var playerCharacter = newCharacter(result.gameState.level,
         v(0, levelHeight div 2), 2,
-        RACE_HUMAN, Sex.male, CLASS_WIZARD)
+        kind=CharacterType.humanoid,
+        race=RACE_HUMAN,
+        sex=Sex.male,
+        class=CLASS_WIZARD)
 
     playerCharacter.clothes[ClothingSlot. head] = MAGE_HOOD
     playerCharacter.clothes[ClothingSlot.body] = KNIGHT_CHESTPLATE
@@ -62,7 +65,10 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
 
     var companion1 = newCharacter(result.gameState.level,
         v(1, levelHeight div 2), 2,
-        RACE_HUMAN, Sex.male, CLASS_ROGUE)
+        kind=CharacterType.humanoid,
+        race=RACE_HUMAN,
+        sex=Sex.male,
+        class=CLASS_ROGUE)
     # companion1.backpack[1, 0] = KNIGHT_HELMET
     companion1.weapon = BLEED_KNIFE
     companion1.ai.worldMovement = AI_FOLLOW
@@ -71,8 +77,10 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
 
     var spider = newCharacter(result.gameState.level,
         v(2, levelHeight div 2 - 1), 2,
-        RACE_SPIDER, Sex.male, CLASS_ROGUE)
-    spider.kind = CharacterType.animal
+        kind=CharacterType.animal,
+        race=RACE_SPIDER,
+        sex=Sex.male,
+        class=CLASS_ROGUE)
     spider.weapon = NONE_WEAPON
 
     result.gameState.entities = concat(result.gameState.playerParty)

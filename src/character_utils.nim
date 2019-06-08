@@ -220,14 +220,15 @@ func getDestRect*(self: Character): sdl2.Rect =
 # -------------------------------------
 
 proc newCharacter*(level: var Level,
-                   pos: Vec2, speed: float, race: Race, sex: Sex,
+                   pos: Vec2, speed: float, 
+                   kind: CharacterType, race: Race, sex: Sex,
                    class: Class): Character =
     result = create(CharacterData)
     result.currentTile = pos
     result.nextTile = pos
     result.actualPos = vecFloat(pos)
     result.facing = Direction.down
-    result.speed = speed
+    result.speed = speed #TODO speed should depend on type/class
     result.race = race
     result.sex = sex
     result.spritesheet = getBaseSpriteSheet(race, sex)

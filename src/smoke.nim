@@ -1,7 +1,7 @@
 import
     sdl2,
-    sdl2.image,
-    sdl2.ttf,
+    sdl2/image,
+    sdl2/ttf,
     os,
     times,
     streams
@@ -55,7 +55,7 @@ proc pollInput(game: var Game) =
 
 template staticReadRW(filename: string): ptr RWops =
     const file = staticRead(filename)
-    rwFromConstMem(file.cstring, file.len)
+    rwFromConstMem(file.cstring, file.len.cint)
 
 const
     HINT_RENDER_SCALE_QUALITY = cstring("SDL_RENDER_SCALE_QUALITY")

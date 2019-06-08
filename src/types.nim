@@ -1,6 +1,6 @@
 import
     sdl2,
-    sdl2.ttf
+    sdl2/ttf
 
 import
     constants,

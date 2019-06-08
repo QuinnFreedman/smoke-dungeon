@@ -1,6 +1,6 @@
 import
     sdl2,
-    sdl2.image,
+    sdl2/image,
     tables
 
 import

@@ -150,7 +150,7 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): ScreenChange =
                 enemies=combat.playerParty,
                 level=level
         )
-        if path.isNil:
+        if path.len == 0:
             echo "AI chose invalid path"
         else:
             combat.movementStart = activeChar.currentTile
@@ -194,7 +194,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
                          level: var Level,
                          keyboard: Keyboard,
                          dt: float): ScreenChange =
-    if combat.turnOrder.isNil:
+    if combat.turnOrder.len == 0:
         setupCombat(combat)
 
     let activeChar = combat.turnOrder[combat.turn]
@@ -228,7 +228,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
                                    rng=nil)
             combat.movementStart = activeChar.currentTile
 
-            if path.isNil:
+            if path.len == 0:
                 combat.message = "Can't move there"
             else:
                 discard path.pop
@@ -243,7 +243,6 @@ proc updateCombatScreen*(combat: var CombatScreen,
         else:
             if not activeChar.isMoving:
                 if combat.path.len == 0:
-                    combat.path = nil
                     if isAlly:
                         combat.setState(CombatState.pickingAbility)
                     else:

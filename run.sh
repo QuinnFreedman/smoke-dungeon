@@ -1,1 +1,1 @@
-nimble build --debug --nilseqs:on -d:nimOldCaseObjects && mv smoke bin/ && bin/smoke
+nimble build --debug && mv smoke bin/ && bin/smoke

@@ -1,6 +1,6 @@
 import
     sdl2,
-    sdl2.ttf,
+    sdl2/ttf,
     random,
     times,
     strutils,
@@ -27,7 +27,7 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
     result.renderInfo = RenderInfo(
         renderer: renderer,
         font: font,
-        textCache: newTextCache()
+        # textCache: newTextCache()
     )
 
     result.mainMenu = initMenu(result.prefs)

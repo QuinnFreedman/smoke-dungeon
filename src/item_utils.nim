@@ -3,13 +3,13 @@ import
     textures
 
 
-let NONE_ITEM*: Item = Item( name: nil )
+let NONE_ITEM*: Item = Item( name: "" )
 
-proc isNone*(self: Item): bool =
-    self.name.isNil
+func isNone*(self: Item): bool =
+    self.name == ""
 
 
-proc getTexture*(self: Item, sex: Sex): TextureAlias =
+func getTexture*(self: Item, sex: Sex): TextureAlias =
     case self.kind:
         of ItemType.clothing:
             if sex == Sex.male: self.clothingInfo.textureMale

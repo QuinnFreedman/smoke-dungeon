@@ -46,7 +46,7 @@ let ZAP* = Ability(
         target.damage(2, DamageType.magical)
 )
 
-proc fire(caster: Character): AoeAura =
+func fire(caster: Character): AoeAura =
     AoeAura(
         turns: 2,
         caster: caster,
@@ -67,7 +67,7 @@ let BURN* = Ability(
         v(-1, 0),
         v( 1, 0),
     ],
-    applyAoeEffect: proc (caster: Character, target: Vec2,
+    applyAoeEffect: func (caster: Character, target: Vec2,
                           weaponInfo: WeaponInfo,
                           combat: var CombatScreen) =
         combat.aoeAuras[target] = fire(caster)

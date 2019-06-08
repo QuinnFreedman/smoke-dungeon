@@ -18,7 +18,7 @@ import
     render_utils
 
 
-proc toInput(key: Scancode): Input =
+func toInput(key: Scancode): Input =
     case key
     of SDL_SCANCODE_A: Input.left
     of SDL_SCANCODE_D: Input.right

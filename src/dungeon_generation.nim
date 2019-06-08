@@ -30,7 +30,7 @@ proc debugDrawDungeon(level: Level) =
             line = line & c
         echo line
 
-proc weightedChoice[T, V](rng: var Rand,
+func weightedChoice[T, V](rng: var Rand,
         options: array[T, V], weights: array[T, float]): V =
     var totals: array[T, float]
     var running_total: float = 0
@@ -44,8 +44,8 @@ proc weightedChoice[T, V](rng: var Rand,
         if rnd < total:
             return options[i]
 
-proc getCollisionFunc(level: Level): (proc (v: Vec2): bool) =
-    return proc (v: Vec2): bool =
+func getCollisionFunc(level: Level): (proc (v: Vec2): bool) =
+    return func (v: Vec2): bool =
         not level.walls.contains(v) or
             level.walls[v] or
             not level.dynamicEntities[v].isNil

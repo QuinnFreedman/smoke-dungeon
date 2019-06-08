@@ -73,7 +73,7 @@ type TextureAlias* {.pure.} = enum
 
 
 
-proc tile(x, y: int): sdl2.Rect =
+func tile(x, y: int): sdl2.Rect =
     newSdlSquare(x * TILE_SIZE, y * TILE_SIZE, TILE_SIZE)
 
 

@@ -16,7 +16,7 @@ type LRUCache*[K, V] = object
     freeProc: proc(key: K, value: V)
 
 
-proc newNode[K, V](value: V, prev, next: NodePtr[K, V]): NodePtr[K, V] =
+func newNode[K, V](value: V, prev, next: NodePtr[K, V]): NodePtr[K, V] =
     # result = cast[NodePtr[K, V]](alloc(sizeof(Node[K, V])))
     new result
     result.value = value
@@ -24,12 +24,12 @@ proc newNode[K, V](value: V, prev, next: NodePtr[K, V]): NodePtr[K, V] =
     result.next = next
 
 
-proc newLRUCache*[K, V](capacity: int, nilValue: V,
+func newLRUCache*[K, V](capacity: int, nilValue: V,
                         freeProc: proc(key: K, value: V)): LRUCache[K, V] =
     result.capacity = capacity
     result.table = initTable[K, NodePtr[K, V]]()
     result.nilValue = nilValue
-    result.freeProc = freeProc
+    result.freefunc = freeProc
     for _ in 0..<capacity:
         if result.head.isNil:
             result.head = newNode[K, V](nilValue, nil, nil)
@@ -40,7 +40,7 @@ proc newLRUCache*[K, V](capacity: int, nilValue: V,
             oldTail.next = result.tail.next
 
 
-proc removeFromChain[K, V](self: var LRUCache[K, V], node: NodePtr[K, V]) =
+func removeFromChain[K, V](self: var LRUCache[K, V], node: NodePtr[K, V]) =
     if node == self.head:
         self.head = node.next
     else:
@@ -52,7 +52,7 @@ proc removeFromChain[K, V](self: var LRUCache[K, V], node: NodePtr[K, V]) =
         node.next.prev = node.prev
 
 
-proc insertHead[K, V](self: var LRUCache[K, V], newHead: NodePtr[K, V]) =
+func insertHead[K, V](self: var LRUCache[K, V], newHead: NodePtr[K, V]) =
     let oldHead = self.head
     oldHead.prev = newHead
 
@@ -62,7 +62,7 @@ proc insertHead[K, V](self: var LRUCache[K, V], newHead: NodePtr[K, V]) =
 
 
 
-proc put*[K, V](self: var LRUCache[K, V], key: K, value: V) =
+func put*[K, V](self: var LRUCache[K, V], key: K, value: V) =
     if key in self.table:
         let node = self.table[key]
         self.removeFromChain(node)
@@ -87,7 +87,7 @@ proc put*[K, V](self: var LRUCache[K, V], key: K, value: V) =
         self.table[key] = recycledNode
 
 
-proc get*[K, V](self: var LRUCache[K, V], key: K): V =
+func get*[K, V](self: var LRUCache[K, V], key: K): V =
     if not (key in self.table):
         return self.nilValue
 

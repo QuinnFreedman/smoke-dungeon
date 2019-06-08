@@ -19,13 +19,13 @@ import
     combat_utils
 
 
-proc getCharacterAtTile(combat: CombatScreen, v: Vec2): Character =
+func getCharacterAtTile(combat: CombatScreen, v: Vec2): Character =
     for c in combat.turnOrder:
         if c.currentTile == v:
             return c
     return nil
 
-proc getTarget(combat: CombatScreen, v: Vec2): AbilityTarget =
+func getTarget(combat: CombatScreen, v: Vec2): AbilityTarget =
     let abilityType: AbilityType = combat.activeAbility.abilityType
     if abilityType == AbilityType.aoe:
         abilityTargetTile(v)
@@ -41,7 +41,7 @@ proc validateTarget*(caster: Character,
     echo "  target:" & $target
     echo "  allies:" & $allies
     echo "  ability:" & $ability
-    if ability.isNone: return (true, nil)
+    if ability.isNone: return (true, "")
     let weapon = caster.getWeaponInfo
     if not caster.canCast(ability):
         return (false, "Can't cast that")
@@ -67,7 +67,7 @@ proc validateTarget*(caster: Character,
             not ability.isValidTarget(caster, target, weapon):
         return (false, "Invalid target")
 
-    return (true, nil)
+    return (true, "")
 
 
 proc validateTarget(combatInfo: CombatScreen,
@@ -76,7 +76,7 @@ proc validateTarget(combatInfo: CombatScreen,
     validateTarget(caster, target, combatInfo.playerParty,
                    ability)
 
-proc numAlive(combat: CombatScreen): (int, int) =
+func numAlive(combat: CombatScreen): (int, int) =
     var numAllies, numEnemies = 0
     for c in combat.turnOrder:
         if c.health > 0:
@@ -86,7 +86,7 @@ proc numAlive(combat: CombatScreen): (int, int) =
                 inc(numEnemies)
     return (numAllies, numEnemies)
 
-proc tickAuras(combat: var CombatScreen, caster: Character) =
+func tickAuras(combat: var CombatScreen, caster: Character) =
     # tick auras
     for p in combat.aoeAuras.indices:
         var aura = combat.aoeAuras[p]
@@ -256,9 +256,9 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 activeChar.update(level, dt)
 
     of CombatState.pickingAbility:
-        if not combat.message.isNil:
+        if combat.message != "":
             if backPressed or enterPressed:
-                combat.message = nil
+                combat.message = ""
         else:
             if backPressed:
                 activeChar.teleport(combat.movementStart,

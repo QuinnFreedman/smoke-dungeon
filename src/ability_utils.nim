@@ -10,20 +10,20 @@ import
     vector
 
 
-proc turnCost*(cost: float): int =
+func turnCost*(cost: float): int =
     int(round(cost * ABILITY_POINTS_PER_TURN))
 
 
-proc getRange*(self: Ability, weapon: WeaponInfo): float =
+func getRange*(self: Ability, weapon: WeaponInfo): float =
     if self.useWeaponRange:
         weapon.weaponRange
     else:
         self.abilityRange
 
-proc isNone*(self: Ability): bool =
+func isNone*(self: Ability): bool =
     self.name == "Rest"
 
-proc getPosition*(self: AbilityTarget): Vec2 =
+func getPosition*(self: AbilityTarget): Vec2 =
     match self:
         TargetCharacter(character: c):
             c.currentTile
@@ -36,7 +36,7 @@ proc canCast*(caster: Character, ability: Ability): bool =
     else:
         ability.isValidCaster(caster)
 
-proc isNone*(self: AoeAura): bool =
+func isNone*(self: AoeAura): bool =
     self.effect.isNil
 
 proc getBasicDamage*(weapon: WeaponInfo, modifier=1.0): (int, bool) =

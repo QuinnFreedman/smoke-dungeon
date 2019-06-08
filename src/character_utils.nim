@@ -20,15 +20,15 @@ import
 # Utils
 # -------------------------------------
 
-proc `$` *(self: Character): string =
+func `$` *(self: Character): string =
     if self.isNil: "nil"
     else: $self.sex & " " & self.race.name & " " & self.class.name
 
-proc isMoving*(self: Character): bool {.inline.} =
+func isMoving*(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
 
 
-proc teleport*(self: Character, pos: Vec2, facing: Direction,
+func teleport*(self: Character, pos: Vec2, facing: Direction,
                level: var Level) =
     level.dynamicEntities[self.nextTile] = nil
     level.dynamicEntities[pos] = self
@@ -51,7 +51,7 @@ proc move*(self: Character, dir: Direction, level: var Level) =
         level.dynamicEntities[self.currentTile] = nil
         level.dynamicEntities[self.nextTile] = self
 
-proc swap*(a, b: Character, level: var Level) =
+func swap*(a, b: Character, level: var Level) =
     a.nextTile = b.currentTile
     a.facing = a.currentTile.directionTo(b.currentTile)
 
@@ -65,15 +65,15 @@ proc moveToward*(self: Character, dest: Vec2, level: var Level) =
     self.move(self.currentTile.directionTo(dest), level)
 
 
-proc faceToward*(self: Character, target: Vec2) =
+func faceToward*(self: Character, target: Vec2) =
     self.facing = self.currentTile.directionTo(target)
 
 
-proc getWornItem*(self: Character, slot: ClothingSlot): (bool, Item) =
+func getWornItem*(self: Character, slot: ClothingSlot): (bool, Item) =
     case self.kind
     of CharacterType.humanoid:
         let item = self.clothes[slot]
-        result[0] = item.name != nil
+        result[0] = item.name != ""
         result[1] = item
     of CharacterType.animal:
         discard
@@ -90,7 +90,7 @@ iterator iterWornItems*(self: Character): Item =
 # Combat stats
 # -------------------------------------
 
-proc getWeaponInfo*(self: Character): WeaponInfo =
+func getWeaponInfo*(self: Character): WeaponInfo =
     if self.weapon.kind == ItemType.weapon:
         return self.weapon.weaponInfo
 
@@ -114,11 +114,11 @@ iterator iterAbilities*(self: Character): Ability =
     #     yield BURN
     # yield NONE_ABILITY
 
-proc numAbilites*(self: Character): int =
+func numAbilites*(self: Character): int =
     for _ in self.iterAbilities:
         result += 1
 
-proc getAbility*(self: Character, index: int): Ability =
+func getAbility*(self: Character, index: int): Ability =
     var i = 0
     for ability in self.iterAbilities:
         if i == index: return ability
@@ -139,7 +139,7 @@ proc damage*(self: Character, damage: int, damageType: DamageType) =
 # Update
 # -------------------------------------
 
-proc update*(self: Character, level: var Level, dt: float) =
+func update*(self: Character, level: var Level, dt: float) =
     if self.health <= 0: return
 
     if self.isMoving:
@@ -169,18 +169,18 @@ proc loopAI*(self: Character, others: seq[Character], level: var Level) {.inline
 # Rendering
 # -------------------------------------
 
-proc getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
+func getBaseSpriteSheet(race: Race, sex: Sex): TextureAlias =
     case sex
     of male:
         race.baseSpritesheetMale
     of female:
         race.baseSpritesheetFemale
 
-proc getStaticSrcRect*(self: Character): sdl2.Rect =
+func getStaticSrcRect*(self: Character): sdl2.Rect =
     newSdlSquare(0, 0, TILE_SIZE)
 
 
-proc animationTimer*(self: Character): float {.inline.} =
+func animationTimer*(self: Character): float {.inline.} =
     let distanceToMove = vecFloat(self.nextTile - self.currentTile)
     let distanceMoved = self.actualPos - vecFloat(self.currentTile)
 
@@ -192,7 +192,7 @@ proc animationTimer*(self: Character): float {.inline.} =
         0
 
 
-proc getSrcRect*(self: Character): sdl2.Rect =
+func getSrcRect*(self: Character): sdl2.Rect =
     let row =
         case self.facing
         of down: 0
@@ -209,7 +209,7 @@ proc getSrcRect*(self: Character): sdl2.Rect =
     newSdlSquare(frame * TILE_SIZE, row * TILE_SIZE, TILE_SIZE)
 
 
-proc getDestRect*(self: Character): sdl2.Rect =
+func getDestRect*(self: Character): sdl2.Rect =
     newSdlSquare(int(round(self.actualPos.x * TILE_SIZE)),
                  int(round(self.actualPos.y * TILE_SIZE)),
                  TILE_SIZE)

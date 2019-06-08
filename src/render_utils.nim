@@ -4,18 +4,18 @@ import
 
 import
     constants,
-    lru_cache,
+#     lru_cache,
     textures,
     utils,
     vector
 
 # patch for missing methods in SDL2
 {.push callConv: cdecl, dynlib: sdl2.LibName.}
-proc rendererSetClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
+func rendererSetClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   importc: "SDL_RenderSetClipRect".}
-proc rendererGetClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
+func rendererGetClipRect*(renderer: RendererPtr; rect: ptr Rect): cint {.
   importc: "SDL_RenderGetClipRect".}
-proc renderIsClipEnabled*(renderer: RendererPtr): cint {.
+func renderIsClipEnabled*(renderer: RendererPtr): cint {.
   importc: "SDL_RenderIsClipEnabled".}
 {.pop.}
 
@@ -62,7 +62,7 @@ proc drawImage*(texture: TextureAlias, pos: Vec2,
     let _ = sdl2.copy(renderer, texture.getTexture, nil, addr(drect))
 
 
-proc fillRect*(drect: Rect, color: Color,
+func fillRect*(drect: Rect, color: Color,
                renderer: RendererPtr, transform: Vec2) =
     var newRect = rect(
         drect.x + cint(transform.x),
@@ -77,7 +77,7 @@ proc fillRect*(drect: Rect, color: Color,
     renderer.setDrawColor(r, g, b, a)
 
 
-proc drawRect*(drect: Rect, color: Color,
+func drawRect*(drect: Rect, color: Color,
                renderer: RendererPtr, transform: Vec2) =
     var newRect = rect(
         drect.x + cint(transform.x),
@@ -96,24 +96,24 @@ type
     RenderInfo* = object
         renderer*: RendererPtr
         font*: FontPtr
-        textCache*: TextCache
+        # textCache*: TextCache
 
-    TextCache = ref LRUCache[string, CacheLine]
+    # TextCache = ref LRUCache[string, CacheLine]
 
     CacheLine = object
         texture: TexturePtr
         w, h: cint
 
 
-proc newTextCache*: TextCache =
-    new result
-    result[] = newLRUCache[string, CacheLine](10, CacheLine(),
-            proc(k: string, v: CacheLine) = v.texture.destroy())
+# func newTextCache*: TextCache =
+#     new result
+#     result[] = newLRUCache[string, CacheLine](10, CacheLine(),
+#             proc(k: string, v: CacheLine) = v.texture.destroy())
 
 
-proc renderText*(renderInfo: RenderInfo, text: string,
+func renderText*(renderInfo: RenderInfo, text: string,
                  pos: Vec2, color: Color) =
-    proc simpleRenderText(renderer: RendererPtr, font: FontPtr,
+    func simpleRenderText(renderer: RendererPtr, font: FontPtr,
                           text: string, color: Color): CacheLine {.nimcall.} =
         let surface = font.renderUtf8Solid(text.cstring, color)
         sdlFailIf surface.isNil: "Could not render text surface"
@@ -129,28 +129,31 @@ proc renderText*(renderInfo: RenderInfo, text: string,
         surface.freeSurface()
 
 
-    var tc = renderInfo.textCache
+    # var tc = renderInfo.textCache
 
-    let cachedTexture = tc[].get(text)
-    let texture =
-        if cachedTexture.texture.isNil:
-            let newTexture =
-                simpleRenderText(renderInfo.renderer,
-                                 renderInfo.font, text, color)
-            tc[].put(text, newTexture)
-            newTexture
-        else:
-            cachedTexture
+    # let cachedTexture = tc[].get(text)
+    # let texture =
+    #     if cachedTexture.texture.isNil:
+    #         let newTexture =
+    #             simpleRenderText(renderInfo.renderer,
+    #                              renderInfo.font, text, color)
+    #         tc[].put(text, newTexture)
+    #         newTexture
+    #     else:
+    #         cachedTexture
+
+    let texture = simpleRenderText(renderInfo.renderer,
+                                   renderInfo.font, text, color)
 
     var dest = rect(pos.x.cint, pos.y.cint, texture.w, texture.h)
     renderInfo.renderer.copy(texture.texture, nil, addr dest)
 
 
-proc getTextSize*(renderInfo: RenderInfo, text: string): Point =
-    let cachedTexture = renderInfo.textCache[].get(text)
+func getTextSize*(renderInfo: RenderInfo, text: string): Point =
+    # let cachedTexture = renderInfo.textCache[].get(text)
 
-    if not cachedTexture.texture.isNil:
-        return point(cachedTexture.w, cachedTexture.h)
+    # if not cachedTexture.texture.isNil:
+    #    return point(cachedTexture.w, cachedTexture.h)
 
     var w, h: cint
     sdlFailIf sizeText(renderInfo.font, text, addr w, addr h) < 0:

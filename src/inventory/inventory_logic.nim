@@ -12,7 +12,7 @@ import
     inventory_utils
 
 
-# proc getItemAtCursor(inv: Inventory, playerParty: seq[Character]): Item =
+# func getItemAtCursor(inv: Inventory, playerParty: seq[Character]): Item =
 #     alias activeChar: playerParty[inv.activeCharacter]
 #
 #     if inv.cursorInTopRow:
@@ -33,7 +33,7 @@ import
 #         playerParty[inv.curBackpack].backpack[inv.curX, inv.curY]
 
 
-# proc setItemAtCursor(inv: Inventory, playerParty: seq[Character], item: Item) =
+# func setItemAtCursor(inv: Inventory, playerParty: seq[Character], item: Item) =
 #     alias activeChar: playerParty[inv.activeCharacter]
 #
 #     if inv.cursorInTopRow:
@@ -54,10 +54,10 @@ import
 #         playerParty[inv.curBackpack].backpack[inv.curX, inv.curY] = item
 
 
-# proc getCurrentBackpack(inv: Inventory, playerParty: seq[Character]): Matrix[Item] =
+# func getCurrentBackpack(inv: Inventory, playerParty: seq[Character]): Matrix[Item] =
 #     playerParty[inv.curBackpack].backpack
 
-# proc updateInvCursor(inv: var Inventory,
+# func updateInvCursor(inv: var Inventory,
 #                      playerParty: seq[Character],
 #                      moveX, moveY: int, enter: bool) =
 #     if inv.cursorInSidePane:
@@ -105,7 +105,7 @@ import
 #                 inv.inMenu = true
 
 
-# proc updateMenu(inv: var Inventory, playerParty: seq[Character],
+# func updateMenu(inv: var Inventory, playerParty: seq[Character],
 #                 moveX, moveY: int, enter: bool) =
 #     # the character that is SELECTED/previewed
 #     alias activeChar: playerParty[inv.activeCharacter]
@@ -161,7 +161,7 @@ import
 #             discard #TODO allow inspect
 
 
-proc loopInventory*(inv: var Inventory, playerParty: seq[Character],
+func loopInventory*(inv: var Inventory, playerParty: seq[Character],
                     keyboard: Keyboard): ScreenChange =
     if keyboard.keyPressed(Input.tab):
         result = ScreenChange(changeTo: Screen.world)

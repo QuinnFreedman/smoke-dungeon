@@ -54,10 +54,9 @@ proc loop*(self: var Game, dt: float) =
         match screenChange:
             # TODO: put init functions in modules
             inventory(items: items):
-                if not items.isNil:
-                    for i in 0..<items.len:
-                        alias ground: self.inventory.ground
-                        ground[i div ground.width, i mod ground.width] = items[i]
+                for i in 0..<items.len:
+                    alias ground: self.inventory.ground
+                    ground[i div ground.width, i mod ground.width] = items[i]
             combat(playerParty: playerParty, enemyParty: enemyParty):
                 self.combat.playerParty = playerParty
                 self.combat.enemyParty = enemyParty
@@ -73,7 +72,7 @@ proc loop*(self: var Game, dt: float) =
     self.resetInputs()
 
 
-proc scaleToFit(rect, bounds: Point, intScale: bool = false): Rect =
+func scaleToFit(rect, bounds: Point, intScale: bool = false): Rect =
     var scale = min(bounds.x / rect.x, bounds.y / rect.y)
 
     if intScale:

@@ -2,7 +2,7 @@ import
     vector,
     matrix
 
-proc getOctant(octant: int): (Vec2, Vec2) =
+func getOctant(octant: int): (Vec2, Vec2) =
     case octant
     of 0: (vector.N,  vector.NE)
     of 1: (vector.NE, vector.E )

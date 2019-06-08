@@ -7,7 +7,7 @@ import
     ../render_utils,
     ../vector
 
-proc renderMenu(game: Game, position: Vec2) =
+func renderMenu(game: Game, position: Vec2) =
     let menu = game.mainMenu
     const lineSpacing = 12
     renderText(game.renderInfo, menu.active.name, position, WHITE)
@@ -22,7 +22,7 @@ proc renderMenu(game: Game, position: Vec2) =
         inc(i)
 
 
-proc renderMainMenu*(game: Game) =
+func renderMainMenu*(game: Game) =
     # let renderer = game.renderInfo.renderer
     # let oldTarget = renderer.getRenderTarget()
     # let menuTexture = createTexture(

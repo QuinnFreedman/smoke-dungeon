@@ -15,7 +15,7 @@ import
     ../vector,
     ../character_utils
 
-proc renderHorizontalBar(pos: Vec2, width: int, value: float, color: Color,
+func renderHorizontalBar(pos: Vec2, width: int, value: float, color: Color,
                          renderInfo: RenderInfo, transform: Vec2)=
 
     let length = (value * (TILE_SIZE.float - 4)).round.cint
@@ -48,8 +48,8 @@ proc renderCharacterVitals(character: Character,
 const MENU_LOCATION = v(50, 100)
 
 
-proc drawMessage(message: string, renderInfo: RenderInfo) =
-    if not message.isNil:
+func drawMessage(message: string, renderInfo: RenderInfo) =
+    if message != "":
         #TODO line wrapping
         renderText(renderInfo, message, MENU_LOCATION, WHITE)
 
@@ -120,18 +120,18 @@ proc renderCombatScreen*(gameState: GameState,
     # Render text
     case combat.state
     of CombatState.pickingMovement:
-        if combat.message.isNil:
+        if combat.message == "":
             drawMessage("Move where?", renderInfo)
         else:
             drawMessage(combat.message, renderInfo)
     of CombatState.pickingAbility:
-        if not combat.message.isNil:
-            drawMessage(combat.message, renderInfo)
-        else:
+        if combat.message == "":
             drawMenu("Do what?", activeChar.iterAbilities(), combat.menuCursor, renderInfo)
-    of CombatState.pickingTarget:
-        if not combat.message.isNil:
-            drawMessage(combat.message, renderInfo)
         else:
+            drawMessage(combat.message, renderInfo)
+    of CombatState.pickingTarget:
+        if combat.message == "":
             drawMessage("Pick target", renderInfo)
+        else:
+            drawMessage(combat.message, renderInfo)
     else: discard

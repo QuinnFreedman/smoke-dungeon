@@ -30,7 +30,7 @@ const MENU_NO_EQUIP* = @[
         MenuAction.inspect, MenuAction.quit
 ]
 
-proc getMenuItems*(subject: Item, itemIsEquipped: bool, activeChar: Character):
+func getMenuItems*(subject: Item, itemIsEquipped: bool, activeChar: Character):
         seq[MenuAction] =
     if activeChar.kind == CharacterType.animal:
         MENU_NO_EQUIP

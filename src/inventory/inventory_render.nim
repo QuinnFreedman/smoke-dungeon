@@ -28,7 +28,7 @@ proc renderCharacterCroppedPreview(character: Character, pos: Vec2,
         drawImage(item.getTexture(character.sex), srcRect, destRect,
                   renderer, transform)
 
-proc getItemSlotPosition(player, x, y: int): Rect =
+func getItemSlotPosition(player, x, y: int): Rect =
     let newX = 60 + x * 9 + player * 41
     let newY = 62 + y * 9
     newSdlSquare(newX, newY, ITEM_ICON_SIZE)
@@ -61,7 +61,7 @@ proc renderCursor(inv: Inventory,
         let weirdOffset = v(3, -1) #TODO temporary offset for current inv screen
         drawImage(TextureAlias.inventoryCursorBig,
                   previewRects[inv.curBackpack] + weirdOffset,
-                  renderer, transform)
+                 renderer, transform)
     else:
         var drect =
             if not inv.cursorInSidePane:
@@ -74,7 +74,7 @@ proc renderCursor(inv: Inventory,
         drawImage(TextureAlias.inventoryCursor, srect, drect, renderer, transform)
 
 
-proc renderMenu(inv: Inventory, activeChar: Character,
+func renderMenu(inv: Inventory, activeChar: Character,
                 renderer: RenderInfo, transform: Vec2) =
 
     let menuItems = getMenuItems(inv.menuSubject,
@@ -89,7 +89,7 @@ proc renderMenu(inv: Inventory, activeChar: Character,
             renderer.renderText("*", pos + v(-8, 0), color(0,0,0,255))
         renderer.renderText($option, pos, color(0,0,0,255))
 
-proc renderInventory*(inventory: var Inventory,
+func renderInventory*(inventory: var Inventory,
                       playerParty: seq[Character],
                       renderInfo: RenderInfo) =
     renderInfo.renderText("Inventory screen doesn't work anymore",

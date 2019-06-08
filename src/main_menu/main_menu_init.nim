@@ -3,41 +3,41 @@ import sdl2
 import
     ../types
 
-proc getSDLFullscreenMode(ft: WindowMode): uint32 =
+func getSDLFullscreenMode(ft: WindowMode): uint32 =
     case ft
     of WindowMode.windowed: 0.uint32
     of WindowMode.fullscreenWindowed: SDL_WINDOW_FULLSCREEN_DESKTOP.uint32
     of WindowMode.fullscreen: SDL_WINDOW_FULLSCREEN.uint32
 
-proc menuNode(name: string, children: varargs[Menu]): Menu =
+func menuNode(name: string, children: varargs[Menu]): Menu =
     result = Menu(name: name, children: @children)
     for child in result.children:
         child.parent = result
 
-proc menuLeaf(name: string, effect: proc(game: Game)): Menu =
+func menuLeaf(name: string, effect: proc(game: Game)): Menu =
     Menu(
         name: name,
         effect: proc(self: var Menu, game: Game) = effect(game)
     )
 
-proc menuLeaf(name: string, effect:
+func menuLeaf(name: string, effect:
               proc(self: var Menu, game: Game)): Menu =
     Menu(name: name, effect: effect)
 
-proc cycleFullscreenMode(ft: WindowMode): WindowMode =
+func cycleFullscreenMode(ft: WindowMode): WindowMode =
     case ft
     of WindowMode.windowed: WindowMode.fullscreenWindowed
     of WindowMode.fullscreenWindowed: WindowMode.fullscreen
     of WindowMode.fullscreen: WindowMode.windowed
 
-proc initMenu*(prefs: Preferences): MainMenuScreen =
-    proc scaleModeText(prefs: Preferences): string =
+func initMenu*(prefs: Preferences): MainMenuScreen =
+    func scaleModeText(prefs: Preferences): string =
         if prefs.scaleModePixelPerfect:
             "Scale Mode:  Pixel Perfect"
         else:
             "Scale Mode:  Stretch"
 
-    proc fullscreenText(prefs: Preferences): string =
+    func fullscreenText(prefs: Preferences): string =
         "Fullscreen: " & $prefs.fullscreen
 
     result.root = menuNode("Menu",

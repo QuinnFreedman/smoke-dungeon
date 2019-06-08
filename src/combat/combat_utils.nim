@@ -7,7 +7,7 @@ import
     ../utils,
     ../vector
 
-proc getCombatCenter*(playerParty, enemyParty: seq[Character]): Vec2 =
+func getCombatCenter*(playerParty, enemyParty: seq[Character]): Vec2 =
     var x, y: float
     var count: int
     for character in flatten(playerParty, enemyParty):
@@ -17,14 +17,14 @@ proc getCombatCenter*(playerParty, enemyParty: seq[Character]): Vec2 =
 
     return vecFloat(x / count.float, y / count.float).round
 
-proc getCombatWindow(center: Vec2): Rect =
+func getCombatWindow(center: Vec2): Rect =
     newSdlRect(center.x - COMBAT_SCREEN_RADIUS_X,
                center.y - COMBAT_SCREEN_RADIUS_Y,
                2 * COMBAT_SCREEN_RADIUS_X + 1,
                2 * COMBAT_SCREEN_RADIUS_Y + 1)
 
-proc getCombatWindow*(combat: CombatScreen): Rect =
+func getCombatWindow*(combat: CombatScreen): Rect =
     getCombatWindow(combat.center)
 
-proc getCombatWindow*(playerParty, enemyParty: seq[Character]): Rect =
+func getCombatWindow*(playerParty, enemyParty: seq[Character]): Rect =
     getCombatWindow(getCombatCenter(playerParty, enemyParty))

@@ -10,7 +10,7 @@ import
     ability_definitions,
     weapon_definitions
 
-proc getClosest(self: Character, others: seq[Character]): Character =
+func getClosest(self: Character, others: seq[Character]): Character =
     var bestDistance: float = Inf
     for c in others:
         if c == self: continue

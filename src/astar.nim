@@ -8,7 +8,7 @@ import
     matrix,
     direction
 
-proc heuristic(a, b: Vec2): int =
+func heuristic(a, b: Vec2): int =
     int(abs(a.x - b.x) + abs(a.y - b.y)) * 10
 
 
@@ -16,7 +16,7 @@ proc aStarSearch*(collision: proc (v: Vec2): bool, start, goal: Vec2, includeGoa
                      rng: ptr Rand): seq[Vec2] =
     var myRng =
         if rng.isNil:
-            initRand(0)
+            initRand(1)
         else:
             rng[]
 

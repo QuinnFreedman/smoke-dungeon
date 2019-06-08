@@ -19,7 +19,7 @@ proc loopMenu*(game: Game): ScreenChange =
         alias selected: menu.active.children[menu.cursor]
         if not selected.effect.isNil:
             selected.effect(selected, game)
-        if not (selected.children.isNil or selected.children.len == 0):
+        if selected.children.len != 0:
             menu.active = selected
             menu.cursor = 0
 

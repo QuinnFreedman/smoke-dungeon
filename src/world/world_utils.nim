@@ -5,13 +5,13 @@ import
   ../vector,
   ../utils
 
-proc getRenderWindow(playerPos: Vec2): Rect =
+func getRenderWindow(playerPos: Vec2): Rect =
     let radiusX = SCREEN_WIDTH_TILES div 2
     let radiusY = SCREEN_HEIGHT_TILES div 2
     newSdlRect(playerPos.x - radiusX, playerPos.y - radiusY,
                2 * radiusX + 1, 2 * radiusY + 1)
 
-proc getRenderWindow*(currentPos: Vec2, nextPos: Vec2): Rect =
+func getRenderWindow*(currentPos: Vec2, nextPos: Vec2): Rect =
     let rect1 = getRenderWindow(currentPos)
     let rect2 = getRenderWindow(nextPos)
     let upperLeft = v(

@@ -7,18 +7,18 @@ type
         inputs: array[Input, bool]
         inputsSinceLastFrame: array[Input, bool]
 
-proc handleInput*(self: var Keyboard, input: Input, keyDown: bool) {.inline.} =
+func handleInput*(self: var Keyboard, input: Input, keyDown: bool) {.inline.} =
     if keyDown and not self.inputs[input]:
         self.inputsSinceLastFrame[input] = true
     self.inputs[input] = keyDown
 
 
-proc keyDown*(self: Keyboard, key: Input): bool {.inline.} =
+func keyDown*(self: Keyboard, key: Input): bool {.inline.} =
     self.inputs[key]
 
 
-proc keyPressed*(self: Keyboard, key: Input): bool {.inline.} =
+func keyPressed*(self: Keyboard, key: Input): bool {.inline.} =
     self.inputsSinceLastFrame[key]
 
-proc resetInputs*(self: var Keyboard) {.inline.} =
+func resetInputs*(self: var Keyboard) {.inline.} =
     self.inputsSinceLastFrame.zero()

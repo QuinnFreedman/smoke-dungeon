@@ -21,87 +21,87 @@ const DOWN* = S
 const LEFT* = W
 const RIGHT* = E
 
-proc directionVector*(dir: Direction): Vec2 =
+func directionVector*(dir: Direction): Vec2 =
     case dir
     of up: UP
     of down: DOWN
     of left: LEFT
     of right: RIGHT
 
-proc v*(x, y: int): Vec2 = (x: x, y : y)
+func v*(x, y: int): Vec2 = (x: x, y : y)
 
-proc `+` *(self, other: Vec2): Vec2 =
+func `+` *(self, other: Vec2): Vec2 =
     result.x = self.x + other.x
     result.y = self.y + other.y
 
-proc `+=` *(self: var Vec2, other: Vec2) =
+func `+=` *(self: var Vec2, other: Vec2) =
     self.x += other.x
     self.y += other.y
 
-proc `-` *(self, other: Vec2): Vec2 =
+func `-` *(self, other: Vec2): Vec2 =
     result.x = self.x - other.x
     result.y = self.y - other.y
 
-proc `-=` *(self: var Vec2, other: Vec2) =
+func `-=` *(self: var Vec2, other: Vec2) =
     self.x -= other.x
     self.y -= other.y
 
-proc `==` *(self, other: Vec2): bool =
+func `==` *(self, other: Vec2): bool =
     self.x == other.x and self.y == other.y
 
 type Vec2f* = tuple
     x: float
     y: float
 
-proc scale*(self: Vec2, scale: int): Vec2 =
+func scale*(self: Vec2, scale: int): Vec2 =
     result.x = self.x * scale
     result.y = self.y * scale
 
-proc scale*(self: Vec2, scale: float): Vec2f =
+func scale*(self: Vec2, scale: float): Vec2f =
     result.x = float(self.x) * scale
     result.y = float(self.y) * scale
 
-proc round*(self: Vec2f): Vec2 =
+func round*(self: Vec2f): Vec2 =
     result.x = int(round(self.x))
     result.y = int(round(self.y))
 
-proc `+` *(self, other: Vec2f): Vec2f =
+func `+` *(self, other: Vec2f): Vec2f =
     result.x = self.x + other.x
     result.y = self.y + other.y
 
-proc `+=` *(self: var Vec2f, other: Vec2f) =
+func `+=` *(self: var Vec2f, other: Vec2f) =
     self.x += other.x
     self.y += other.y
 
-proc `-` *(self, other: Vec2f): Vec2f =
+func `-` *(self, other: Vec2f): Vec2f =
     result.x = self.x - other.x
     result.y = self.y - other.y
 
-proc `-=` *(self: var Vec2f, other: Vec2f) =
+func `-=` *(self: var Vec2f, other: Vec2f) =
     self.x -= other.x
     self.y -= other.y
 
-proc scale*(self: Vec2f, scalar: float): Vec2f =
+func scale*(self: Vec2f, scalar: float): Vec2f =
     result.x = self.x * scalar
     result.y = self.y * scalar
 
-proc `==` *(self, other: Vec2f): bool =
+func `==` *(self, other: Vec2f): bool =
     self.x == other.x and self.y == other.y
 
-proc vecFloat*(x, y: float): Vec2f =
+func vecFloat*(x, y: float): Vec2f =
     (x: x, y: y)
 
-proc vf*(x, y: float): Vec2f = (x: x, y : y)
+func vf*(x, y: float): Vec2f = (x: x, y : y)
 
-proc vecFloat*(v: Vec2): Vec2f =
+func vecFloat*(v: Vec2): Vec2f =
     (x: float(v.x), y: float(v.y))
 
-proc distance*(a, b: Vec2): float =
+func distance*(a, b: Vec2): float =
     let dx = float(a.x - b.x)
     let dy = float(a.y - b.y)
     sqrt(dx * dx + dy * dy)
 
-proc distance*(a, b: Vec2f): float =
+func distance*(a, b: Vec2f): float =
     let dx = a.x - b.x
     let dy = a.y - b.y
     sqrt(dx * dx + dy * dy)

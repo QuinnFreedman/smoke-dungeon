@@ -2,7 +2,7 @@ import strutils
 
 import vector
 
-proc index[T](p: ptr T, i: int): ptr T =
+func index[T](p: ptr T, i: int): ptr T =
     cast[ptr T](cast[int](p) + (i * sizeof(T)))
 
 type Matrix*[T] = object
@@ -11,9 +11,9 @@ type Matrix*[T] = object
     offset: Vec2
     data: ptr T
 
-proc width*(self: Matrix): int {.inline.} =
+func width*(self: Matrix): int {.inline.} =
     self.width
-proc height*(self: Matrix): int {.inline.} =
+func height*(self: Matrix): int {.inline.} =
     self.height
 
 proc newMatrix*[T](width, height: int): Matrix[T] =
@@ -38,11 +38,11 @@ proc recycle*[T](self: var Matrix[T], width, height: int, offset: Vec2) =
     self.height = height
     self.offset = offset
 
-proc setAll*[T](self: var Matrix[T], value: T) =
+func setAll*[T](self: var Matrix[T], value: T) =
     for i in 0..<(self.width * self.height):
         self.data.index(i)[] = value
 
-proc get*[T](self: Matrix[T], x, y: int): T =
+func get*[T](self: Matrix[T], x, y: int): T =
     let x2 = x - self.offset.x
     let y2 = y - self.offset.y
     if x2 < 0 or x2 >= self.width:
@@ -53,7 +53,7 @@ proc get*[T](self: Matrix[T], x, y: int): T =
             "y index: $1 out of bounds for matrix: $2".format(y, self))
     return self.data.index(y2 * self.width + x2)[]
 
-proc set*[T](self: var Matrix[T], x, y: int, value: T) =
+func set*[T](self: var Matrix[T], x, y: int, value: T) =
     let x2 = x - self.offset.x
     let y2 = y - self.offset.y
     if x2 < 0 or x2 >= self.width:
@@ -64,31 +64,31 @@ proc set*[T](self: var Matrix[T], x, y: int, value: T) =
             "y index: $1 out of bounds for matrix: $2".format(y, self))
     self.data.index(y2 * self.width + x2)[] = value
 
-proc `[]` *[T](self: Matrix[T], x, y: int): T {.inline.} =
+func `[]` *[T](self: Matrix[T], x, y: int): T {.inline.} =
     self.get(x, y)
 
-proc `[]` *[T](self: Matrix[T], pos: Vec2): T {.inline.} =
+func `[]` *[T](self: Matrix[T], pos: Vec2): T {.inline.} =
     self.get(pos.x, pos.y)
 
-proc `[]=` *[T](self: var Matrix[T], x, y: int, value: T) {.inline.} =
+func `[]=` *[T](self: var Matrix[T], x, y: int, value: T) {.inline.} =
     self.set(x, y, value)
 
-proc `[]=` *[T](self: var Matrix[T], pos: Vec2, value: T) {.inline.} =
+func `[]=` *[T](self: var Matrix[T], pos: Vec2, value: T) {.inline.} =
     self.set(pos.x, pos.y, value)
 
-proc contains*[T](self: Matrix[T], vec: Vec2): bool =
+func contains*[T](self: Matrix[T], vec: Vec2): bool =
     let x = vec.x - self.offset.x
     let y = vec.y - self.offset.y
     x >= 0 and x < self.width and y >= 0 and y < self.height
 
-proc inc*[T](self: var Matrix[T], v: Vec2) =
+func inc*[T](self: var Matrix[T], v: Vec2) =
     self[v] = self[v] + 1
 
-proc dec*[T](self: var Matrix[T], v: Vec2) =
+func dec*[T](self: var Matrix[T], v: Vec2) =
     self[v] = self[v] - 1
 
 
-proc `$` *[T](self: Matrix[T]): string =
+func `$` *[T](self: Matrix[T]): string =
     "Matrix( width:$1, height:$2, offset:$3 )".format(
         self.width, self.height, self.offset)
 
@@ -101,7 +101,7 @@ iterator indices*[T](self: Matrix[T]): Vec2 =
         let y = i div width + self.offset.y
         yield (x, y)
 #
-# proc unsafeGetAddr*[T](self: Matrix[T], x, y: int): ptr T =
+# func unsafeGetAddr*[T](self: Matrix[T], x, y: int): ptr T =
 #     let x2 = x - self.offset.x
 #     let y2 = y - self.offset.y
 #     if x2 < 0 or x2 >= self.width:

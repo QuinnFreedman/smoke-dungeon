@@ -3,7 +3,7 @@ import
     textures,
     ai
 
-proc makeAi(): AI =
+func makeAi(): AI =
     #TODO wierd hack... tuple literal gives type error
     result.worldMovement = AI_RANDOM
     result.combatMovement = AI_COMBAT_MOVE_NEAREST_ENEMY

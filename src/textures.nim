@@ -37,6 +37,7 @@ type TextureAlias* {.pure.} = enum
     mapMarker = IMAGES & "map_marker.png"
     bloodStain = IMAGES & "blood_splatter.png"
     fire = IMAGES & "fire.png"
+    footprint = IMAGES & "footprint.png"
 
     # Spider
     spider = SPRITESHEETS & "spider.png"

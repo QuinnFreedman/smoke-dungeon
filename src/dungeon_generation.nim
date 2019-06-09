@@ -4,6 +4,7 @@ import
     math
 
 import
+    astar,
     direction,
     matrix,
     textures,
@@ -54,6 +55,7 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
     result.walls = newMatrix[bool](width, height)
     result.textures = newMatrix[sdl2.Rect](width, height)
     result.textures.setAll(BLACK)
+    result.decals = newMatrix[TextureAlias](width, height)
     result.seen = newMatrix[bool](width, height)
     result.dynamicEntities = newMatrix[Character](width, height)
     result.collision = getCollisionFunc(result)
@@ -62,7 +64,7 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
     var particle = v(0, height div 2)
     result.entrance = particle
 
-    doUntil particle.x == result.walls.width - 1:
+    doUntil particle.x == result.walls.width - 2:
         result.walls[particle] = false
         result.textures[particle] = GRASS_LONG3
         for x in -1..1:
@@ -81,5 +83,16 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
         particle = next
 
     result.exit = particle
+
+    let level = result
+    let collide = func (v: Vec2): bool = not level.walls.contains(v) or level.walls[v]
+    let shortestPath = aStarSearch(
+            collide,
+            result.entrance, result.exit, false, addr(rng))
+
+    for p in shortestPath:
+        result.decals[p] = TextureAlias.footprint
+    
+    result.decals[result.entrance] = TextureAlias.footprint
 
     if false: debugDrawDungeon(result)

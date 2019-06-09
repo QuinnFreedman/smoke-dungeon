@@ -48,6 +48,7 @@ type
     Level* = object
         walls*: Matrix[bool]
         textures*: Matrix[sdl2.Rect]
+        decals*: Matrix[TextureAlias] # TODO these should be tiles also
         shadowMask1*: Matrix[bool]
         shadowMask2*: Matrix[bool]
         seen*: Matrix[bool]

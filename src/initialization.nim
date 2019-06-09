@@ -53,7 +53,7 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
         sex=Sex.male,
         class=CLASS_WIZARD)
 
-    playerCharacter.clothes[ClothingSlot. head] = MAGE_HOOD
+    playerCharacter.clothes[ClothingSlot.head] = MAGE_HOOD
     playerCharacter.clothes[ClothingSlot.body] = KNIGHT_CHESTPLATE
     playerCharacter.clothes[ClothingSlot.feet] = KNIGHT_GRIEVES
     # playerCharacter.backpack[0, 0] = KNIGHT_HELMET

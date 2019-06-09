@@ -19,3 +19,10 @@ proc renderMap*(map: Level, window: Rect,
             let tilePos = pos.scale(TILE_SIZE)
             drawTile(TextureAlias.mapTiles,
                      srect, tilePos, renderer, transform)
+            
+            if map.decals[pos] != TextureAlias.none:
+                # drawTile(TextureAlias.mapTiles,
+                #         newSdlSquare(7 * TILE_SIZE, 0 * TILE_SIZE, TILE_SIZE),
+                #          tilePos, renderer, transform)
+                drawImage(map.decals[pos], pos.scale(TILE_SIZE),
+                        renderer, transform)

@@ -13,7 +13,7 @@ func heuristic(a, b: Vec2): int =
 
 
 proc aStarSearch*(collision: proc (v: Vec2): bool, start, goal: Vec2, includeGoal: bool,
-                     rng: ptr Rand): seq[Vec2] =
+                  rng: ptr Rand): seq[Vec2] =
     var myRng =
         if rng.isNil:
             initRand(1)

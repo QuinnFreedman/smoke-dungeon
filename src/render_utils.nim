@@ -35,9 +35,9 @@ proc drawTile*(textureAlias: TextureAlias, srcRect: Rect, pos: Vec2,
     let texture = textureAlias.getTexture()
     var drect = newSdlSquare(
         pos.x + transform.x, pos.y + transform.y, TILE_SIZE)
-
     var srect = srcRect
-    let _ = sdl2.copy(renderer, texture, addr srect, addr drect)
+
+    discard sdl2.copy(renderer, texture, addr srect, addr drect)
 
 proc drawImage*(texture: TextureAlias, srcRect: var Rect, destRect: var Rect,
                 renderer: RendererPtr, transform: Vec2) {.inline.} =
@@ -47,7 +47,7 @@ proc drawImage*(texture: TextureAlias, srcRect: var Rect, destRect: var Rect,
         destRect.w,
         destRect.h
     )
-    let _ = sdl2.copy(renderer, texture.getTexture, addr srcRect, addr drect)
+    discard sdl2.copy(renderer, texture.getTexture, addr srcRect, addr drect)
 
 
 proc drawImage*(texture: TextureAlias, pos: Vec2,

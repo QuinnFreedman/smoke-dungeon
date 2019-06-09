@@ -299,35 +299,41 @@ proc updateCombatScreen*(combat: var CombatScreen,
         #TODO wait until animation is completed
         let weapon = activeChar.getWeaponInfo
         let isMagical = combat.activeAbility.isMagical
-        #TODO make this a match not case
-        case combat.activeTarget.kind:
-        of TargetCharacter:
-            echo "combat.activeTarget.kind == TargetCharacter"
-            let target = combat.activeTarget.character
-            echo "  activeTarget.target == " & $target
-            echo "  activeChar == " & $activeChar
-            echo "  weapon == " & $activeChar.getWeaponInfo
-            combat.activeAbility.applyEffect(
-                        activeChar, target,
-                        activeChar.getWeaponInfo)
-            let afterEffect =
-                if isMagical: weapon.magicAfterEffect
-                else: weapon.kineticAfterEffect
-            if not afterEffect.isNil:
-                afterEffect(activeChar, target, level)
+        match combat.activeTarget:
+            TargetCharacter(character: target):
+                echo "combat.activeTarget.kind == TargetCharacter"
+                echo "  activeTarget.target == " & $target
+                echo "  activeChar == " & $activeChar
+                echo "  weapon == " & $activeChar.getWeaponInfo
+                combat.activeAbility.applyEffect(
+                            activeChar, target,
+                            activeChar.getWeaponInfo)
+                let afterEffect =
+                    if isMagical: weapon.magicAfterEffect
+                    else: weapon.kineticAfterEffect
+                if not afterEffect.isNil:
+                    afterEffect(activeChar, target, level)
 
-        of TargetTile:
-            let target = combat.activeTarget.tile
-            for v in combat.activeAbility.aoePattern:
-                let tile = target + v
-                if combat.aoeAuras.contains(tile):
-                    combat.activeAbility.applyAoeEffect(
-                            activeChar, tile, weapon, combat)
-            let afterEffect =
-                if isMagical: weapon.magicAoeAfterEffect
-                else: weapon.kineticAoeAfterEffect
-            if not afterEffect.isNil:
-                afterEffect(activeChar, target, combat.activeAbility.aoePattern, level)
+            TargetTile(tile: target):
+                let ability = combat.activeAbility
+                case ability.abilityType
+                of aoe:
+                    for v in ability.aoePattern:
+                        let tile = target + v
+                        if combat.aoeAuras.contains(tile):
+                            ability.applyAoeEffect(
+                                    activeChar, tile, weapon, combat)
+                    let afterEffect =
+                        if isMagical: weapon.magicAoeAfterEffect
+                        else: weapon.kineticAoeAfterEffect
+                    if not afterEffect.isNil:
+                        afterEffect(activeChar, target,
+                                    ability.aoePattern, level)
+                else:
+                    raise ObjectConversionError.newException(
+                        "The target of an ability is a tile but " &
+                        "it's not an AOE ability")
+
 
         activeChar.faceToward(combat.activeTarget.getPosition)
         combat.turnPointsRemaining -= combat.activeAbility.turnCost

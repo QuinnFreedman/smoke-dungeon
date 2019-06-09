@@ -1,5 +1,6 @@
 import
     math,
+    patty,
     sdl2,
     random
 
@@ -91,8 +92,13 @@ iterator iterWornItems*(self: Character): Item =
 # -------------------------------------
 
 func getWeaponInfo*(self: Character): WeaponInfo =
-    if self.weapon.kind == ItemType.weapon:
+    case self.weapon.kind
+    of ItemType.weapon:
         return self.weapon.weaponInfo
+    else:
+        #TODO this will change when weapon implementation changes
+        discard 
+
 
 proc get*(self: Character, stat: Stat): int =
     result = self.class.stats[stat] + self.statMods[stat]

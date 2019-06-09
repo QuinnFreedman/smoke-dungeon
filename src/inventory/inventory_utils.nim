@@ -30,17 +30,22 @@ const MENU_NO_EQUIP* = @[
         MenuAction.inspect, MenuAction.quit
 ]
 
+func isSingleHandedWeapon(item: Item): bool =
+    case item.kind
+    of ItemType.weapon:
+        item.weaponInfo.handedness == Handed.single
+    else:
+        false
+
+
 func getMenuItems*(subject: Item, itemIsEquipped: bool, activeChar: Character):
         seq[MenuAction] =
     if activeChar.kind == CharacterType.animal:
         MENU_NO_EQUIP
     else:
-        let isHandedWeapon = subject.kind == ItemType.weapon and
-            subject.weaponInfo.handedness == Handed.single
-
         if itemIsEquipped:
             MENU_EQUIPPED_ITEM
-        elif isHandedWeapon:
+        elif isSingleHandedWeapon(subject):
             MENU_HANDED_WEAPON
         else:
             MENU_GENERIC_ITEM

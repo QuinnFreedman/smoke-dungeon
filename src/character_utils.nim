@@ -105,8 +105,8 @@ proc get*(self: Character, stat: Stat): int =
     if not self.getWeaponInfo.getStat.isNil:
         result = self.getWeaponInfo.getStat(stat, result)
     for aura in self.auras:
-        if not aura.getStat.isNil:
-            result = aura.getStat(stat, result)
+        if not aura.effect.getStat.isNil:
+            result = aura.effect.getStat(stat, result)
 
 iterator iterAbilities*(self: Character): Ability =
     for ability in self.unlockedAbilities:

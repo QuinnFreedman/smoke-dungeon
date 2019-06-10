@@ -1,8 +1,9 @@
 import
-    types,
-    textures,
-    utils,
     character_utils,
+    combat/combat_logic,
+    textures,
+    types,
+    utils,
     vector
 
 
@@ -22,7 +23,19 @@ let IRON_SHORTSWORD* = Item(
 let BLEED* = Aura(
     turns: 3,
     icon: TextureAlias.none,
-    effect: proc(character: Character) = character.health -= 1
+    effect: Effect(
+        onTurnStart: proc(character: Character, level: var Level, combat: var CombatScreen) = 
+            character.health -= 1
+    )
+)
+
+let STUN* = Aura(
+    turns: 1,
+    icon: TextureAlias.none,
+    effect: Effect(
+        onTurnStart: proc(character: Character, level: var Level, combat: var CombatScreen) = 
+            discard goToNextTurn(combat, level)
+    )
 )
 
 let KNOCKBACK_SWORD* = Item(

@@ -16,3 +16,5 @@ func getTexture*(self: Item, sex: Sex): TextureAlias =
             else: self.clothingInfo.textureFemale
         of ItemType.weapon:
             TextureAlias.none
+        of ItemType.modifier:
+            TextureAlias.none

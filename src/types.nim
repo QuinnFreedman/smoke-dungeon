@@ -102,7 +102,7 @@ type
     #          Items
     # **************************
 
-    ItemType* {.pure.} = enum clothing, weapon
+    ItemType* {.pure.} = enum clothing, weapon, modifier
 
     Item* = object
         name*: string
@@ -110,6 +110,7 @@ type
         case kind*: ItemType
         of ItemType.clothing: clothingInfo*: ClothingInfo
         of ItemType.weapon: weaponInfo*: WeaponInfo
+        of ItemType.modifier: modInfo*: Effect
 
     WeaponInfo* = object
         baseDamage*: int
@@ -137,6 +138,11 @@ type
     ClothingSlot* {.pure.} = enum
         head, body, feet
 
+    Effect* = object
+        getStat*: proc(stat: Stat, currentValue: int): int
+        onTurnStart*: proc(self: Character, level: var Level, combat: var CombatScreen)
+        afterAttack*: proc(self, target: Character, level: var Level)
+        afterAoeAttack*: proc(self: Character, target: Vec2, level: var Level)
 
     Stat* {.pure.} = enum
         maxHp,
@@ -256,8 +262,7 @@ type
     Aura* = object
         turns*: int
         icon*: TextureAlias
-        getStat*: proc(stat: Stat, currentValue: int): int
-        effect*: proc(character: Character)
+        effect*: Effect
 
     ScreenChange* = object
         case changeTo*: Screen

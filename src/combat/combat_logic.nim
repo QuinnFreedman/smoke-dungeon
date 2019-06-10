@@ -102,8 +102,7 @@ func tickAuras(combat: var CombatScreen, caster: Character) =
                 )
 
 
-proc goToNextTurn(combat: var CombatScreen, level: var Level): ScreenChange =
-
+proc goToNextTurn*(combat: var CombatScreen, level: var Level): ScreenChange =
 
     alias activeChar: combat.turnOrder[combat.turn]
 
@@ -126,7 +125,8 @@ proc goToNextTurn(combat: var CombatScreen, level: var Level): ScreenChange =
     # apply aura effects
     for i in 0..<activeChar.auras.len:
         var aura = activeChar.auras[i]
-        aura.effect(activeChar)
+        if not aura.effect.onTurnStart.isNil:
+            aura.effect.onTurnStart(activeChar, level, combat)
         aura.turns -= 1
 
     # Apply aoe effects

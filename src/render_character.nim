@@ -6,8 +6,12 @@ import
     textures,
     constants,
     character_utils,
-    item_utils,
     render_utils
+
+
+func getClothingTexture*(self: Clothing, sex: Sex): TextureAlias =
+    if sex == Sex.male: self.clothingInfo.textureMale
+    else: self.clothingInfo.textureFemale
 
 proc renderStaticCharacter*(character: Character, pos: Vec2,
                             renderer: RendererPtr, transform: Vec2) =
@@ -16,7 +20,7 @@ proc renderStaticCharacter*(character: Character, pos: Vec2,
     drawTile(character.spritesheet, srcRect, pos, renderer, transform)
 
     for item in character.iterWornItems:
-        drawTile(item.getTexture(character.sex), srcRect, pos,
+        drawTile(item.getClothingTexture(character.sex), srcRect, pos,
                  renderer, transform)
 
 
@@ -28,7 +32,7 @@ proc renderCharacter*(character: Character,
         drawImage(character.spritesheet,
                   srect, drect, renderer, transfrom)
         for item in character.iterWornItems:
-            let sprite = item.getTexture(character.sex)
+            let sprite = item.getClothingTexture(character.sex)
             drawImage(sprite, srect, drect, renderer, transfrom)
     else:
         var srect = rect(0, 0, TILE_SIZE, TILE_SIZE)

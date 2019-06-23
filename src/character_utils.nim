@@ -11,7 +11,6 @@ import
     constants,
     utils,
     textures,
-    item_utils,
     matrix,
     astar,
     times
@@ -70,17 +69,17 @@ func faceToward*(self: Character, target: Vec2) =
     self.facing = self.currentTile.directionTo(target)
 
 
-func getWornItem*(self: Character, slot: ClothingSlot): (bool, Item) =
+func getWornItem*(self: Character, slot: ClothingSlot): (bool, Clothing) =
     case self.kind
     of CharacterType.humanoid:
         let item = self.clothes[slot]
-        result[0] = item.name != ""
+        result[0] = item.icon != TextureAlias.none
         result[1] = item
     of CharacterType.animal:
         discard
 
 
-iterator iterWornItems*(self: Character): Item =
+iterator iterWornItems*(self: Character): Clothing =
     for slot in ClothingSlot.items:
         let (exists, item) = self.getWornItem(slot)
         if exists:
@@ -92,16 +91,12 @@ iterator iterWornItems*(self: Character): Item =
 # -------------------------------------
 
 func getWeaponInfo*(self: Character): WeaponInfo =
-    case self.weapon.kind
-    of ItemType.weapon:
-        return self.weapon.weaponInfo
-    else:
-        #TODO this will change when weapon implementation changes
-        discard 
+    return self.weapon.weaponInfo
 
 
 proc get*(self: Character, stat: Stat): int =
     result = self.class.stats[stat] + self.statMods[stat]
+    # for item in self.
     if not self.getWeaponInfo.getStat.isNil:
         result = self.getWeaponInfo.getStat(stat, result)
     for aura in self.auras:
@@ -112,13 +107,6 @@ iterator iterAbilities*(self: Character): Ability =
     for ability in self.unlockedAbilities:
         yield ability
     yield Ability( name: "Rest" )
-    # yield BASIC_ATTACK
-    # if self.class.isMagicUser:
-    #     yield HEAVY_ATTACK
-    # else:
-    #     yield ZAP
-    #     yield BURN
-    # yield NONE_ABILITY
 
 func numAbilites*(self: Character): int =
     for _ in self.iterAbilities:

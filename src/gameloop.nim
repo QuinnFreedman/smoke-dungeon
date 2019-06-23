@@ -53,10 +53,9 @@ proc loop*(self: var Game, dt: float) =
     if not wasInMenu:
         match screenChange:
             # TODO: put init functions in modules
-            inventory(items: items):
-                for i in 0..<items.len:
-                    alias ground: self.inventory.ground
-                    ground[i div ground.width, i mod ground.width] = items[i]
+            inventory(pickupMods: _, pickupWeapons: _):
+                # TODO add the picked up items to inventory screen
+                discard
             combat(playerParty: playerParty, enemyParty: enemyParty):
                 self.combat.playerParty = playerParty
                 self.combat.enemyParty = enemyParty

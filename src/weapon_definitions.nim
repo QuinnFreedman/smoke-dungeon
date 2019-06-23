@@ -7,8 +7,7 @@ import
     vector
 
 
-let IRON_SHORTSWORD* = Item(
-    kind: ItemType.weapon,
+let IRON_SHORTSWORD* = Weapon(
     name: "Iron Shortsword",
     icon: TextureAlias.basicSwordIcon,
     weaponInfo: WeaponInfo(
@@ -38,8 +37,7 @@ let STUN* = Aura(
     )
 )
 
-let KNOCKBACK_SWORD* = Item(
-    kind: ItemType.weapon,
+let KNOCKBACK_SWORD* = Weapon(
     name: "Repulsive Shortsword",
     icon: TextureAlias.basicSwordIcon,
     weaponInfo: WeaponInfo(
@@ -56,8 +54,7 @@ let KNOCKBACK_SWORD* = Item(
     )
 )
 
-let BLEED_KNIFE* = Item(
-    kind: ItemType.weapon,
+let BLEED_KNIFE* = Weapon(
     name: "Bloody Knife",
     icon: TextureAlias.basicSwordIcon,
     weaponInfo: WeaponInfo(

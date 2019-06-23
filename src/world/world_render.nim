@@ -13,7 +13,6 @@ import
     ../render_map,
     ../render_utils,
     ../render_character,
-    ../item_utils,
     ../textures,
     world_utils
 

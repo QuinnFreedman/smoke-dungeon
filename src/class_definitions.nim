@@ -15,7 +15,6 @@ let CLASS_ROGUE* = Class(
         5,   # strength
         0,   # intelect
         4,   # combatSpeed
-        2,   # backpackCapacity
     ],
     startingAbilities: @[
         BASIC_ATTACK,
@@ -36,7 +35,6 @@ let CLASS_WIZARD* = Class(
         5,   # strength
         10,  # intelect
         4,   # combatSpeed
-        2,   # backpackCapacity
     ],
     startingAbilities: @[
         BASIC_ATTACK,

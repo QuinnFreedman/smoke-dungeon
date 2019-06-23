@@ -3,9 +3,8 @@ import
     textures
 
 
-let MAGE_HOOD* = Item(
-    kind: ItemType.clothing,
-    name: "Mage Hood",
+let MAGE_HOOD* = Clothing(
+    # name: "Mage Hood",
     icon: TextureAlias.mageHeadIcon,
     clothingInfo: ClothingInfo(
         textureMale: TextureAlias.mageHoodMale,
@@ -14,9 +13,8 @@ let MAGE_HOOD* = Item(
     )
 )
 
-let MAGE_CLOAK* = Item(
-    kind: ItemType.clothing,
-    name: "Mage Cloak",
+let MAGE_CLOAK* = Clothing(
+    # name: "Mage Cloak",
     icon: TextureAlias.mageChestIcon,
     clothingInfo: ClothingInfo(
         textureMale: TextureAlias.mageCloakMale,
@@ -25,9 +23,8 @@ let MAGE_CLOAK* = Item(
     )
 )
 
-let MAGE_SHOES* = Item(
-    kind: ItemType.clothing,
-    name: "Mage Shoes",
+let MAGE_SHOES* = Clothing(
+    # name: "Mage Shoes",
     icon: TextureAlias.mageFeetIcon,
     clothingInfo: ClothingInfo(
         textureMale: TextureAlias.mageFeetMale,
@@ -36,9 +33,8 @@ let MAGE_SHOES* = Item(
     )
 )
 
-let KNIGHT_HELMET* = Item(
-    kind: ItemType.clothing,
-    name: "Knight Helmet",
+let KNIGHT_HELMET* = Clothing(
+    # name: "Knight Helmet",
     icon: TextureAlias.knightHeadIcon,
     clothingInfo: ClothingInfo(
         textureMale: TextureAlias.knightHelmetMale,
@@ -47,9 +43,8 @@ let KNIGHT_HELMET* = Item(
     )
 )
 
-let KNIGHT_CHESTPLATE* = Item(
-    kind: ItemType.clothing,
-    name: "Knight Chestplate",
+let KNIGHT_CHESTPLATE* = Clothing(
+    # name: "Knight Chestplate",
     icon: TextureAlias.knightChestIcon,
     clothingInfo: ClothingInfo(
         textureMale: TextureAlias.knightChestMale,
@@ -58,9 +53,8 @@ let KNIGHT_CHESTPLATE* = Item(
     )
 )
 
-let KNIGHT_GRIEVES* = Item(
-    kind: ItemType.clothing,
-    name: "Knight Grieves",
+let KNIGHT_GRIEVES* = Clothing(
+    # name: "Knight Grieves",
     icon: TextureAlias.knightFeetIcon,
     clothingInfo: ClothingInfo(
         textureMale: TextureAlias.knightFeetMale,

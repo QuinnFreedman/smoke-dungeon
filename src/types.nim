@@ -58,14 +58,7 @@ type
         dynamicEntities*: Matrix[Character]
 
     Inventory* = object
-        curBackpack*: int
-        curX*, curY*, curI*: int
-        cursorInSidePane*, cursorInTopRow*: bool
-        activeCharacter*: int
         inMenu*: bool
-        menuCursor*: int
-        menuSubject*: Item
-        ground*: Matrix[Item]
 
     CombatScreen* = object
         playerParty*: seq[Character]
@@ -102,15 +95,45 @@ type
     #          Items
     # **************************
 
-    ItemType* {.pure.} = enum clothing, weapon, modifier
+    # Clothing
 
-    Item* = object
+    Clothing* = object
+        icon*: TextureAlias
+        clothingInfo*: ClothingInfo
+
+    ClothingInfo* = object
+        textureMale*: TextureAlias
+        textureFemale*: TextureAlias
+        slot*: ClothingSlot
+
+    ClothingSlot* {.pure.} = enum
+        head, body, feet
+    
+    # Mods
+
+    Stat* {.pure.} = enum
+        maxHp,
+        armor,
+        magicResist,
+        initiative,
+        accuracy,
+        dodge,
+        strength,
+        intelect,
+        combatSpeed
+    
+    Modifier* = object
         name*: string
         icon*: TextureAlias
-        case kind*: ItemType
-        of ItemType.clothing: clothingInfo*: ClothingInfo
-        of ItemType.weapon: weaponInfo*: WeaponInfo
-        of ItemType.modifier: modInfo*: Effect
+        description*: string
+        statMod*: array[Stat, int]
+
+    # Weapons
+
+    Weapon* = object
+        name*: string
+        icon*: TextureAlias
+        weaponInfo*: WeaponInfo
 
     WeaponInfo* = object
         baseDamage*: int
@@ -126,36 +149,13 @@ type
         kineticAoeAfterEffect*: proc(caster: Character, target: Vec2,
                                      aoe: seq[Vec2], level: var Level)
 
-
     Handed* {.pure.} = enum single, double
-
-    ClothingInfo* = object
-        textureMale*: TextureAlias
-        textureFemale*: TextureAlias
-        slot*: ClothingSlot
-        getStat*: proc(stat: Stat, baseValue: int): int
-
-    ClothingSlot* {.pure.} = enum
-        head, body, feet
 
     Effect* = object
         getStat*: proc(stat: Stat, currentValue: int): int
         onTurnStart*: proc(self: Character, level: var Level, combat: var CombatScreen)
         afterAttack*: proc(self, target: Character, level: var Level)
         afterAoeAttack*: proc(self: Character, target: Vec2, level: var Level)
-
-    Stat* {.pure.} = enum
-        maxHp,
-        armor,
-        magicResist,
-        initiative,
-        accuracy,
-        dodge,
-        strength,
-        intelect,
-        combatSpeed,
-        backpackCapacity
-
 
     # **************************
     #         Characters
@@ -179,14 +179,14 @@ type
         statMods*: array[Stat, int]
         auras*: seq[Aura]
         unlockedAbilities*: seq[Ability]
-        weapon*: Item
+        weapon*: Weapon
 
         ai*: AI
         following*: Character
 
         case kind*: CharacterType
         of humanoid:
-            clothes*: array[ClothingSlot, Item]
+            clothes*: array[ClothingSlot, Clothing]
         of animal: discard
 
     Class* = object
@@ -272,7 +272,8 @@ type
             startWindow*, endWindow*: Rect
             whenDone*: ref ScreenChange
         of Screen.inventory:
-            items*: seq[Item]
+            pickupWeapons*: seq[Weapon]
+            pickupMods*: seq[Modifier]
         of Screen.menu:
             previousScreen*: Screen
         of Screen.world:
@@ -313,8 +314,7 @@ func abilityTargetTile*(target: Vec2): AbilityTarget =
     AbilityTarget(kind: TargetTile, tile: target)
 
 # Can't be in weapon_definitions b/c of circular import
-let NONE_WEAPON* = Item(
-    kind: ItemType.weapon,
+let NONE_WEAPON* = Weapon(
     name: "Hands",
     icon: TextureAlias.basicSwordIcon,
     weaponInfo: WeaponInfo(

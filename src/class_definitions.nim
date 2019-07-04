@@ -17,8 +17,7 @@ let CLASS_ROGUE* = Class(
         4,   # combatSpeed
     ],
     startingAbilities: @[
-        BASIC_ATTACK,
-        HEAVY_ATTACK
+        RANGE_TEST
     ]
 )
 
@@ -37,7 +36,6 @@ let CLASS_WIZARD* = Class(
         4,   # combatSpeed
     ],
     startingAbilities: @[
-        BASIC_ATTACK,
-        ZAP
+        RANGE_TEST
     ]
 )

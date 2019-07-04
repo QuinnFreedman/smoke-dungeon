@@ -9,6 +9,12 @@ import
     utils,
     vector
 
+func debugTintTile*(tile: Vec2, color: Color, renderer: RendererPtr, transform: Vec2) =
+    renderer.setDrawBlendMode(BlendMode_Blend)
+    let tilePos = tile.scale(TILE_SIZE)
+    let myRect = rect(tilePos.x.cint, tilePos.y.cint, TILE_SIZE, TILE_SIZE)
+    fillRect(myRect, color, renderer, transform)
+
 
 proc renderMap*(map: Level, window: Rect,
                 renderer: RendererPtr, transform: Vec2, fow=true) =

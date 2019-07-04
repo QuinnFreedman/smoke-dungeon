@@ -1,6 +1,7 @@
 import
     sdl2,
-    math
+    math,
+    sugar
 
 import
     combat_utils,
@@ -76,11 +77,42 @@ proc drawMapMarker(mapCursor: Vec2, renderInfo: RenderInfo, transform: Vec2) {.i
     drawImage(TextureAlias.mapMarker, mapCursor.scale(TILE_SIZE),
               renderInfo.renderer, transform)
 
+proc drawPathOptions(combat: CombatScreen,
+                     renderInfo: RenderInfo,
+                     transform: Vec2) = 
+    let paths = getPathOptions(combat)
+    for i, path in paths:
+        let tint = 
+            if i == combat.menuCursor:
+                color(255, 255, 0, 100)
+            else:
+                color(255, 0, 0, 75)
+        for v in path:
+            debugTintTile(v, tint, renderInfo.renderer, transform)
+
+
+func getPrompt(combat: CombatScreen): string =
+    case combat.state
+    of CombatState.pickingAbility:
+        return "Do what?"
+    of CombatState.pickingAbilityTarget:
+        case combat.activeAbility.abilityType
+        of AbilityType.ranged:
+            return "Move where?"
+        else:
+            TODO("Implement abilities other than RANGED")
+
+    of CombatState.pickingRangedAbilitySecondaryTarget:
+        case combat.activeAbility.abilityType
+        of AbilityType.ranged:
+            return "Pick target"
+        else:
+            TODO("Implement abilities other than RANGED")
+    else: discard
 
 proc renderCombatScreen*(gameState: GameState,
                          combat: CombatScreen,
                          renderInfo: RenderInfo) =
-
     alias activeChar: combat.turnOrder[combat.turn]
 
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
@@ -102,14 +134,14 @@ proc renderCombatScreen*(gameState: GameState,
 
     # Render markers and cursors
     case combat.state
-    of CombatState.pickingMovement:
-        drawMapMarker(activeChar.currentTile, renderInfo, transform)
-        drawMapCursor(combat.mapCursor, renderInfo, transform)
     of CombatState.pickingAbility:
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
-    of CombatState.pickingTarget:
+    of CombatState.pickingAbilityTarget:
+        drawPathOptions(combat, renderInfo, transform)
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
-        drawMapCursor(combat.mapCursor, renderInfo, transform)
+    of CombatState.pickingRangedAbilitySecondaryTarget:
+        drawPathOptions(combat, renderInfo, transform)
+        drawMapMarker(activeChar.currentTile, renderInfo, transform)
     else: discard
 
     # Render characters
@@ -118,20 +150,24 @@ proc renderCombatScreen*(gameState: GameState,
         renderCharacter(character, renderInfo.renderer, transform)
 
     # Render text
-    case combat.state
-    of CombatState.pickingMovement:
-        if combat.message == "":
-            drawMessage("Move where?", renderInfo)
-        else:
-            drawMessage(combat.message, renderInfo)
-    of CombatState.pickingAbility:
-        if combat.message == "":
+
+    if combat.tempMessage != "":
+        drawMessage(combat.tempMessage, renderInfo)
+    else:
+        case combat.state
+        of CombatState.pickingAbility:
             drawMenu("Do what?", activeChar.iterAbilities(), combat.menuCursor, renderInfo)
-        else:
-            drawMessage(combat.message, renderInfo)
-    of CombatState.pickingTarget:
-        if combat.message == "":
-            drawMessage("Pick target", renderInfo)
-        else:
-            drawMessage(combat.message, renderInfo)
-    else: discard
+        of CombatState.pickingAbilityTarget:
+            case combat.activeAbility.abilityType
+            of AbilityType.ranged:
+                drawMessage("Move where?", renderInfo)
+            else:
+                TODO("Implement abilities other than RANGED")
+
+        of CombatState.pickingRangedAbilitySecondaryTarget:
+            case combat.activeAbility.abilityType
+            of AbilityType.ranged:
+                drawMessage("Pick target", renderInfo)
+            else:
+                TODO("Implement abilities other than RANGED")
+        else: discard

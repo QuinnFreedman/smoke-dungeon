@@ -10,6 +10,7 @@ import
     game_utils,
     inventory/inventory_render,
     inventory/inventory_logic,
+    combat/combat_init,
     combat/combat_logic,
     combat/combat_render,
     character_utils,
@@ -57,8 +58,7 @@ proc loop*(self: var Game, dt: float) =
                 # TODO add the picked up items to inventory screen
                 discard
             combat(playerParty: playerParty, enemyParty: enemyParty):
-                self.combat.playerParty = playerParty
-                self.combat.enemyParty = enemyParty
+                self.combat = initCombatScreen(playerParty, enemyParty)
             menu(previousScreen: previousScreen):
                 self.mainMenu.previousScreen = previousScreen
                 self.mainMenu.cursor = 0

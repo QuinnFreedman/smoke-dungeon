@@ -14,21 +14,8 @@ func turnCost*(cost: float): int =
     int(round(cost * ABILITY_POINTS_PER_TURN))
 
 
-func getRange*(self: Ability, weapon: WeaponInfo): float =
-    if self.useWeaponRange:
-        weapon.weaponRange
-    else:
-        self.abilityRange
-
 func isNone*(self: Ability): bool =
     self.name == "Rest"
-
-func getPosition*(self: AbilityTarget): Vec2 =
-    match self:
-        TargetCharacter(character: c):
-            c.currentTile
-        TargetTile(tile: t):
-            t
 
 proc canCast*(caster: Character, ability: Ability): bool =
     if ability.isValidCaster.isNil:

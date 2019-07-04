@@ -1,4 +1,7 @@
-import random
+import
+    random,
+    sugar
+
 
 import
     types,
@@ -43,28 +46,14 @@ const AI_RANDOM* =
             for _ in 0..10:
                 self.move(randomDirection(), level)
 
+type CombatAiFunction = proc(self: Character, allies, enemies: seq[Character],
+         level: Level): (Ability, TargetIntention)
 
-const AI_COMBAT_MOVE_NEAREST_ENEMY* =
-    proc(self: Character, allies, enemies: seq[Character],
-         level: var Level): seq[Vec2] =
-        let closestEnemy = getClosest(self, enemies)
-        if not closestEnemy.isNil:
-            result = aStarSearch(level.collision, self.currentTile,
-                                 closestEnemy.currentTile,
-                                 includeGoal=false,
-                                 rng=nil)
 
-const AI_COMBAT_ATTACK_NEAREST_ENEMY* =
-    proc(self: Character, allies, enemies: seq[Character],
-         level: Level): (Ability, AbilityTarget) =
-        let closestEnemy = getClosest(self, enemies)
-        if not closestEnemy.isNil:
-            let target = abilityTargetCharacter(closestEnemy)
-            let ability = BASIC_ATTACK
-            if validateTarget(caster=self,
-                              target=target,
-                              allies=allies,
-                              ability=ability)[0]:
-                return (BASIC_ATTACK, target)
+func combatAi(f: CombatAiFunction): CombatAiFunction = f
 
-        return (NONE_ABILITY, abilityTargetCharacter(nil))
+
+let AI_COMBAT_DO_NOTHING* = combatAi(
+    (self, allies, enemies, level) => 
+        (NONE_ABILITY, TargetIntention(abilityType: untargeted))
+)

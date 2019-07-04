@@ -3,13 +3,16 @@ import
     sequtils,
     math,
     patty,
-    algorithm
+    algorithm,
+    sugar
 
 import
     ../astar,
+    ../ability_definitions,
     ../ability_utils,
     ../character_utils,
     ../constants,
+    ../direction,
     ../game_utils,
     ../keyboard,
     ../matrix,
@@ -25,56 +28,76 @@ func getCharacterAtTile(combat: CombatScreen, v: Vec2): Character =
             return c
     return nil
 
-func getTarget(combat: CombatScreen, v: Vec2): AbilityTarget =
-    let abilityType: AbilityType = combat.activeAbility.abilityType
-    if abilityType == AbilityType.aoe:
-        abilityTargetTile(v)
-    else:
-        abilityTargetCharacter(combat.getCharacterAtTile(v))
 
-proc validateTarget*(caster: Character,
-                     target: AbilityTarget,
-                     allies: seq[Character],
-                     ability: Ability): (bool, string) =
-    echo "Validate Target:"
-    echo "  caster:" & $caster
-    echo "  target:" & $target
-    echo "  allies:" & $allies
-    echo "  ability:" & $ability
-    if ability.isNone: return (true, "")
-    let weapon = caster.getWeaponInfo
-    if not caster.canCast(ability):
+func movementPathIsValid(combat: CombatScreen,
+                         level: Level,
+                         path: seq[Vec2],
+                         canJump: bool): bool =
+    let window = getCombatWindow(combat)
+    let last = path.last
+    if not window.containsPoint(last) or not level.walls.contains(last):
+        return false
+    
+    if level.collision(last):
+        return false
+
+    for v in path:
+        if not window.containsPoint(v) or not level.walls.contains(v):
+            return false
+        
+        if level.collision(v) and not canJump:
+            return false
+
+    return true
+
+
+proc validateTargetIntention*(
+        combat: CombatScreen,
+        level: Level,
+        ability: Ability,
+        target: TargetIntention,
+    ): (bool, string) =
+    let activeChar = combat.turnOrder[combat.turn]
+    let characterPosBeforeMovement = combat.movementStart
+
+    if not activeChar.canCast(ability):
         return (false, "Can't cast that")
-    if distance(caster.currentTile,
-                target.getPosition) > ability.getRange(weapon):
-        return (false, "Out of range")
 
-    match target:
-        TargetCharacter(character: target):
-            let casterIsAlly = caster in allies
-            let targetIsAlly = target in allies
-            if target.isNil:
-                return (false, "No one is there!")
-            if ability.abilityType == AbilityType.enemyTarget and
-                    casterIsAlly == targetIsAlly:
-                return (false, "That's an ally!")
-            if ability.abilityType == AbilityType.allyTarget and
-                    casterIsAlly != targetIsAlly:
-                return (false, "That's an enemy!")
-        TargetTile(tile: _): discard
+    if target.abilityType != ability.abilityType:
+        return (false, "Internal Error: ability types don't match")
 
-    if not ability.isValidTarget.isNil and
-            not ability.isValidTarget(caster, target, weapon):
-        return (false, "Invalid target")
+    case ability.abilityType
+    of dash:
+        TODO("Validate dash")
+        return (false, "TODO validate dash")
+    of targeted:
+        TODO("Validate targeted")
+        return (false, "TODO validate targeted")
+    of ranged:
+        let movementPath = expandMovementPattern(
+                characterPosBeforeMovement,
+                ability.projectilePattern)
+        if target.movementPathIndex < 0 or 
+            target.movementPathIndex >= movementPath.len:
+            return (false, "Movement index out of bounds.")
+        
+        let path = movementPath[target.movementPathIndex]
+        if not movementPathIsValid(combat, level, path, ability.canJump):
+            return (false, "Can't move there")
+
+        # call getTargetFromIntention and validate target if it should be 
+        # possible to have invalid projectile paths.
+
+        return (true, "")
+    of untargeted:
+        return (true, "")
+
+    # if not ability.isValidTarget.isNil and
+    #         not ability.isValidTarget(activeChar, target):
+    #     return (false, "Invalid target")
 
     return (true, "")
 
-
-proc validateTarget(combatInfo: CombatScreen,
-                    caster: Character, target: AbilityTarget,
-                    ability: Ability): (bool, string) {.inline.} =
-    validateTarget(caster, target, combatInfo.playerParty,
-                   ability)
 
 func numAlive(combat: CombatScreen): (int, int) =
     var numAllies, numEnemies = 0
@@ -86,7 +109,127 @@ func numAlive(combat: CombatScreen): (int, int) =
                 inc(numEnemies)
     return (numAllies, numEnemies)
 
-func tickAuras(combat: var CombatScreen, caster: Character) =
+
+func getTargetFromIntention(combat: CombatScreen,
+                            level: Level,
+                            ability: Ability,
+                            target: TargetIntention): AbilityTarget =
+    assert target.abilityType == ability.abilityType
+    let activeChar = combat.turnOrder[combat.turn]
+    case ability.abilityType
+    of AbilityType.ranged:
+        let movementOptions = expandMovementPattern(combat.movementStart,
+                                                    ability.movementPattern)
+        let characterPosAfterMovement = 
+            movementOptions[target.movementPathIndex].last
+                                            
+        let projectilePaths = expandMovementPattern(characterPosAfterMovement,
+                                                    ability.projectilePattern)
+        let window = getCombatWindow(combat)
+        let path = projectilePaths[target.projectilePathIndex]
+        for v in path:
+            if not window.containsPoint(v) or not level.walls.contains(v):
+                return abilityTargetNone()
+            
+            if level.walls[v]:
+                return abilityTargetTile(v)
+                
+            let hit = level.dynamicEntities[v]
+            if not hit.isNil:
+                if ability.hasFriendlyFire:
+                    return abilityTargetCharacter(hit)
+                
+                let isPlayerCharacter = activeChar in combat.playerParty
+                let opponentParty = 
+                    if isPlayerCharacter:
+                        combat.enemyParty
+                    else:
+                        combat.playerParty
+                    
+                if hit in opponentParty:
+                    return abilityTargetCharacter(hit)
+    else:
+        # TODO: implement other ability types
+        return abilityTargetNone()
+
+
+func getTargetAtCursor(combat: CombatScreen,
+                       level: Level,
+                       ability: Ability): AbilityTarget =
+    let intention = 
+        case ability.abilityType
+        of untargeted:
+            TargetIntention(
+                abilityType: untargeted
+            )
+        of ranged:
+            TargetIntention(
+                abilityType: AbilityType.ranged,
+                movementPathIndex: combat.rangedAbilityMovementPathIndex,
+                projectilePathIndex: combat.menuCursor
+            )
+        else:
+            TODO("Implement getTargetAtCursor for other ability types")
+            TargetIntention( abilityType: untargeted)
+    return getTargetFromIntention(combat, level, ability, intention)
+
+proc doAttack(combat: var CombatScreen,
+               level: var Level) = 
+    alias activeChar: combat.turnOrder[combat.turn]
+    if activeChar in combat.enemyParty:
+        let (ability, target) = activeChar.ai.chooseAttack(
+                activeChar,
+                combat.enemyParty,
+                combat.playerParty,
+                level
+        )
+        assert target.abilityType == ability.abilityType
+        match target:
+            targeted(target: _):
+                # target*: Vec2
+                TODO("AI targeted")
+                discard
+            dash(pathIndex: _):
+                # pathIndex*: int
+                TODO("AI dash")
+                discard
+            ranged(movementPathIndex: moveIdx, projectilePathIndex: _):
+                let movementOptions = expandMovementPattern(
+                    activeChar.currentTile, ability.movementPattern)
+                let moveTo = movementOptions[moveIdx].last
+                # TODO fix facing direction
+                activeChar.teleport(moveTo, Direction.down, level)
+            untargeted:
+                discard
+        let (valid, reason) = validateTargetIntention(combat, level, ability, target)
+        if valid:
+            combat.activeAbility = ability
+        else:
+            echo "AI picked invalid move. MESSAGE: \"" & reason & "\""
+            combat.activeAbility = NONE_ABILITY
+    else:
+        assert activeChar in combat.playerParty
+
+    let ability = combat.activeAbility
+    let hit = getTargetAtCursor(combat, level, ability)
+    combat.activeTarget = hit
+    match hit:
+        TargetCharacter(character: character):
+            combat.log("You hit an enemy!", true)
+    
+        TargetTile(tile: _):
+            combat.log("You hit a wall", true)
+
+        TargetNone:
+            if ability.abilityType == AbilityType.untargeted:
+                combat.log("Untargeted ability. doing nothing for now", true)
+            else:
+                combat.log("You missed", true)
+
+    combat.setState(CombatState.playingAinimation)
+
+
+func tickAoeAuras(combat: var CombatScreen, caster: Character) =
     # tick auras
     for p in combat.aoeAuras.indices:
         var aura = combat.aoeAuras[p]
@@ -112,13 +255,13 @@ proc goToNextTurn*(combat: var CombatScreen, level: var Level): ScreenChange =
     # Check if anyone is still alive
     let (numAllies, numEnemies) = combat.numAlive
     if numEnemies == 0 or numAllies == 0:
-        return ScreenCHange(changeTo: Screen.world)
+        return ScreenChange(changeTo: Screen.world)
 
     # Skip unconcious characters
     doUntil activeChar.health > 0:
         combat.turn = (combat.turn + 1) mod combat.turnOrder.len
         if activeChar.health <= 0:
-            tickAuras(combat, activeChar)
+            tickAoeAuras(combat, activeChar)
 
     echo "turn start: " & $activeChar
 
@@ -135,68 +278,27 @@ proc goToNextTurn*(combat: var CombatScreen, level: var Level): ScreenChange =
         aoeAura.effect(activeChar)
 
     # Decrement aoe aura turn counters
-    tickAuras(combat, activeChar)
+    tickAoeAuras(combat, activeChar)
 
     # go to the next character if the active character died from auras
     if activeChar.health <= 0:
         return goToNextTurn(combat, level)
 
+    combat.movementStart = activeChar.currentTile
+    combat.turnPointsRemaining = ABILITY_POINTS_PER_TURN
+    combat.rangedAbilityMovementPathIndex = -1
 
     # Do AI for enemy turn or ask user to pcik movement
     if activeChar in combat.enemyParty:
-        var path = activeChar.ai.combatMovement(
-                activeChar,
-                allies=combat.enemyParty,
-                enemies=combat.playerParty,
-                level=level
-        )
-        if path.len == 0:
-            echo "AI chose invalid path"
-        else:
-            combat.movementStart = activeChar.currentTile
-            discard path.pop
-            combat.path = path
-            combat.setState(CombatState.waitingMovementAnimation)
+        doAttack(combat, level)
     else:
-        combat.turnPointsRemaining = ABILITY_POINTS_PER_TURN
-        combat.setState(CombatState.pickingMovement)
+        combat.setState(CombatState.pickingAbility)
 
-proc pickEnemyAttack(combat: var CombatScreen, level: Level) =
-    let activeChar = combat.turnOrder[combat.turn]
-    let (ability, target) = activeChar.ai.chooseAttack(
-            activeChar,
-            combat.enemyParty,
-            combat.playerParty,
-            level
-    )
-    assert validateTarget(activeChar, target, combat.enemyParty, ability)[0]
-    combat.activeAbility = ability
-    combat.activeTarget = target
-    combat.setState(CombatSTate.waitingAttackAnimation)
-
-
-proc setupCombat(combat: var CombatScreen) =
-    combat.turnOrder = concat(combat.playerParty, combat.enemyParty)
-    combat.turnOrder.sort do (a, b: Character) -> int:
-        result = cmp(a.get(Stat.initiative), b.get(Stat.initiative))
-
-    # TODO set combat window on start (from animation)
-    combat.center = combat.playerParty[0].currentTile
-    combat.turn = 0
-    let window = getCombatWindow(combat)
-    combat.aoeAuras = newMatrixWithOffset[AoeAura](window.w, window.h,
-        v(window.x, window.y))
-
-    combat.turnPointsRemaining = ABILITY_POINTS_PER_TURN
-    combat.setState(CombatState.pickingMovement)
 
 proc updateCombatScreen*(combat: var CombatScreen,
                          level: var Level,
                          keyboard: Keyboard,
                          dt: float): ScreenChange =
-    if combat.turnOrder.len == 0:
-        setupCombat(combat)
-
     let activeChar = combat.turnOrder[combat.turn]
     let isAlly = activeChar in combat.playerParty
 
@@ -214,128 +316,89 @@ proc updateCombatScreen*(combat: var CombatScreen,
     let backPressed = keyboard.keyPressed(Input.back)
 
     case combat.state
-    of CombatState.pickingMovement:
-        let window = getCombatWindow(combat)
-        combat.mapCursor.x = clamp(combat.mapCursor.x + moveX,
-                                   window.x, window.x + window.w - 1)
-        combat.mapCursor.y = clamp(combat.mapCursor.y + moveY,
-                                   window.y, window.y + window.h - 1)
+    of CombatState.pickingAbility:
+        combat.menuCursor =
+            (combat.menuCursor + moveY) %% activeChar.numAbilites
         if enterPressed:
-            var path = aStarSearch(level.collision,
-                                   activeChar.currentTile,
-                                   combat.mapCursor,
-                                   includeGoal=true,
-                                   rng=nil)
-            combat.movementStart = activeChar.currentTile
-
-            if path.len == 0:
-                combat.message = "Can't move there"
+            combat.activeAbility = activeChar.getAbility(combat.menuCursor)
+            if combat.activeAbility.isNone:
+                result = combat.goToNextTurn(level)
+            elif combat.activeAbility.turnCost > combat.turnPointsRemaining:
+                combat.log("No time!", false)
+            elif activeChar.canCast(combat.activeAbility):
+                combat.setState(CombatState.pickingAbilityTarget)
             else:
-                discard path.pop
-                combat.path = path
-                combat.setState(CombatState.waitingMovementAnimation)
-    of CombatState.waitingMovementAnimation:
-        if backPressed and isAlly:
+                combat.log("Can't cast that", false)
+
+    of CombatState.pickingAbilityTarget:
+        let ability = combat.activeAbility
+        case ability.abilityType
+        of AbilityType.ranged:
+            let paths = expandMovementPattern(activeChar.currentTile,
+                                              ability.movementPattern)
+
+            combat.menuCursor =
+                (combat.menuCursor + moveY) %% paths.len
+            if enterPressed:
+                let path = paths[combat.menuCursor]
+                combat.rangedAbilityMovementPathIndex = combat.menuCursor
+                if not movementPathIsValid(combat, level, path, ability.canJump):
+                    combat.log("Can't move there", false)
+                else:
+                    combat.movementStart = activeChar.currentTile
+                    activeChar.teleport(path.last,
+                        Direction.down, # TODO face the right direction
+                        level)
+                    combat.setState(CombatState.pickingRangedAbilitySecondaryTarget)
+        else:
+            TODO("Implement ability types other than RANGED")
+            # doAttack(combat, level)
+
+    of CombatState.pickingRangedAbilitySecondaryTarget:
+        if backPressed:
             activeChar.teleport(combat.movementStart,
                 combat.movementStart.directionTo(activeChar.currentTile),
                 level)
-            combat.setState(CombatState.pickingMovement)
+            combat.setState(CombatState.pickingRangedAbilitySecondaryTarget)
+
+        let ability = combat.activeAbility
+        case ability.abilityType
+        of AbilityType.ranged:
+            let paths = expandMovementPattern(activeChar.currentTile,
+                                              ability.projectilePattern)
+            combat.menuCursor =
+                (combat.menuCursor + moveY) %% paths.len
+            if enterPressed:
+                doAttack(combat, level)
         else:
-            if not activeChar.isMoving:
-                if combat.path.len == 0:
-                    if isAlly:
-                        combat.setState(CombatState.pickingAbility)
-                    else:
-                        pickEnemyAttack(combat, level)
-                else:
-                    let nextTile = combat.path.pop()
-                    activeChar.moveToward(nextTile, level)
+            echo "ERROR: entered secodary target combat state with non-ranged ability"
+            combat.setState(CombatState.playingAinimation)
+        
 
-            if activeChar.isMoving:
-                activeChar.update(level, dt)
-
-    of CombatState.pickingAbility:
-        if combat.message != "":
-            if backPressed or enterPressed:
-                combat.message = ""
+    of CombatState.playingAinimation:
+        if combat.animationTimer < 100: # TODO placeholder
+            combat.animationTimer += 1
         else:
-            if backPressed:
-                activeChar.teleport(combat.movementStart,
-                    combat.movementStart.directionTo(activeChar.currentTile),
-                    level)
-                combat.setState(CombatState.pickingMovement)
-            else:
-                combat.menuCursor =
-                    (combat.menuCursor + moveY) %% activeChar.numAbilites
-                if enterPressed:
-                    combat.activeAbility = activeChar.getAbility(combat.menuCursor)
-                    if combat.activeAbility.isNone:
-                        result = combat.goToNextTurn(level)
-                    elif combat.activeAbility.turnCost > combat.turnPointsRemaining:
-                        combat.message = "No time!"
-                    elif activeChar.canCast(combat.activeAbility):
-                        combat.setState(CombatState.pickingTarget)
-                    else:
-                        combat.message = "Can't cast that"
+            let weapon = activeChar.getWeaponInfo
+            match combat.activeTarget:
+                TargetCharacter(character: target):
+                    echo "combat.activeTarget.kind == TargetCharacter"
+                    echo "  activeTarget.target == " & $target
+                    echo "  activeChar == " & $activeChar
+                    echo "  weapon == " & $activeChar.getWeaponInfo
+                    combat.activeAbility.applyEffect(
+                                activeChar, target,
+                                activeChar.getWeaponInfo)
+                    # let afterEffect =
+                    #     if isMagical: weapon.magicAfterEffect
+                    #     else: weapon.kineticAfterEffect
+                    # if not afterEffect.isNil:
+                    #     afterEffect(activeChar, target, level)
+                TargetTile(tile: _):
+                    echo "TODO placeholder; make do_attack function"
+                TargetNone:
+                    echo "no target; passing"
 
-
-    of CombatState.pickingTarget:
-        if backPressed:
-            combat.setState(CombatState.pickingAbility)
-        let window = getCombatWindow(combat)
-        combat.mapCursor.x = clamp(combat.mapCursor.x + moveX,
-                                   window.x, window.x + window.w - 1)
-        combat.mapCursor.y = clamp(combat.mapCursor.y + moveY,
-                                   window.y, window.y + window.h - 1)
-        if enterPressed:
-            var target = combat.getTarget(combat.mapCursor)
-            let (valid, reason) = combat.validateTarget(
-                    activeChar, target, combat.activeAbility)
-            combat.message = reason
-            if valid:
-                combat.activeTarget = target
-                combat.setState(CombatSTate.waitingAttackAnimation)
-    of CombatState.waitingAttackAnimation:
-        #TODO wait until animation is completed
-        let weapon = activeChar.getWeaponInfo
-        let isMagical = combat.activeAbility.isMagical
-        match combat.activeTarget:
-            TargetCharacter(character: target):
-                echo "combat.activeTarget.kind == TargetCharacter"
-                echo "  activeTarget.target == " & $target
-                echo "  activeChar == " & $activeChar
-                echo "  weapon == " & $activeChar.getWeaponInfo
-                combat.activeAbility.applyEffect(
-                            activeChar, target,
-                            activeChar.getWeaponInfo)
-                let afterEffect =
-                    if isMagical: weapon.magicAfterEffect
-                    else: weapon.kineticAfterEffect
-                if not afterEffect.isNil:
-                    afterEffect(activeChar, target, level)
-
-            TargetTile(tile: target):
-                let ability = combat.activeAbility
-                case ability.abilityType
-                of aoe:
-                    for v in ability.aoePattern:
-                        let tile = target + v
-                        if combat.aoeAuras.contains(tile):
-                            ability.applyAoeEffect(
-                                    activeChar, tile, weapon, combat)
-                    let afterEffect =
-                        if isMagical: weapon.magicAoeAfterEffect
-                        else: weapon.kineticAoeAfterEffect
-                    if not afterEffect.isNil:
-                        afterEffect(activeChar, target,
-                                    ability.aoePattern, level)
-                else:
-                    raise ObjectConversionError.newException(
-                        "The target of an ability is a tile but " &
-                        "it's not an AOE ability")
-
-
-        activeChar.faceToward(combat.activeTarget.getPosition)
         combat.turnPointsRemaining -= combat.activeAbility.turnCost
         echo "turn points remaining: " & $combat.turnPointsRemaining
         if combat.turnPointsRemaining > 0 and isAlly:
@@ -344,3 +407,5 @@ proc updateCombatScreen*(combat: var CombatScreen,
         else:
             echo "No turn points left; going to next turn"
             result = combat.goToNextTurn(level)
+
+

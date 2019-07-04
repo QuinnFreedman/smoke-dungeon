@@ -3,11 +3,10 @@ import
     textures,
     ai
 
-func makeAi(): AI =
+proc makeAi(): AI =
     #TODO wierd hack... tuple literal gives type error
     result.worldMovement = AI_RANDOM
-    result.combatMovement = AI_COMBAT_MOVE_NEAREST_ENEMY
-    result.chooseAttack = AI_COMBAT_ATTACK_NEAREST_ENEMY
+    result.chooseAttack = AI_COMBAT_DO_NOTHING
 
 
 let RACE_SPIDER* = Race(

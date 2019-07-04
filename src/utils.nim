@@ -79,3 +79,12 @@ func boundedLerp*(x: float, a, b: int): float =
 func lerp*(progress: float, a, b: Vec2f): Vec2f =
     vecFloat(boundedLerp(progress, a.x, b.x),
              boundedLerp(progress, a.y, b.y))
+
+proc TODO*(s: string) =
+    raise Exception.newException(s)
+
+func rot90*(v: Vec2): Vec2 = (x: -v.y, y: v.x)
+
+func containsPoint*(rect: Rect, point: Vec2): bool =
+    (point.x >= rect.x and point.x <= rect.x + rect.w and 
+     point.y >= rect.y and point.y <= rect.y + rect.h)

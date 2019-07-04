@@ -1,6 +1,8 @@
 import
     random,
-    math
+    math,
+    sugar,
+    sequtils
 
 import
     types,
@@ -11,64 +13,30 @@ import
     ability_utils
 
 let NONE_ABILITY* = Ability(
-    name: "Rest"
+    name: "Rest",
+    abilityType: AbilityType.untargeted
 )
 
 
-let BASIC_ATTACK* = Ability(
-    name: "Basic Attack",
-    useWeaponRange: true,
-    abilityType: AbilityType.enemyTarget,
-    turnCost: turnCost(0.5),
-    applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
-        let damage = getBasicDamage(weaponInfo)[0]
-        target.damage(damage, DamageType.physical)
-)
+proc forRange[T](n: int, f: proc(x: int): T): seq[T] =
+    for i in 0..n:
+        result.add(f(i))
 
-let HEAVY_ATTACK* = Ability(
-    name: "Heavy Attack",
-    useWeaponRange: true,
-    abilityType: AbilityType.enemyTarget,
+
+let RANGE_TEST* = Ability(
+    name: "Ranged test",
     turnCost: turnCost(1),
-    applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
-        let damage = getBasicDamage(weaponInfo, 2)[0]
-        target.damage(damage, DamageType.physical)
+    abilityType: AbilityType.ranged,
+    movementPattern: @[v(1, 0)],
+    projectilePattern: forRange(10, x => v(x, x)),
+    canJump: false
 )
 
-let ZAP* = Ability(
-    name: "Zap",
-    useWeaponRange: false,
-    abilityRange: 4,
-    abilityType: AbilityType.enemyTarget,
-    isMagical: true,
-    turnCost: turnCost(1),
-    applyEffect: proc (caster, target: Character, weaponInfo: WeaponInfo) =
-        target.damage(2, DamageType.magical)
-)
-
-func fire(caster: Character): AoeAura =
-    AoeAura(
-        turns: 2,
-        caster: caster,
-        texture: TextureAlias.fire,
-        effect: proc(character: Character) =
-            character.damage(2, DamageType.trueDamage)
-    )
-
-let BURN* = Ability(
-    name: "Ignite",
-    useWeaponRange: false,
-    abilityRange: 4,
-    abilityType: AbilityType.aoe,
-    aoePattern: @[
-        v(0,  0),
-        v(0, -1),
-        v(0,  1),
-        v(-1, 0),
-        v( 1, 0),
-    ],
-    applyAoeEffect: func (caster: Character, target: Vec2,
-                          weaponInfo: WeaponInfo,
-                          combat: var CombatScreen) =
-        combat.aoeAuras[target] = fire(caster)
-)
+# func fire(caster: Character): AoeAura =
+#     AoeAura(
+#         turns: 2,
+#         caster: caster,
+#         texture: TextureAlias.fire,
+#         effect: proc(character: Character) =
+#             character.damage(2, DamageType.trueDamage)
+#     )

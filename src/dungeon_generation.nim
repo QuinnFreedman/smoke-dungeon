@@ -45,7 +45,7 @@ func weightedChoice[T, V](rng: var Rand,
         if rnd < total:
             return options[i]
 
-func getCollisionFunc(level: Level): (proc (v: Vec2): bool) =
+func getCollisionFunc(level: Level): (proc (v: Vec2): bool {.noSideEffect.}) =
     return func (v: Vec2): bool =
         not level.walls.contains(v) or
             level.walls[v] or

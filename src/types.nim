@@ -54,7 +54,7 @@ type
         seen*: Matrix[bool]
         entrance*: Vec2
         exit*: Vec2
-        collision*: proc (pos: Vec2): bool
+        collision*: proc (pos: Vec2): bool {.noSideEffect.}
         dynamicEntities*: Matrix[Character]
 
     Inventory* = object
@@ -73,9 +73,11 @@ type
         movementStart*: Vec2
         mapCursor*: Vec2
         menuCursor*: int
-        path*: seq[Vec2]
-        message*: string
+        messageLog*: seq[string]
+        tempMessage*: string
         aoeAuras*: Matrix[AoeAura]
+        animationTimer*: int
+        rangedAbilityMovementPathIndex*: int
 
     CombatTransitionScreen* = object
         startWindow*: Rect
@@ -84,11 +86,10 @@ type
         whenDone*: ScreenChange
 
     CombatState* {.pure.} = enum
-        waitingMovementAnimation,
-        pickingMovement,
         pickingAbility,
-        pickingTarget,
-        waitingAttackAnimation
+        pickingAbilityTarget,
+        pickingRangedAbilitySecondaryTarget
+        playingAinimation
 
 
     # **************************
@@ -208,35 +209,48 @@ type
     # **************************
 
     AbilityType* {.pure.} = enum
-        enemyTarget, allyTarget, aoe
+        targeted, dash, ranged, untargeted
 
     Ability* = object
         name*: string
-        abilityRange*: float  # number of squares
-        useWeaponRange*: bool # if true, ignore abilityRange and use the range of the weaoon the spell is channeled throug
-        isMagical*: bool
         turnCost*: int
-        case abilityType*: AbilityType:
-        of aoe:
-            aoePattern*: seq[Vec2]
-            applyAoeEffect*: proc(caster: Character, target: Vec2,
-                                  weaponInfo: WeaponInfo,
-                                  combat: var CombatScreen)
+        case abilityType*: AbilityType
+        of dash: 
+            pattern*: seq[Vec2]
+        of ranged: 
+            movementPattern*: seq[Vec2]
+            canJump*: bool
+            projectilePattern*: seq[Vec2]
+            hasFriendlyFire*: bool
         else:
             discard
+
         isValidCaster*: proc(caster: Character): bool
         isValidTarget*: proc(caster: Character,
-                             target: AbilityTarget,
-                             weaponInfo: WeaponInfo): bool
+                             target: AbilityTarget): bool
         applyEffect*: proc(caster, target: Character, weaponInfo: WeaponInfo)
 
-    AbilityTargetType* = enum TargetCharacter, TargetTile
+    AbilityTargetType* = enum TargetNone, TargetCharacter, TargetTile
     AbilityTarget* = object
         case kind*: AbilityTargetType
         of TargetCharacter:
             character*: Character
         of TargetTile:
             tile*: Vec2
+        of TargetNone:
+            discard
+
+    TargetIntention* = object
+        case abilityType*: AbilityType
+        of targeted:
+            target*: Vec2
+        of dash:
+            pathIndex*: int
+        of ranged:
+            movementPathIndex*: int
+            projectilePathIndex*: int
+        of untargeted:
+            discard
 
     DamageType* {.pure.} = enum physical, magical, trueDamage
 
@@ -245,12 +259,9 @@ type
         worldMovement: proc(self: Character,
                             others: seq[Character],
                             level: var Level),
-        combatMovement: proc(self: Character,
-                             allies, enemies: seq[Character],
-                             level: var Level): seq[Vec2],
         chooseAttack: proc(self: Character,
                            allies, enemies: seq[Character],
-                           level: Level): (Ability, AbilityTarget)
+                           level: Level): (Ability, TargetIntention)
     ]
 
     AoeAura* = object
@@ -305,13 +316,17 @@ func setState*(self: var CombatScreen, state: CombatState) {.inline.} =
     self.menuCursor = 0
     self.mapCursor = activeChar.currentTile
     self.privateState = state
-    self.message = ""
+    self.tempMessage = ""
 
 func abilityTargetCharacter*(target: Character): AbilityTarget =
     AbilityTarget(kind: TargetCharacter, character: target)
 
 func abilityTargetTile*(target: Vec2): AbilityTarget =
     AbilityTarget(kind: TargetTile, tile: target)
+
+func abilityTargetNone*() : AbilityTarget =
+    AbilityTarget(kind: TargetNone)
+
 
 # Can't be in weapon_definitions b/c of circular import
 let NONE_WEAPON* = Weapon(

@@ -1,6 +1,7 @@
 import
     sequtils,
-    sdl2
+    sdl2,
+    sugar
 
 import
     ../constants,
@@ -30,13 +31,17 @@ func getCombatWindow*(combat: CombatScreen): Rect =
 func getCombatWindow*(playerParty, enemyParty: seq[Character]): Rect =
     getCombatWindow(getCombatCenter(playerParty, enemyParty))
 
-func expandMovementPattern*(origin: Vec2, pattern: seq[Vec2]): seq[seq[Vec2]] =
-    # TODO add flips
-    let one = pattern
-    let two = one.map(rot90)
-    let three = two.map(rot90)
-    let four = three.map(rot90)
-    result = @[one, two, three, four]
+let ROTATION_MATRICES = @[
+    MATRIX_IDENTITY,
+    MATRIX_ROT_90,
+    MATRIX_ROT_180,
+    MATRIX_ROT_270
+]
+
+func expandMovementPattern*(origin: Vec2, pattern: seq[seq[Vec2]]): seq[seq[Vec2]] =
+    for i in 0..3:
+        for path in pattern:
+            result.add(path.map(x => x.transform(ROTATION_MATRICES[i])))
 
     for i, path in result:
         for j, v in path:

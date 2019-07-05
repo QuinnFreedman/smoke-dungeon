@@ -216,11 +216,11 @@ type
         turnCost*: int
         case abilityType*: AbilityType
         of dash: 
-            pattern*: seq[Vec2]
+            pattern*: seq[seq[Vec2]]
         of ranged: 
-            movementPattern*: seq[Vec2]
+            movementPattern*: seq[seq[Vec2]]
             canJump*: bool
-            projectilePattern*: seq[Vec2]
+            projectilePattern*: seq[seq[Vec2]]
             hasFriendlyFire*: bool
         else:
             discard

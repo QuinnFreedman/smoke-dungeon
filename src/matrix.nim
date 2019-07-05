@@ -25,6 +25,21 @@ proc newMatrixWithOffset*[T](width, height: int, offset: Vec2): Matrix[T] =
     result = newMatrix[T](width, height)
     result.offset = offset
 
+proc matrixFromSeq*[T](data: seq[seq[T]]): Matrix[T] =
+    result.height = data.len
+    if result.height == 0:
+        return
+    result.width = data[0].len
+    result.data = create(T, result.width * result.height)
+    for y in 0..result.height - 1:
+        let row = data[y]
+        if row.len != result.width:
+            raise ValueError.newException(
+                "The first row had len $1 but row $2 had len $3"
+                    .format(result.width, y, row.len)
+            )
+        for x in 0..result.width-1:
+            result[x, y] = row[x]
 
 proc recycle*[T](self: var Matrix[T], width, height: int, offset: Vec2) =
     if self.data.isNil:

@@ -2,8 +2,9 @@ import sdl2,
     math
 
 import
-    vector,
-    direction
+    direction,
+    matrix,
+    vector
 
 func newSdlRect*(x, y, w, h: int): Rect {.inline.} =
     rect(cint(x), cint(y), cint(w), cint(h))
@@ -83,7 +84,26 @@ func lerp*(progress: float, a, b: Vec2f): Vec2f =
 proc TODO*(s: string) =
     raise Exception.newException(s)
 
-func rot90*(v: Vec2): Vec2 = (x: -v.y, y: v.x)
+let MATRIX_IDENTITY* = matrixFromSeq[int](@[
+    @[1, 0],
+    @[0, 1]
+])
+let MATRIX_ROT_90* = matrixFromSeq[int](@[
+    @[0, -1],
+    @[1,  0],
+])
+let MATRIX_ROT_180* = matrixFromSeq[int](@[
+    @[-1, 0],
+    @[0, -1]
+])
+let MATRIX_ROT_270* = matrixFromSeq[int](@[
+    @[ 0, 1],
+    @[-1, 0],
+])
+
+func transform*(v: Vec2, m: Matrix[int]): Vec2 =
+    (x: m[0, 0] * v.x + m[1, 0] * v.y,
+     y: m[0, 1] * v.x + m[1, 1] * v.y)
 
 func containsPoint*(rect: Rect, point: Vec2): bool =
     (point.x >= rect.x and point.x <= rect.x + rect.w and 

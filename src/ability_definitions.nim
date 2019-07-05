@@ -27,8 +27,8 @@ let RANGE_TEST* = Ability(
     name: "Ranged test",
     turnCost: turnCost(1),
     abilityType: AbilityType.ranged,
-    movementPattern: @[v(1, 0)],
-    projectilePattern: forRange(10, x => v(x, x)),
+    movementPattern: @[@[v(1, 0)]],
+    projectilePattern: @[forRange(10, x => v(x, x))],
     canJump: false
 )
 

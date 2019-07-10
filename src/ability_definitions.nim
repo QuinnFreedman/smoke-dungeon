@@ -32,6 +32,15 @@ let RANGE_TEST* = Ability(
     canJump: false
 )
 
+let RANGE_TEST_2* = Ability(
+    name: "Ranged test 2",
+    turnCost: turnCost(1),
+    abilityType: AbilityType.ranged,
+    movementPattern: @[@[v(1, 0)], @[v(1, 1)]],
+    projectilePattern: @[@[v(1, 0)], @[v(1, 1)]],
+    canJump: false
+)
+
 # func fire(caster: Character): AoeAura =
 #     AoeAura(
 #         turns: 2,

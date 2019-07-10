@@ -24,6 +24,13 @@ func `$` *(self: Character): string =
     if self.isNil: "nil"
     else: $self.sex & " " & self.race.name & " " & self.class.name
 
+func describe*(self: Character): string =
+    case self.kind
+    of humanoid:
+        self.class.name
+    else:
+        self.race.name
+
 func isMoving*(self: Character): bool {.inline.} =
     self.currentTile != self.nextTile
 

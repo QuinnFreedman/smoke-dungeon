@@ -212,10 +212,17 @@ proc doAttack(combat: var CombatScreen,
 
     let ability = combat.activeAbility
     let hit = getTargetAtCursor(combat, level, ability)
+    let weapon = activeChar.getWeaponInfo
     combat.activeTarget = hit
     match hit:
-        TargetCharacter(character: character):
-            combat.log("You hit an enemy!", true)
+        TargetCharacter(character: target):
+            if ability.applyEffect.isNil:
+                echo "WARNING: the ability \"" & ability.name & "\" has no effect function so it will be skipped."
+            else:
+                let message = ability.applyEffect(activeChar, target, weapon)
+                if message == "":
+                    combat.log("The " & describe(activeChar) & " hits the" & describe(target) & "!", true)
+
     
         TargetTile(tile: _):
             combat.log("You hit a wall", true)
@@ -246,7 +253,6 @@ func tickAoeAuras(combat: var CombatScreen, caster: Character) =
 
 
 proc goToNextTurn*(combat: var CombatScreen, level: var Level): ScreenChange =
-
     alias activeChar: combat.turnOrder[combat.turn]
 
     echo "turn end: " & $activeChar
@@ -287,6 +293,7 @@ proc goToNextTurn*(combat: var CombatScreen, level: var Level): ScreenChange =
     combat.movementStart = activeChar.currentTile
     combat.turnPointsRemaining = ABILITY_POINTS_PER_TURN
     combat.rangedAbilityMovementPathIndex = -1
+    combat.animationTimer = 0
 
     # Do AI for enemy turn or ask user to pcik movement
     if activeChar in combat.enemyParty:
@@ -376,36 +383,17 @@ proc updateCombatScreen*(combat: var CombatScreen,
         
 
     of CombatState.playingAinimation:
+        echo "playing animation"
         if combat.animationTimer < 100: # TODO placeholder
             combat.animationTimer += 1
         else:
-            let weapon = activeChar.getWeaponInfo
-            match combat.activeTarget:
-                TargetCharacter(character: target):
-                    echo "combat.activeTarget.kind == TargetCharacter"
-                    echo "  activeTarget.target == " & $target
-                    echo "  activeChar == " & $activeChar
-                    echo "  weapon == " & $activeChar.getWeaponInfo
-                    combat.activeAbility.applyEffect(
-                                activeChar, target,
-                                activeChar.getWeaponInfo)
-                    # let afterEffect =
-                    #     if isMagical: weapon.magicAfterEffect
-                    #     else: weapon.kineticAfterEffect
-                    # if not afterEffect.isNil:
-                    #     afterEffect(activeChar, target, level)
-                TargetTile(tile: _):
-                    echo "TODO placeholder; make do_attack function"
-                TargetNone:
-                    echo "no target; passing"
-
-        combat.turnPointsRemaining -= combat.activeAbility.turnCost
-        echo "turn points remaining: " & $combat.turnPointsRemaining
-        if combat.turnPointsRemaining > 0 and isAlly:
-            echo "Turn points remaining; going to pick ability again"
-            combat.setState(CombatState.pickingAbility)
-        else:
-            echo "No turn points left; going to next turn"
-            result = combat.goToNextTurn(level)
+            combat.turnPointsRemaining -= combat.activeAbility.turnCost
+            echo "turn points remaining: " & $combat.turnPointsRemaining
+            if combat.turnPointsRemaining > 0 and isAlly:
+                echo "Turn points remaining; going to pick ability again"
+                combat.setState(CombatState.pickingAbility)
+            else:
+                echo "No turn points left; going to next turn"
+                result = combat.goToNextTurn(level)
 
 

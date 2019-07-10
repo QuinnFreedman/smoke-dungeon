@@ -228,7 +228,7 @@ type
         isValidCaster*: proc(caster: Character): bool
         isValidTarget*: proc(caster: Character,
                              target: AbilityTarget): bool
-        applyEffect*: proc(caster, target: Character, weaponInfo: WeaponInfo)
+        applyEffect*: proc(caster, target: Character, weaponInfo: WeaponInfo): string
 
     AbilityTargetType* = enum TargetNone, TargetCharacter, TargetTile
     AbilityTarget* = object

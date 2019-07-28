@@ -47,6 +47,19 @@ func expandMovementPattern*(origin: Vec2, pattern: seq[seq[Vec2]]): seq[seq[Vec2
         for j, v in path:
             result[i][j] = v + origin
 
+func getEnemies*(combat: CombatScreen): seq[Character] =
+    let activeChar = combat.turnOrder[combat.turn]
+    if activeChar in combat.playerParty:
+        return combat.enemyParty
+    else:
+        return combat.playerParty
+
+func getAllies*(combat: CombatScreen): seq[Character] =
+    let activeChar = combat.turnOrder[combat.turn]
+    if activeChar in combat.playerParty:
+        return combat.playerParty
+    else:
+        return combat.enemyParty
 
 func getPathOptions*(combat: CombatScreen): seq[seq[Vec2]] =
     let ability = combat.activeAbility

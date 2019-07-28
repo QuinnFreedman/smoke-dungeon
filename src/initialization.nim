@@ -80,8 +80,9 @@ proc initGameData*(window: WindowPtr, renderer: RendererPtr, font: FontPtr): Gam
         kind=CharacterType.animal,
         race=RACE_SPIDER,
         sex=Sex.male,
-        class=CLASS_ROGUE)
+        class=CLASS_SPIDER)
     spider.weapon = NONE_WEAPON
+    spider.ai.chooseAttack = AI_COMBAT_SPIDER
 
     result.gameState.entities = concat(result.gameState.playerParty)
     result.gameState.entities.add(spider)

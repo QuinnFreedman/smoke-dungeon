@@ -108,3 +108,5 @@ func transform*(v: Vec2, m: Matrix[int]): Vec2 =
 func containsPoint*(rect: Rect, point: Vec2): bool =
     (point.x >= rect.x and point.x <= rect.x + rect.w and 
      point.y >= rect.y and point.y <= rect.y + rect.h)
+
+func isNotNil*[T](x: T): bool = not x.isNil

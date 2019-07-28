@@ -260,7 +260,7 @@ type
                             others: seq[Character],
                             level: var Level),
         chooseAttack: proc(self: Character,
-                           allies, enemies: seq[Character],
+                           combat: CombatScreen,
                            level: Level): (Ability, TargetIntention)
     ]
 
@@ -340,3 +340,22 @@ let NONE_WEAPON* = Weapon(
         handedness: Handed.single
     )
 )
+
+func targetIntentionNone*(): TargetIntention =
+    TargetIntention(abilityType: untargeted)
+
+func targetIntentionTargeted*(target: Vec2): TargetIntention =
+    TargetIntention(abilityType: targeted, target: target)
+
+func targetIntentionRanged*(movementIndex, projectileIndex: int): TargetIntention =
+    TargetIntention(
+        abilityType: ranged,
+        movementPathIndex: movementIndex,
+        projectilePathIndex: projectileIndex
+    )
+
+func targetIntentionDash*(movementIndex: int): TargetIntention =
+    TargetIntention(
+        abilityType: dash,
+        pathIndex: movementIndex
+    )

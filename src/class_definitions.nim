@@ -41,3 +41,22 @@ let CLASS_WIZARD* = Class(
         RANGE_TEST_2
     ]
 )
+
+let CLASS_SPIDER* = Class(
+    name: "Rogue",
+    isMagicUser: false,
+    stats: [
+        10,  # maxHp
+        0,   # armor
+        0,   # magicResist
+        5,   # initiative
+        90,  # accuracy
+        30,  # dodge
+        5,   # strength
+        0,   # intelect
+        4,   # combatSpeed
+    ],
+    startingAbilities: @[
+        RANGE_TEST_2
+    ]
+)

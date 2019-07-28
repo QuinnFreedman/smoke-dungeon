@@ -22,17 +22,17 @@ import
     combat_utils
 
 
-func getCharacterAtTile(combat: CombatScreen, v: Vec2): Character =
+func getCharacterAtTile*(combat: CombatScreen, v: Vec2): Character =
     for c in combat.turnOrder:
         if c.currentTile == v:
             return c
     return nil
 
 
-func movementPathIsValid(combat: CombatScreen,
-                         level: Level,
-                         path: seq[Vec2],
-                         canJump: bool): bool =
+func movementPathIsValid*(combat: CombatScreen,
+                          level: Level,
+                          path: seq[Vec2],
+                          canJump: bool): bool =
     let window = getCombatWindow(combat)
     let last = path.last
     if not window.containsPoint(last) or not level.walls.contains(last):
@@ -178,10 +178,7 @@ proc doAttack(combat: var CombatScreen,
     alias activeChar: combat.turnOrder[combat.turn]
     if activeChar in combat.enemyParty:
         let (ability, target) = activeChar.ai.chooseAttack(
-                activeChar,
-                combat.enemyParty,
-                combat.playerParty,
-                level
+                activeChar, combat, level
         )
         assert target.abilityType == ability.abilityType
         match target:
@@ -384,7 +381,8 @@ proc updateCombatScreen*(combat: var CombatScreen,
 
     of CombatState.playingAinimation:
         echo "playing animation"
-        if combat.animationTimer < 100: # TODO placeholder
+        let ANIMATION_TIME_MS = 1 # TODO placeholder
+        if combat.animationTimer < ANIMATION_TIME_MS:
             combat.animationTimer += 1
         else:
             combat.turnPointsRemaining -= combat.activeAbility.turnCost

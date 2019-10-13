@@ -91,20 +91,26 @@ proc drawPathOptions(combat: CombatScreen,
             debugTintTile(v, tint, renderInfo.renderer, transform)
 
 
-func getPrompt(combat: CombatScreen): string =
+func drawCombatTextUI(combat: CombatScreen, renderInfo: RenderInfo) =
+    if combat.tempMessage.isNotEmpty:
+        drawMessage(combat.tempMessage, renderInfo)
+        return
+
+    let activeChar = combat.turnOrder[combat.turn]
+
     case combat.state
     of CombatState.pickingAbility:
-        return "Do what?"
+        drawMenu("Do what?", activeChar.iterAbilities(), combat.menuCursor, renderInfo)
     of CombatState.pickingAbilityTarget:
         case combat.activeAbility.abilityType
         of AbilityType.ranged:
-            return "Move where?"
+            drawMessage("Move where?", renderInfo)
         else:
             TODO("Implement abilities other than RANGED")
     of CombatState.pickingRangedAbilitySecondaryTarget:
         case combat.activeAbility.abilityType
         of AbilityType.ranged:
-            return "Pick target"
+            drawMessage("Pick target", renderInfo)
         else:
             TODO("Implement abilities other than RANGED")
     else: discard
@@ -149,7 +155,4 @@ proc renderCombatScreen*(gameState: GameState,
         renderCharacter(character, renderInfo.renderer, transform)
 
     # Render text
-    if combat.tempMessage.isNotEmpty:
-        drawMessage(combat.tempMessage, renderInfo)
-    else:
-        drawMessage(combat.getPrompt, renderInfo)
+    drawCombatTextUI(combat, renderInfo)

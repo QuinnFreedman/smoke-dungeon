@@ -33,7 +33,7 @@ type
         scaleModePixelPerfect*: bool
         fullscreen*: WindowMode
 
-    WindowMode* {.pure.} = enum
+    WindowMode*{.pure.} = enum
         windowed = "Windowed"
         fullscreenWindowed = "Fullscreen Windowed"
         fullscreen = "Fullscreen"
@@ -75,9 +75,10 @@ type
         menuCursor*: int
         messageLog*: seq[string]
         tempMessage*: string
+        tempMessageCountdown*: float
         aoeAuras*: Matrix[AoeAura]
         animationTimer*: int
-        rangedAbilityMovementPathIndex*: int
+        rangedAbilityMovementPathIndex * : int
 
     CombatTransitionScreen* = object
         startWindow*: Rect
@@ -85,7 +86,7 @@ type
         timeElapsed*: float
         whenDone*: ScreenChange
 
-    CombatState* {.pure.} = enum
+    CombatState*{.pure.} = enum
         pickingAbility,
         pickingAbilityTarget,
         pickingRangedAbilitySecondaryTarget
@@ -107,12 +108,12 @@ type
         textureFemale*: TextureAlias
         slot*: ClothingSlot
 
-    ClothingSlot* {.pure.} = enum
+    ClothingSlot*{.pure.} = enum
         head, body, feet
-    
+
     # Mods
 
-    Stat* {.pure.} = enum
+    Stat*{.pure.} = enum
         maxHp,
         armor,
         magicResist,
@@ -122,7 +123,7 @@ type
         strength,
         intelect,
         combatSpeed
-    
+
     Modifier* = object
         name*: string
         icon*: TextureAlias
@@ -150,11 +151,12 @@ type
         kineticAoeAfterEffect*: proc(caster: Character, target: Vec2,
                                      aoe: seq[Vec2], level: var Level)
 
-    Handed* {.pure.} = enum single, double
+    Handed*{.pure.} = enum single, double
 
     Effect* = object
         getStat*: proc(stat: Stat, currentValue: int): int
-        onTurnStart*: proc(self: Character, level: var Level, combat: var CombatScreen)
+        onTurnStart*: proc(self: Character, level: var Level,
+                combat: var CombatScreen)
         afterAttack*: proc(self, target: Character, level: var Level)
         afterAoeAttack*: proc(self: Character, target: Vec2, level: var Level)
 
@@ -162,7 +164,7 @@ type
     #         Characters
     # **************************
 
-    CharacterType* {.pure.} = enum humanoid, animal
+    CharacterType*{.pure.} = enum humanoid, animal
 
     Character* = ptr CharacterData
 
@@ -208,16 +210,16 @@ type
     #         Abilities
     # **************************
 
-    AbilityType* {.pure.} = enum
+    AbilityType*{.pure.} = enum
         targeted, dash, ranged, untargeted
 
     Ability* = object
         name*: string
         turnCost*: int
         case abilityType*: AbilityType
-        of dash: 
+        of dash:
             pattern*: seq[seq[Vec2]]
-        of ranged: 
+        of ranged:
             movementPattern*: seq[seq[Vec2]]
             canJump*: bool
             projectilePattern*: seq[seq[Vec2]]
@@ -228,7 +230,8 @@ type
         isValidCaster*: proc(caster: Character): bool
         isValidTarget*: proc(caster: Character,
                              target: AbilityTarget): bool
-        applyEffect*: proc(caster, target: Character, weaponInfo: WeaponInfo): string
+        applyEffect*: proc(caster, target: Character,
+                weaponInfo: WeaponInfo): string
 
     AbilityTargetType* = enum TargetNone, TargetCharacter, TargetTile
     AbilityTarget* = object
@@ -252,7 +255,7 @@ type
         of untargeted:
             discard
 
-    DamageType* {.pure.} = enum physical, magical, trueDamage
+    DamageType*{.pure.} = enum physical, magical, trueDamage
 
 
     AI* = tuple[
@@ -317,6 +320,7 @@ func setState*(self: var CombatScreen, state: CombatState) {.inline.} =
     self.mapCursor = activeChar.currentTile
     self.privateState = state
     self.tempMessage = ""
+    self.tempMessageCountdown = 0
 
 func abilityTargetCharacter*(target: Character): AbilityTarget =
     AbilityTarget(kind: TargetCharacter, character: target)
@@ -324,7 +328,7 @@ func abilityTargetCharacter*(target: Character): AbilityTarget =
 func abilityTargetTile*(target: Vec2): AbilityTarget =
     AbilityTarget(kind: TargetTile, tile: target)
 
-func abilityTargetNone*() : AbilityTarget =
+func abilityTargetNone*(): AbilityTarget =
     AbilityTarget(kind: TargetNone)
 
 
@@ -347,7 +351,8 @@ func targetIntentionNone*(): TargetIntention =
 func targetIntentionTargeted*(target: Vec2): TargetIntention =
     TargetIntention(abilityType: targeted, target: target)
 
-func targetIntentionRanged*(movementIndex, projectileIndex: int): TargetIntention =
+func targetIntentionRanged*(movementIndex,
+        projectileIndex: int): TargetIntention =
     TargetIntention(
         abilityType: ranged,
         movementPathIndex: movementIndex,

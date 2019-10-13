@@ -68,7 +68,8 @@ func getPathOptions*(combat: CombatScreen): seq[seq[Vec2]] =
     of CombatState.pickingAbilityTarget:
         case ability.abilityType
         of AbilityType.ranged:
-            result = expandMovementPattern(activeCharPos, ability.movementPattern)
+            result = expandMovementPattern(activeCharPos,
+                    ability.movementPattern)
         of AbilityType.dash:
             result = expandMovementPattern(activeCharPos, ability.pattern)
         else:
@@ -77,7 +78,8 @@ func getPathOptions*(combat: CombatScreen): seq[seq[Vec2]] =
     of CombatState.pickingRangedAbilitySecondaryTarget:
         case ability.abilityType
         of AbilityType.ranged:
-            result = expandMovementPattern(activeCharPos, ability.projectilePattern)
+            result = expandMovementPattern(activeCharPos,
+                    ability.projectilePattern)
         else:
             discard
     else:
@@ -92,3 +94,4 @@ proc log*(combat: var CombatScreen, message: string, save: bool) =
         if message != combat.tempMessage:
             echo message
         combat.tempMessage = message
+        combat.tempMessageCountdown = 2

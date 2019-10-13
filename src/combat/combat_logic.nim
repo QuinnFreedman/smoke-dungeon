@@ -304,6 +304,13 @@ proc updateCombatScreen*(combat: var CombatScreen,
                          level: var Level,
                          keyboard: Keyboard,
                          dt: float): ScreenChange =
+    if combat.tempMessage.isNotEmpty:
+        combat.tempMessageCountdown -= dt
+        if combat.tempMessageCountdown <= 0:
+            combat.tempMessageCountdown = 0
+            combat.tempMessage = ""
+
+
     let activeChar = combat.turnOrder[combat.turn]
     let isAlly = activeChar in combat.playerParty
 
@@ -322,6 +329,9 @@ proc updateCombatScreen*(combat: var CombatScreen,
 
     case combat.state
     of CombatState.pickingAbility:
+        if backPressed:
+            combat.log("Can't go back", false)
+
         combat.menuCursor =
             (combat.menuCursor + moveY) %% activeChar.numAbilites
         if enterPressed:
@@ -336,6 +346,9 @@ proc updateCombatScreen*(combat: var CombatScreen,
                 combat.log("Can't cast that", false)
 
     of CombatState.pickingAbilityTarget:
+        if backPressed:
+            combat.log("Can't go back", false)
+
         let ability = combat.activeAbility
         case ability.abilityType
         of AbilityType.ranged:

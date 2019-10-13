@@ -37,14 +37,14 @@ func movementPathIsValid*(combat: CombatScreen,
     let last = path.last
     if not window.containsPoint(last) or not level.walls.contains(last):
         return false
-    
+
     if level.collision(last):
         return false
 
     for v in path:
         if not window.containsPoint(v) or not level.walls.contains(v):
             return false
-        
+
         if level.collision(v) and not canJump:
             return false
 
@@ -77,15 +77,15 @@ proc validateTargetIntention*(
         let movementPath = expandMovementPattern(
                 characterPosBeforeMovement,
                 ability.projectilePattern)
-        if target.movementPathIndex < 0 or 
+        if target.movementPathIndex < 0 or
             target.movementPathIndex >= movementPath.len:
             return (false, "Movement index out of bounds.")
-        
+
         let path = movementPath[target.movementPathIndex]
         if not movementPathIsValid(combat, level, path, ability.canJump):
             return (false, "Can't move there")
 
-        # call getTargetFromIntention and validate target if it should be 
+        # call getTargetFromIntention and validate target if it should be
         # possible to have invalid projectile paths.
 
         return (true, "")
@@ -120,9 +120,9 @@ func getTargetFromIntention(combat: CombatScreen,
     of AbilityType.ranged:
         let movementOptions = expandMovementPattern(combat.movementStart,
                                                     ability.movementPattern)
-        let characterPosAfterMovement = 
+        let characterPosAfterMovement =
             movementOptions[target.movementPathIndex].last
-                                            
+
         let projectilePaths = expandMovementPattern(characterPosAfterMovement,
                                                     ability.projectilePattern)
         let window = getCombatWindow(combat)
@@ -130,22 +130,22 @@ func getTargetFromIntention(combat: CombatScreen,
         for v in path:
             if not window.containsPoint(v) or not level.walls.contains(v):
                 return abilityTargetNone()
-            
+
             if level.walls[v]:
                 return abilityTargetTile(v)
-                
+
             let hit = level.dynamicEntities[v]
             if not hit.isNil:
                 if ability.hasFriendlyFire:
                     return abilityTargetCharacter(hit)
-                
+
                 let isPlayerCharacter = activeChar in combat.playerParty
-                let opponentParty = 
+                let opponentParty =
                     if isPlayerCharacter:
                         combat.enemyParty
                     else:
                         combat.playerParty
-                    
+
                 if hit in opponentParty:
                     return abilityTargetCharacter(hit)
     else:
@@ -156,7 +156,7 @@ func getTargetFromIntention(combat: CombatScreen,
 func getTargetAtCursor(combat: CombatScreen,
                        level: Level,
                        ability: Ability): AbilityTarget =
-    let intention = 
+    let intention =
         case ability.abilityType
         of untargeted:
             TargetIntention(
@@ -170,11 +170,11 @@ func getTargetAtCursor(combat: CombatScreen,
             )
         else:
             TODO("Implement getTargetAtCursor for other ability types")
-            TargetIntention( abilityType: untargeted)
+            TargetIntention(abilityType: untargeted)
     return getTargetFromIntention(combat, level, ability, intention)
 
 proc doAttack(combat: var CombatScreen,
-               level: var Level) = 
+               level: var Level) =
     alias activeChar: combat.turnOrder[combat.turn]
     if activeChar in combat.enemyParty:
         let (ability, target) = activeChar.ai.chooseAttack(
@@ -218,9 +218,10 @@ proc doAttack(combat: var CombatScreen,
             else:
                 let message = ability.applyEffect(activeChar, target, weapon)
                 if message == "":
-                    combat.log("The " & describe(activeChar) & " hits the" & describe(target) & "!", true)
+                    combat.log("The " & describe(activeChar) & " hits the" &
+                            describe(target) & "!", true)
 
-    
+
         TargetTile(tile: _):
             combat.log("You hit a wall", true)
 
@@ -346,7 +347,8 @@ proc updateCombatScreen*(combat: var CombatScreen,
             if enterPressed:
                 let path = paths[combat.menuCursor]
                 combat.rangedAbilityMovementPathIndex = combat.menuCursor
-                if not movementPathIsValid(combat, level, path, ability.canJump):
+                if not movementPathIsValid(combat, level, path,
+                        ability.canJump):
                     combat.log("Can't move there", false)
                 else:
                     combat.movementStart = activeChar.currentTile
@@ -363,7 +365,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
             activeChar.teleport(combat.movementStart,
                 combat.movementStart.directionTo(activeChar.currentTile),
                 level)
-            combat.setState(CombatState.pickingRangedAbilitySecondaryTarget)
+            combat.setState(CombatState.pickingAbilityTarget)
 
         let ability = combat.activeAbility
         case ability.abilityType
@@ -377,7 +379,7 @@ proc updateCombatScreen*(combat: var CombatScreen,
         else:
             echo "ERROR: entered secodary target combat state with non-ranged ability"
             combat.setState(CombatState.playingAinimation)
-        
+
 
     of CombatState.playingAinimation:
         echo "playing animation"

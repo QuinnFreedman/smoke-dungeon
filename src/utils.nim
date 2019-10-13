@@ -1,5 +1,4 @@
-import sdl2,
-    math
+import sdl2
 
 import
     direction,
@@ -90,14 +89,14 @@ let MATRIX_IDENTITY* = matrixFromSeq[int](@[
 ])
 let MATRIX_ROT_90* = matrixFromSeq[int](@[
     @[0, -1],
-    @[1,  0],
+    @[1, 0],
 ])
 let MATRIX_ROT_180* = matrixFromSeq[int](@[
     @[-1, 0],
     @[0, -1]
 ])
 let MATRIX_ROT_270* = matrixFromSeq[int](@[
-    @[ 0, 1],
+    @[0, 1],
     @[-1, 0],
 ])
 
@@ -106,7 +105,13 @@ func transform*(v: Vec2, m: Matrix[int]): Vec2 =
      y: m[0, 1] * v.x + m[1, 1] * v.y)
 
 func containsPoint*(rect: Rect, point: Vec2): bool =
-    (point.x >= rect.x and point.x <= rect.x + rect.w and 
+    (point.x >= rect.x and point.x <= rect.x + rect.w and
      point.y >= rect.y and point.y <= rect.y + rect.h)
 
 func isNotNil*[T](x: T): bool = not x.isNil
+
+func isEmpty*(x: string): bool = len(x) == 0
+func isEmpty*[T](x: seq[T]): bool = len(x) == 0
+
+func isNotEmpty*(x: string): bool = not x.isEmpty
+func isNotEmpty*[T](x: seq[T]): bool = not x.isEmpty

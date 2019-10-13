@@ -17,7 +17,7 @@ import
     ../character_utils
 
 func renderHorizontalBar(pos: Vec2, width: int, value: float, color: Color,
-                         renderInfo: RenderInfo, transform: Vec2)=
+                         renderInfo: RenderInfo, transform: Vec2) =
 
     let length = (value * (TILE_SIZE.float - 4)).round.cint
     fillRect(rect(pos.x.cint, pos.y.cint, length, width.cint), color,
@@ -31,9 +31,9 @@ proc renderCharacterVitals(character: Character,
 
     let maxHealth = character.get(Stat.maxHp)
     if maxHealth != 0:
-         renderHorizontalBar(upperLeft + v(2, 2), 2,
-                character.health / maxHealth, RED,
-                renderInfo, transform)
+        renderHorizontalBar(upperLeft + v(2, 2), 2,
+               character.health / maxHealth, RED,
+               renderInfo, transform)
 
     # if character.maxMana != 0:
     #      renderHorizontalBar(upperLeft + v(2, 4), 2,
@@ -79,10 +79,10 @@ proc drawMapMarker(mapCursor: Vec2, renderInfo: RenderInfo, transform: Vec2) {.i
 
 proc drawPathOptions(combat: CombatScreen,
                      renderInfo: RenderInfo,
-                     transform: Vec2) = 
+                     transform: Vec2) =
     let paths = getPathOptions(combat)
     for i, path in paths:
-        let tint = 
+        let tint =
             if i == combat.menuCursor:
                 color(255, 255, 0, 100)
             else:
@@ -101,7 +101,6 @@ func getPrompt(combat: CombatScreen): string =
             return "Move where?"
         else:
             TODO("Implement abilities other than RANGED")
-
     of CombatState.pickingRangedAbilitySecondaryTarget:
         case combat.activeAbility.abilityType
         of AbilityType.ranged:
@@ -116,7 +115,7 @@ proc renderCombatScreen*(gameState: GameState,
     alias activeChar: combat.turnOrder[combat.turn]
 
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
-                               .scale(TILE_SIZE / 2)
+        .scale(TILE_SIZE / 2)
     let transform = round(
         (vecFloat(combat.center) + vf(0.5, 0.5))
             .scale(float(-TILE_SIZE)) + screenCenter)
@@ -124,7 +123,7 @@ proc renderCombatScreen*(gameState: GameState,
     let window = getCombatWindow(combat)
 
     # Render map
-    renderMap(gameState.level, window, renderInfo.renderer, transform, fow=false)
+    renderMap(gameState.level, window, renderInfo.renderer, transform, fow = false)
 
     for p in combat.aoeAuras.indices:
         if gameState.level.walls.contains(p) and not gameState.level.walls[p]:
@@ -150,24 +149,7 @@ proc renderCombatScreen*(gameState: GameState,
         renderCharacter(character, renderInfo.renderer, transform)
 
     # Render text
-
-    if combat.tempMessage != "":
+    if combat.tempMessage.isNotEmpty:
         drawMessage(combat.tempMessage, renderInfo)
     else:
-        case combat.state
-        of CombatState.pickingAbility:
-            drawMenu("Do what?", activeChar.iterAbilities(), combat.menuCursor, renderInfo)
-        of CombatState.pickingAbilityTarget:
-            case combat.activeAbility.abilityType
-            of AbilityType.ranged:
-                drawMessage("Move where?", renderInfo)
-            else:
-                TODO("Implement abilities other than RANGED")
-
-        of CombatState.pickingRangedAbilitySecondaryTarget:
-            case combat.activeAbility.abilityType
-            of AbilityType.ranged:
-                drawMessage("Pick target", renderInfo)
-            else:
-                TODO("Implement abilities other than RANGED")
-        else: discard
+        drawMessage(combat.getPrompt, renderInfo)

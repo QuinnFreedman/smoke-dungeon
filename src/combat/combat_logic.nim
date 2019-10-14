@@ -216,6 +216,7 @@ proc doAttack(combat: var CombatScreen,
             if ability.applyEffect.isNil:
                 echo "WARNING: the ability \"" & ability.name & "\" has no effect function so it will be skipped."
             else:
+                # TODO figure out if the ability hits (is dodged)
                 let message = ability.applyEffect(activeChar, target, weapon)
                 if message == "":
                     combat.log("The " & describe(activeChar) & " hits the" &
@@ -226,10 +227,7 @@ proc doAttack(combat: var CombatScreen,
             combat.log("You hit a wall", true)
 
         TargetNone:
-            if ability.abilityType == AbilityType.untargeted:
-                combat.log("Untargeted ability. doing nothing for now", true)
-            else:
-                combat.log("You missed", true)
+            combat.log("Untargeted ability. doing nothing for now", true)
 
     combat.setState(CombatState.playingAinimation)
 
@@ -395,11 +393,12 @@ proc updateCombatScreen*(combat: var CombatScreen,
 
 
     of CombatState.playingAinimation:
-        echo "playing animation"
-        let ANIMATION_TIME_MS = 1 # TODO placeholder
+        let ANIMATION_TIME_MS = 1000 # TODO placeholder
         if combat.animationTimer < ANIMATION_TIME_MS:
-            combat.animationTimer += 1
+            combat.animationTimer += int(math.round(dt * 1000))
         else:
+            # Animation finished
+            # Clean up and go to next turn
             combat.turnPointsRemaining -= combat.activeAbility.turnCost
             echo "turn points remaining: " & $combat.turnPointsRemaining
             if combat.turnPointsRemaining > 0 and isAlly:

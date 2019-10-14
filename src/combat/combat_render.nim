@@ -1,6 +1,7 @@
 import
-    sdl2,
     math,
+    patty,
+    sdl2,
     sugar
 
 import
@@ -115,6 +116,36 @@ func drawCombatTextUI(combat: CombatScreen, renderInfo: RenderInfo) =
             TODO("Implement abilities other than RANGED")
     else: discard
 
+proc renderCombatAnimation(combat: CombatScreen, renderInfo: RenderInfo) =
+    # let ability = combat.activeAbility
+    let activeChar = combat.turnOrder[combat.turn]
+    let targetChar =
+        match combat.activeTarget:
+            TargetCharacter(character: target):
+                target
+
+            TargetTile(tile: _):
+                nil
+
+            TargetNone:
+                nil
+
+    let ANIMATION_TIME_MS = 1000 # TODO placeholder
+    let scale = 4
+    let x = combat.animationTimer / ANIMATION_TIME_MS
+    let max = SCREEN_WIDTH_PIXELS
+    let min = - TILE_SIZE * scale
+    let xpos = int(math.round(boundedLerp(x, min, max)))
+    renderStaticCharacter(activeChar, v(xpos, 100),
+            scale, renderInfo.renderer)
+
+    if targetChar.isNotNil:
+        let xpos2 = int(math.round(boundedLerp(x, max, min)))
+        renderStaticCharacter(targetChar, v(xpos2, 150),
+                scale, renderInfo.renderer)
+
+
+
 proc renderCombatScreen*(gameState: GameState,
                          combat: CombatScreen,
                          renderInfo: RenderInfo) =
@@ -153,6 +184,10 @@ proc renderCombatScreen*(gameState: GameState,
     for character in combat.turnOrder:
         renderCharacterVitals(character, renderInfo, transform)
         renderCharacter(character, renderInfo.renderer, transform)
+
+    # Render combat animation
+    if combat.state == CombatState.playingAinimation:
+        renderCombatAnimation(combat, renderInfo)
 
     # Render text
     drawCombatTextUI(combat, renderInfo)

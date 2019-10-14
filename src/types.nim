@@ -1,9 +1,7 @@
 import
-    sdl2,
-    sdl2/ttf
+    sdl2
 
 import
-    constants,
     direction,
     keyboard,
     matrix,

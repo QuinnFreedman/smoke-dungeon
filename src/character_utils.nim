@@ -1,8 +1,6 @@
 import
     math,
-    patty,
-    sdl2,
-    random
+    sdl2
 
 import
     types,
@@ -11,9 +9,7 @@ import
     constants,
     utils,
     textures,
-    matrix,
-    astar,
-    times
+    matrix
 
 
 # -------------------------------------
@@ -113,7 +109,7 @@ proc get*(self: Character, stat: Stat): int =
 iterator iterAbilities*(self: Character): Ability =
     for ability in self.unlockedAbilities:
         yield ability
-    yield Ability( name: "Rest" )
+    yield Ability(name: "Rest")
 
 func numAbilites*(self: Character): int =
     for _ in self.iterAbilities:
@@ -221,7 +217,7 @@ func getDestRect*(self: Character): sdl2.Rect =
 # -------------------------------------
 
 proc newCharacter*(level: var Level,
-                   pos: Vec2, speed: float, 
+                   pos: Vec2, speed: float,
                    kind: CharacterType, race: Race, sex: Sex,
                    class: Class): Character =
     result = create(CharacterData)

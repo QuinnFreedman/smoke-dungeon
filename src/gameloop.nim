@@ -13,11 +13,7 @@ import
     combat/combat_init,
     combat/combat_logic,
     combat/combat_render,
-    character_utils,
-    direction,
     render_utils,
-    matrix,
-    utils,
     constants,
     main_menu/main_menu_logic,
     main_menu/main_menu_render,
@@ -39,7 +35,8 @@ proc loop*(self: var Game, dt: float) =
             of Screen.inventory:
                 loopInventory(self.inventory, self.gamestate.playerParty, self.keyboard)
             of Screen.combat:
-                updateCombatScreen(self.combat, self.gameState.level, self.keyboard, dt)
+                updateCombatScreen(self.combat, self.gameState.level,
+                        self.keyboard, dt)
             of Screen.menu:
                 loopMenu(self)
             of Screen.transition:
@@ -114,14 +111,15 @@ proc render*(self: Game, renderTarget: TexturePtr,
         discard
 
     renderText(self.renderInfo, "fps: " & $avgFps,
-               v(SCREEN_WIDTH_PIXELS - 80, 0), color(255,255,255,255))
+               v(SCREEN_WIDTH_PIXELS - 80, 0), color(255, 255, 255, 255))
 
 
 
     let windowRect = window.getSize()
     let gameScreenRect = point(SCREEN_WIDTH_PIXELS, SCREEN_HEIGHT_PIXELS)
 
-    var drect = gameScreenRect.scaleToFit(windowRect, self.prefs.scaleModePixelPerfect)
+    var drect = gameScreenRect.scaleToFit(windowRect,
+            self.prefs.scaleModePixelPerfect)
 
     self.renderer.setRenderTarget(nil)
     self.renderer.clear()

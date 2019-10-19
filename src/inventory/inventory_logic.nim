@@ -1,12 +1,12 @@
-import sdl2
+# import sdl2
 
 import
     ../keyboard,
-    ../matrix,
-    ../types,
-    ../utils,
-    ../vector,
-    inventory_utils
+    # ../matrix,
+    ../types
+    # ../utils,
+    # ../vector,
+    # inventory_utils
 
 func loopInventory*(inv: var Inventory, playerParty: seq[Character],
                     keyboard: Keyboard): ScreenChange =

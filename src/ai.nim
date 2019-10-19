@@ -12,8 +12,7 @@ import
     direction,
     types,
     utils,
-    vector,
-    weapon_definitions
+    vector
 
 func getClosest(self: Character, others: seq[Character]): Character =
     var bestDistance: float = Inf
@@ -31,8 +30,8 @@ const AI_FOLLOW* =
         if not self.following.isNil:
             let path = aStarSearch(level.collision, self.currentTile,
                                    self.following.nextTile,
-                                   includeGoal=false,
-                                   rng=nil)
+                                   includeGoal = false,
+                                   rng = nil)
             # let followDistance =
             #     if self.following.isMoving: 4
             #     else: 2
@@ -55,7 +54,7 @@ type CombatAiFunction = proc(self: Character, combat: CombatScreen,
 func combatAi(f: CombatAiFunction): CombatAiFunction = f
 
 let AI_COMBAT_DO_NOTHING* = combatAi(
-    (self, combat, level) => 
+    (self, combat, level) =>
         (NONE_ABILITY, TargetIntention(abilityType: untargeted))
 )
 
@@ -80,7 +79,7 @@ proc walkingDistance(level: Level, fromTile, toTile: Vec2): int =
     echo "calculate walking distance:"
     dump((level, fromTile, toTile))
     let path = aStarSearch(level.collision, fromTile, toTile,
-                           includeGoal=false, rng=nil)
+                           includeGoal = false, rng = nil)
     dump(path)
     if path.len > 0:
         return path.len
@@ -104,8 +103,8 @@ proc AI_COMBAT_SPIDER*(self: Character, combat: CombatScreen,
     var movementLocation: Vec2
     var bestDistance = high(int)
     for (i, location) in getRangedMovementOptions(combat, level, ability):
-        let distanceToNearestEnemy = 
-                level.walkingDistance(location, nearestEnemy.currentTile)
+        let distanceToNearestEnemy =
+            level.walkingDistance(location, nearestEnemy.currentTile)
         echo $i & ": " & $distanceToNearestEnemy
         if distanceToNearestEnemy >= 0 and distanceToNearestEnemy < bestDistance:
             movementChoice = i
@@ -116,7 +115,8 @@ proc AI_COMBAT_SPIDER*(self: Character, combat: CombatScreen,
 
     # pick projectile target (pick any option that will hit an enemy)
     var projectileChoice = -1
-    for (i, location) in getRangedProjectileOptions(combat, level, ability, movementLocation):
+    for (i, location) in getRangedProjectileOptions(combat, level, ability,
+            movementLocation):
         if combat.getCharacterAtTile(location).isNotNil or projectileChoice == -1:
             projectileChoice = i
 

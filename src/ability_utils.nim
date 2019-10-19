@@ -1,13 +1,11 @@
 import
-    patty,
     random,
     math
 
 import
     character_utils,
     constants,
-    types,
-    vector
+    types
 
 
 func turnCost*(cost: float): int =
@@ -26,7 +24,7 @@ proc canCast*(caster: Character, ability: Ability): bool =
 func isNone*(self: AoeAura): bool =
     self.effect.isNil
 
-proc getBasicDamage*(weapon: WeaponInfo, modifier=1.0): (int, bool) =
+proc getBasicDamage*(weapon: WeaponInfo, modifier = 1.0): (int, bool) =
     if weapon.critChance >= rand(1.0):
         ((weapon.critBonus * weapon.baseDamage.float * modifier).round.toInt,
          true)

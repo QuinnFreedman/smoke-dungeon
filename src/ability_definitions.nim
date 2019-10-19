@@ -1,15 +1,9 @@
 import
-    random,
-    math,
-    sugar,
-    sequtils
+    sugar
 
 import
     types,
     vector,
-    textures,
-    matrix,
-    character_utils,
     ability_utils
 
 let NONE_ABILITY* = Ability(

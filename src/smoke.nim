@@ -3,11 +3,9 @@ import
     sdl2/image,
     sdl2/ttf,
     os,
-    times,
-    streams
+    times
 
 import
-    matrix,
     types,
     keyboard,
     initialization,

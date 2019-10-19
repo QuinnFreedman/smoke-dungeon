@@ -1,20 +1,19 @@
-import strutils,
-       math
+import math
 
 import direction
 
 type Vec2* = tuple
     x: int
     y: int
-const ZERO* =( x:  0, y:  0 )
-const NE*  = ( x:  1, y: -1 )
-const E*   = ( x:  1, y:  0 )
-const SE*  = ( x:  1, y:  1 )
-const S*   = ( x:  0, y:  1 )
-const SW*  = ( x: -1, y:  1 )
-const W*   = ( x: -1, y:  0 )
-const NW*  = ( x: -1, y: -1 )
-const N*   = ( x:  0, y: -1 )
+const ZERO* = (x: 0, y: 0)
+const NE* = (x: 1, y: -1)
+const E* = (x: 1, y: 0)
+const SE* = (x: 1, y: 1)
+const S* = (x: 0, y: 1)
+const SW* = (x: -1, y: 1)
+const W* = (x: -1, y: 0)
+const NW* = (x: -1, y: -1)
+const N* = (x: 0, y: -1)
 
 const UP* = N
 const DOWN* = S
@@ -28,7 +27,7 @@ func directionVector*(dir: Direction): Vec2 =
     of left: LEFT
     of right: RIGHT
 
-func v*(x, y: int): Vec2 = (x: x, y : y)
+func v*(x, y: int): Vec2 = (x: x, y: y)
 
 func `+` *(self, other: Vec2): Vec2 =
     result.x = self.x + other.x
@@ -91,7 +90,7 @@ func `==` *(self, other: Vec2f): bool =
 func vecFloat*(x, y: float): Vec2f =
     (x: x, y: y)
 
-func vf*(x, y: float): Vec2f = (x: x, y : y)
+func vf*(x, y: float): Vec2f = (x: x, y: y)
 
 func vecFloat*(v: Vec2): Vec2f =
     (x: float(v.x), y: float(v.y))

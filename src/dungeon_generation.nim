@@ -1,7 +1,6 @@
 import
     sdl2,
-    random,
-    math
+    random
 
 import
     astar,
@@ -22,9 +21,9 @@ proc debugDrawDungeon(level: Level) =
                     " ^"
                 elif v(x, y) == level.exit:
                     " v"
-                elif textures[x, y]  == GRASS_LONG3:
+                elif textures[x, y] == GRASS_LONG3:
                     " ."
-                elif textures[x, y]  == STONE1:
+                elif textures[x, y] == STONE1:
                     " #"
                 else:
                     "  "
@@ -77,7 +76,8 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
         var next: Vec2
         doUntil result.walls.contains(next):
             let randDirection = rng.weightedChoice(
-                    [Direction.down, Direction.up, Direction.left, Direction.right],
+                    [Direction.down, Direction.up, Direction.left,
+                            Direction.right],
                     [0.25, 0.25, 0.23, 0.27])
             next = particle + directionVector(randDirection)
         particle = next
@@ -85,14 +85,15 @@ proc generateLevel*(width, height: int, rng: var Rand): Level =
     result.exit = particle
 
     let level = result
-    let collide = func (v: Vec2): bool = not level.walls.contains(v) or level.walls[v]
+    let collide = func (v: Vec2): bool = not level.walls.contains(v) or
+            level.walls[v]
     let shortestPath = aStarSearch(
             collide,
             result.entrance, result.exit, false, addr(rng))
 
     for p in shortestPath:
         result.decals[p] = TextureAlias.footprint
-    
+
     result.decals[result.entrance] = TextureAlias.footprint
 
     if false: debugDrawDungeon(result)

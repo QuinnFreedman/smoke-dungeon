@@ -5,7 +5,6 @@ import
 
 import
     vector,
-    matrix,
     direction
 
 func heuristic(a, b: Vec2): int =

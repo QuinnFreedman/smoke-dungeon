@@ -1,6 +1,4 @@
-import strutils,
-       sdl2,
-       math
+import sdl2
 
 import
     ../types,
@@ -45,8 +43,9 @@ proc renderGameFrame*(gamestate: GameState, renderer: RendererPtr) =
     let level = gamestate.level
     let pc: Character = gamestate.playerParty[0]
     let screenCenter = v(SCREEN_WIDTH_TILES, SCREEN_HEIGHT_TILES)
-                               .scale(TILE_SIZE / 2)
-    let transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter - vecFloat(TILE_SIZE / 2, TILE_SIZE / 2))
+        .scale(TILE_SIZE / 2)
+    let transform = round(pc.actualPos.scale(-TILE_SIZE) + screenCenter -
+            vecFloat(TILE_SIZE / 2, TILE_SIZE / 2))
 
     let window = getRenderWindow(pc.currentTile, pc.nextTile)
 

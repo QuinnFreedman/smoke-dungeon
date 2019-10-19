@@ -1,19 +1,14 @@
 import
-    sdl2,
-    sequtils,
     math,
     patty,
-    algorithm,
     sugar
 
 import
-    ../astar,
     ../ability_definitions,
     ../ability_utils,
     ../character_utils,
     ../constants,
     ../direction,
-    ../game_utils,
     ../keyboard,
     ../matrix,
     ../types,

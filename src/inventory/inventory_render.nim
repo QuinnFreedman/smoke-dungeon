@@ -1,18 +1,18 @@
-import sdl2
+# import sdl2
 
 import
-    ../constants,
-    ../matrix,
-    ../render_character,
+    # ../constants,
+    # ../matrix,
+    # ../render_character,
     ../render_utils,
-    ../textures,
+    # ../textures,
     ../types,
-    ../utils,
-    ../vector,
-    inventory_utils
+    # ../utils,
+    ../vector
+    # inventory_utils
 
 
-const ITEM_ICON_SIZE = TILE_SIZE div 4
+# const ITEM_ICON_SIZE = TILE_SIZE div 4
 
 
 

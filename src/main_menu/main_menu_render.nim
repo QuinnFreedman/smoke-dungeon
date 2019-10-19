@@ -1,6 +1,5 @@
 import
-    system,
-    sdl2
+    system
 
 import
     ../types,

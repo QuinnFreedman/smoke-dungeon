@@ -41,6 +41,12 @@ let RANGE_TEST_2* = Ability(
     canJump: false
 )
 
+let TARGETED_ABILITY_TEST* = Ability(
+    name: "Targeted test",
+    turnCost: turnCost(1),
+    abilityType: AbilityType.targeted
+)
+
 # func fire(caster: Character): AoeAura =
 #     AoeAura(
 #         turns: 2,

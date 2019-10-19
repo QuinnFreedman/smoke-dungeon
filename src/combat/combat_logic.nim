@@ -148,6 +148,14 @@ func getTargetFromIntention(combat: CombatScreen,
 
                 if hit in opponentParty:
                     return abilityTargetCharacter(hit)
+    of AbilityType.targeted:
+        let v = target.target
+        let hit = level.dynamicEntities[v]
+        if hit.isNil:
+            return abilityTargetNone()
+
+        return abilityTargetCharacter(hit)
+
     else:
         # TODO: implement other ability types
         return abilityTargetNone()
@@ -167,6 +175,11 @@ func getTargetAtCursor(combat: CombatScreen,
                 abilityType: AbilityType.ranged,
                 movementPathIndex: combat.rangedAbilityMovementPathIndex,
                 projectilePathIndex: combat.menuCursor
+            )
+        of targeted:
+            TargetIntention(
+                abilityType: AbilityType.targeted,
+                target: combat.mapCursor
             )
         else:
             TODO("Implement getTargetAtCursor for other ability types")
@@ -367,8 +380,14 @@ proc updateCombatScreen*(combat: var CombatScreen,
                         Direction.down, # TODO face the right direction
                         level)
                     combat.setState(CombatState.pickingRangedAbilitySecondaryTarget)
+        of AbilityType.targeted:
+            combat.mapCursor = combat.mapCursor + v(moveX, moveY)
+
+            if enterPressed:
+                doAttack(combat, level)
+
         else:
-            TODO("Implement ability types other than RANGED")
+            TODO("Implement ability types other than RANGED and TARGETED")
             # doAttack(combat, level)
 
     of CombatState.pickingRangedAbilitySecondaryTarget:

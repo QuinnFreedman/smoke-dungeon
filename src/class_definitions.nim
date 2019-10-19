@@ -18,7 +18,8 @@ let CLASS_ROGUE* = Class(
     ],
     startingAbilities: @[
         RANGE_TEST,
-        RANGE_TEST_2
+        RANGE_TEST_2,
+        TARGETED_ABILITY_TEST
     ]
 )
 
@@ -38,7 +39,8 @@ let CLASS_WIZARD* = Class(
     ],
     startingAbilities: @[
         RANGE_TEST,
-        RANGE_TEST_2
+        RANGE_TEST_2,
+        TARGETED_ABILITY_TEST
     ]
 )
 

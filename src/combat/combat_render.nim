@@ -106,8 +106,10 @@ func drawCombatTextUI(combat: CombatScreen, renderInfo: RenderInfo) =
         case combat.activeAbility.abilityType
         of AbilityType.ranged:
             drawMessage("Move where?", renderInfo)
+        of AbilityType.targeted:
+            drawMessage("Choose a target", renderInfo)
         else:
-            TODO("Implement abilities other than RANGED")
+            TODO("Implement abilities other than RANGED and TARGETED")
     of CombatState.pickingRangedAbilitySecondaryTarget:
         case combat.activeAbility.abilityType
         of AbilityType.ranged:
@@ -175,6 +177,8 @@ proc renderCombatScreen*(gameState: GameState,
     of CombatState.pickingAbilityTarget:
         drawPathOptions(combat, renderInfo, transform)
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
+        if combat.activeAbility.abilityType == AbilityType.targeted:
+            drawMapCursor(combat.mapCursor, renderInfo, transform)
     of CombatState.pickingRangedAbilitySecondaryTarget:
         drawPathOptions(combat, renderInfo, transform)
         drawMapMarker(activeChar.currentTile, renderInfo, transform)
